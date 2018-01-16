@@ -1,0 +1,35 @@
+{
+  "name": "dmhy-subscribe",
+  "version": "0.1.0",
+  "bin": {
+    "dmhy": "./index.js"
+  },
+  "description": "Subscribe by keywords and download torrents",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlandreDaisuki/dmhy-subscribe.git"
+  },
+  "author": "FlandreDaisuki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FlandreDaisuki/dmhy-subscribe/issues"
+  },
+  "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
+  "devDependencies": {
+    "eslint": "^4.15.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "cheerio": "^1.0.0-rc.2",
+    "commander": "^2.13.0"
+  }
+}

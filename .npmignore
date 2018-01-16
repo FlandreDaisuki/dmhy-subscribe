@@ -1,0 +1,4 @@
+.eslintrc*
+.vscode
+fakedb.json
+
