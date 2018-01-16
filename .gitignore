@@ -1,3 +1,5 @@
+.vscode/launch.json
+
 fakedb.json
 
 node_modules
