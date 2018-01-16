@@ -22,45 +22,54 @@ npm i -g dmhy-subscribe
 ## Usage
 
 ```
-Usage: dmhy [options] [command]
+  Usage: dmhy [options] [command]
 
-Options:
 
-  -V, --version  output the version number
-  -h, --help     output usage information
+  Options:
 
-Commands:
+    -V, --version  output the version number
+    -h, --help     output usage information
 
-  add [anime...]
-    Add <anime> to subscribe.
 
-    A <anime> contains a name and following keywords
-    to identify series you want to download, then
-    joins them by CSV format in a string.
+  Commands:
 
-    Examples:
+    add [options] [anime...]
+      Add <anime> to subscribe.
 
-    Simple:
-        $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+      A <anime> contains a name and following keywords
+      to identify series you want to download, then
+      joins them by CSV format in a string.
 
-    Multiple:
-        $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
+      Examples:
 
-  remove|rm [vid...]
-    Unsubscribe <anime> by <vid>.
+        Direct:
+          $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+          $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
 
-    The <vid> are listed at `$ dmhy list`.
+        File:
+          $ dmhy ls -addable > a.txt
+          $ dmhy rm --all
+          $ dmhy add --file a.txt
 
-  download|dl [epid...]
-    Download <episode> of <anime> which are subscribed.
+    remove|rm [options] [vid...]
+      Unsubscribe <anime> by <vid>.
 
-    The epid format: <vid>-<ep>
-    <ep> : int | float | 'all' | <ep>..<ep> | <ep>,<ep>
+      The <vid> are listed at `$ dmhy list`.
 
-    Examples:
-    $ dmhy download ABC-01
-    $ dmhy dl XYZ-5.5 QWE-all ZZZ-1,3..5,6,8
+      Examples:
+        $ dmhy rm XYZ ABC
+        $ dmhy rm -a
 
-  list|ls
-    List all <anime> which are subscribed.
+    download|dl [epid...]
+      Download <episode> of <anime> which are subscribed.
+
+      The epid format: <vid>-<ep>
+      <ep> : int | float | 'all' | <ep>..<ep> | <ep>,<ep>
+
+      Examples:
+        $ dmhy download ABC-01
+        $ dmhy dl XYZ-5.5 QWE-all ZZZ-1,3..5,6,8
+
+    list|ls [options]
+      List all <anime> which are subscribed.
 ```

@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
+const path = require('path')
 const axios = require('axios')
 const cheerio = require('cheerio')
 const program = require('commander')
 const spawn = require('child_process').spawn
 const pkg = require('./package.json')
 
-// const CWD = process.cwd()
+const CWD = process.cwd()
 // Make cwd to source
 process.chdir(__dirname)
 
@@ -147,18 +148,14 @@ class Database {
 }
 
 const fakedb = JSON.parse(fs.readFileSync('fakedb.json'))
-// console.log('fakedb', fakedb)
 const db = new Database(fakedb)
-
-//   .option('-i, --input <list.json>', 'The json contains list with keywords.')
-//   .option('-o, --output <list.json>', '')
 
 program
   .version(pkg.version)
 
 program
   .command('add [anime...]')
-  .usage('[anime...]')
+  .option('-f, --file <path>', 'Add from file.')
   .description(`
   Add <anime> to subscribe.
 
@@ -168,20 +165,33 @@ program
 
   Examples:
 
-    Simple:
+    Direct:
       $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
-
-    Multiple:
       $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
+
+    File:
+      $ dmhy ls -addable > a.txt
+      $ dmhy rm --all
+      $ dmhy add --file a.txt
   `)
-  .action(function (animes) {
-    if (!animes.length) {
+  .action(function (animes, cmd) {
+    if (!animes.length && !cmd.file) {
       this.help()
     } else {
+      if (cmd.file) {
+        const file = fs.readFileSync(path.normalize(path.join(CWD, cmd.file)), 'utf8')
+        for (const a of file.split(/\r?\n/)) {
+          if (a) {
+            animes.push(a)
+          }
+        }
+      }
+
       for (const a of animes) {
         const anime = db.createAnime(a)
         if (!db.query('name', anime.name)) {
           db.push(anime)
+          console.log(`Add ${anime.name} successfully.`)
         } else {
           console.error(`Anime ${anime.name} has existed.`)
         }
@@ -194,20 +204,28 @@ program
 program
   .command('remove [vid...]')
   .alias('rm')
-  .usage('[vid...]')
+  .option('-a, --all', 'Remove all subscribed <anime>.')
   .description(`
   Unsubscribe <anime> by <vid>.
 
   The <vid> are listed at \`$ dmhy list\`.
+
+  Examples:
+    $ dmhy rm XYZ ABC
+    $ dmhy rm -a
   `)
-  .action(function (vids) {
-    if (!vids.length) {
+  .action(function (vids, cmd) {
+    if (!vids.length && !cmd.all) {
       this.help()
     } else {
+      if (cmd.all) {
+        vids = [...db].map(anime => anime.vid)
+      }
+
       for (const vid of vids) {
         const anime = db.query('vid', vid)
-        console.log('Remove', anime.name)
         if (anime) {
+          console.log('Remove', anime.name)
           db.pop(anime)
         } else {
           console.error(`Not found vid: ${vid}.`)
@@ -248,11 +266,19 @@ program
 program
   .command('list')
   .alias('ls')
+  .option('-a, --addable', 'List addable format.')
   .description(`
   List all <anime> which are subscribed.
   `)
-  .action(function () {
-    db.list()
+  .action(function (cmd) {
+    if (cmd.addable) {
+      for (const anime of db) {
+        console.log([anime.name, ...anime.keywords].join())
+      }
+    } else {
+      db.list()
+    }
+
     process.exit()
   })
 
