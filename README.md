@@ -73,3 +73,10 @@ npm i -g dmhy-subscribe
     list|ls [options]
       List all <anime> which are subscribed.
 ```
+
+## Work with crontab
+
+Check and fetch every 6 hour
+```
+$ (crontab -l 2>/dev/null; echo "0 */6 * * * `which dmhy`") | crontab -
+```
