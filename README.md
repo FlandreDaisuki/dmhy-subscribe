@@ -16,7 +16,7 @@ $ sudo apt install deluge deluge-console
 ## Installation
 
 ```
-npm i -g dmhy-subscribe
+$ npm i -g dmhy-subscribe
 ```
 
 ## Usage
@@ -79,4 +79,11 @@ npm i -g dmhy-subscribe
 Check and fetch every 6 hour
 ```
 $ (crontab -l 2>/dev/null; echo "0 */6 * * * `which dmhy`") | crontab -
+```
+
+Use [pm2](http://pm2.keymetrics.io/) instead
+```
+$ npm i -g pm2
+$ pm2 start dmhy --cron '0 */6 * * *'
+$ pm2 ps
 ```
