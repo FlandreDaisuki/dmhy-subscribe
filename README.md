@@ -4,7 +4,7 @@
 ## Requirement
 
 ### node & npm
-- recommend use [creationix/nvm](https://github.com/creationix/nvm)
+- Recommend using [creationix/nvm](https://github.com/creationix/nvm)
  or [tj/n](https://github.com/tj/n)
 
 ### deluge & deluge-console
