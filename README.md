@@ -1,17 +1,24 @@
 # dmhy-subscribe
 
+Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10
+在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
 ## Requirement
 
 ### node & npm
 - Recommend using [creationix/nvm](https://github.com/creationix/nvm)
- or [tj/n](https://github.com/tj/n)
+ or [tj/n](https://github.com/tj/n) on Linux
+- Recommend using [official installer](https://nodejs.org/) on Windows 10
 
 ### deluge & deluge-console
 
+Linux:
 ```
-$ sudo apt install deluge deluge-console
+$ sudo apt install deluge deluged deluge-console
 ```
+
+Windows 10:
+Use [offical installer](http://dev.deluge-torrent.org/wiki/Download)
 
 ## Installation
 
@@ -74,7 +81,11 @@ $ npm i -g dmhy-subscribe
       List all <anime> which are subscribed.
 ```
 
-## Work with crontab
+## Work with crontab/pm2
+
+cron format: http://www.nncron.ru/help/EN/working/cron-format.htm
+
+### Linux
 
 Check and fetch every 6 hour
 ```
@@ -85,5 +96,25 @@ Use [pm2](http://pm2.keymetrics.io/) instead
 ```
 $ npm i -g pm2
 $ pm2 start dmhy --cron '0 */6 * * *'
-$ pm2 ps
+$ pm2 ls
+```
+
+### Windows 10
+
+There are some previous work for Windows 10:
+
+- Add deluge path (`C:\Program Files (x86)\deluge` in default) into environment variable
+- open PowerShell and type `deluged` to execute deamon
+
+Test previous work with PowerShell:
+```
+> deluge-console info
+# if no error, OK
+```
+
+Use [pm2](http://pm2.keymetrics.io/) with PowerShell
+```
+> npm i -g pm2
+> pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
+> pm2 ls
 ```
