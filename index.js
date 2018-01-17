@@ -5,7 +5,7 @@ const path = require('path')
 const axios = require('axios')
 const cheerio = require('cheerio')
 const program = require('commander')
-const spawn = require('child_process').spawn
+const { spawn } = require('child_process')
 const pkg = require('./package.json')
 
 const CWD = process.cwd()
@@ -109,14 +109,18 @@ class Database {
     }
   }
   download (episode) {
-    const task = spawn('deluge-console', ['add', episode.link])
+    const task = spawn('deluge-console', ['add', `"${episode.link}"`])
 
-    task.on('close', (code) => {
+    task.on('close', code => {
       if (code === 0) {
-        console.log(`Add ${episode.title}`)
+        console.log(`Add ${episode.title}.`)
       } else {
-        console.error(`Fail to add ${episode.title}`)
+        console.error(`Failed to add ${episode.title}.`)
       }
+    })
+
+    task.on('error', () => {
+      console.error('Failed to start subprocess.')
     })
   }
   createAnime (str) {
