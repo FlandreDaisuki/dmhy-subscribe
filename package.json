@@ -1,10 +1,10 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "bin": {
     "dmhy": "./index.js"
   },
-  "description": "Subscribe by keywords and download torrents",
+  "description": "Subscribe by keywords and download megnets",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
