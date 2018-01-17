@@ -55,7 +55,7 @@ $ npm i -g dmhy-subscribe
           $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
 
         File:
-          $ dmhy ls -addable > a.txt
+          $ dmhy ls --addable > a.txt
           $ dmhy rm --all
           $ dmhy add --file a.txt
 
