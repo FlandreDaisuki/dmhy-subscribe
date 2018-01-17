@@ -17,40 +17,36 @@ if (!fs.existsSync('fakedb.json')) {
 }
 
 class Database {
-  constructor (db) {
-    this.db = db
-    this.maxAnimeLength = 0
-    for (const anime of this.db) {
-      this.maxAnimeLength = Math.max(this.maxAnimeLength, anime.name.length)
-    }
+  constructor (fakedb) {
+    this.data = fakedb
   }
 
   * [Symbol.iterator] () {
-    for (const anime of this.db) {
+    for (const anime of this.data) {
       yield anime
     }
   }
 
   push (anime) {
     if (anime) {
-      this.db.push(anime)
+      this.data.push(anime)
     }
   }
   pop (anime) {
-    const index = this.db.findIndex(elem => {
+    const index = this.data.findIndex(elem => {
       return elem.vid === anime.vid
     })
     if (index >= 0) {
-      this.db.splice(index, 1)
+      this.data.splice(index, 1)
     }
   }
   save () {
-    fs.writeFileSync('fakedb.json', JSON.stringify(this.db))
+    fs.writeFileSync('fakedb.json', JSON.stringify(this.data))
   }
   list () {
     console.log(`vid | latest | name`)
     console.log()
-    for (const anime of this.db) {
+    for (const anime of this.data) {
       const lastEpisode = anime.episodes[0]
       const latest = (lastEpisode ? lastEpisode.ep : '--').toString().padStart(2, '0')
       console.log(`${anime.vid} |   ${latest}   | ${anime.name}`)
@@ -72,35 +68,35 @@ class Database {
           [p, q] = [q, p]
         }
 
-        const P = episodes.findIndex(ep => ep.ep >= p)
-        let Q = episodes.findIndex(ep => ep.ep > q)
+        const P = episodes.findIndex(episode => episode.ep >= p)
+        let Q = episodes.findIndex(episode => episode.ep > q)
         Q = Q < 0 ? episodes.length : Q + 1
 
-        return episodes.slice(P, Q).map(ep => ep.ep)
+        return episodes.slice(P, Q).map(episode => episode.ep)
       } else if (epkey.match(/\d+\.?\d*/)) {
         return parseFloat(epkey)
       } else {
         console.error('parseEpkey: Unknown epkey: ', epkey)
-        return undefined
+        return null
       }
     }
 
     switch (key) {
       case 'vid':
       case 'name':
-        return this.db.find(anime => anime[key] === val) || null
+        return this.data.find(anime => anime[key] === val) || null
 
       case 'epid': {
-        const [vid, epkey] = val.split('-')
-        const anime = this.db.find(anime => anime.vid === vid)
+        const [vid, epkeyStr] = val.split('-')
+        const anime = this.data.find(anime => anime.vid === vid)
         if (!anime) {
           return null
         }
-        const eps = parseEpkey(anime.episodes, epkey)
-        if (eps === 'all') {
+        const epkeys = parseEpkey(anime.episodes, epkeyStr)
+        if (epkeys === 'all') {
           return anime.episodes
         } else {
-          return anime.episodes.filter(ep => [].concat(eps).includes(ep.ep))
+          return anime.episodes.filter(episode => [].concat(epkeys).includes(episode.ep))
         }
       }
 
@@ -151,7 +147,14 @@ class Database {
   }
 }
 
-const fakedb = JSON.parse(fs.readFileSync('fakedb.json'))
+let fakedb = []
+
+try {
+  fakedb = JSON.parse(fs.readFileSync('fakedb.json'))
+} catch (error) {
+  fakedb = []
+}
+
 const db = new Database(fakedb)
 
 program
@@ -184,15 +187,15 @@ program
     } else {
       if (cmd.file) {
         const file = fs.readFileSync(path.normalize(path.join(CWD, cmd.file)), 'utf8')
-        for (const a of file.split(/\r?\n/)) {
-          if (a) {
-            animes.push(a)
+        for (const animeStr of file.split(/\r?\n/)) {
+          if (animeStr) {
+            animes.push(animeStr)
           }
         }
       }
 
-      for (const a of animes) {
-        const anime = db.createAnime(a)
+      for (const animeStr of animes) {
+        const anime = db.createAnime(animeStr)
         if (!db.query('name', anime.name)) {
           db.push(anime)
           console.log(`Add ${anime.name} successfully.`)
@@ -200,6 +203,7 @@ program
           console.error(`Anime ${anime.name} has existed.`)
         }
       }
+
       db.save()
       process.exit()
     }
@@ -235,6 +239,7 @@ program
           console.error(`Not found vid: ${vid}.`)
         }
       }
+
       db.save()
       process.exit()
     }
@@ -264,6 +269,7 @@ program
         }
       }
     }
+
     process.exit()
   })
 
@@ -300,8 +306,8 @@ for (const anime of db) {
       const titleTexts = $('#topic_list tr:nth-child(n+1) .title > a').text()
       const titles = titleTexts.split(/[\n\t]+/).filter(x => x)
 
-      const magnetElement = $('#topic_list tr:nth-child(n+1) a.download-arrow').toArray()
-      const magnets = magnetElement.map(x => x.attribs.href)
+      const magnetElements = $('#topic_list tr:nth-child(n+1) a.download-arrow').toArray()
+      const magnets = magnetElements.map(x => x.attribs.href)
 
       if (titles.length !== magnets.length) {
         throw new Error('titles.length !== magnets.length')
@@ -317,7 +323,7 @@ for (const anime of db) {
 
       if (dmhyEpisodes.length !== anime.episodes.length) {
         for (const dep of dmhyEpisodes) {
-          const existed = anime.episodes.find(x => x.ep === dep.ep)
+          const existed = anime.episodes.find(episode => episode.ep === dep.ep)
           if (!existed) {
             db.download(dep)
             anime.episodes.push(dep)
