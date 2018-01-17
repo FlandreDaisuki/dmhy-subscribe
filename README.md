@@ -1,6 +1,7 @@
 # dmhy-subscribe
 
-Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10
+Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
+
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
 ## Requirement
