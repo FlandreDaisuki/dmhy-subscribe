@@ -21,6 +21,8 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 Linux:
 ```
+$ sudo add-apt-repository ppa:deluge-team/ppa
+$ sudo apt update
 $ sudo apt install deluge deluged deluge-console
 ```
 
@@ -111,7 +113,7 @@ $ pm2 ls
 There are some previous work for Windows 10:
 
 - Add deluge path (`C:\Program Files (x86)\deluge` in default) into environment variable
-- open PowerShell and type `deluged` to execute deamon
+- Open PowerShell and type `deluged` to execute deamon
 
 Test previous work with PowerShell:
 ```
