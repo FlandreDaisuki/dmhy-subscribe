@@ -25,7 +25,7 @@ $ sudo apt install deluge deluged deluge-console
 ```
 
 Windows 10:
-Use [offical installer](http://dev.deluge-torrent.org/wiki/Download)
+Use [official installer](http://dev.deluge-torrent.org/wiki/Download)
 
 ## Installation
 
