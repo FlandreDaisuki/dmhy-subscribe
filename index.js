@@ -54,7 +54,7 @@ class Database {
   }
   query (key, val) {
     function parseEpkey (episodes, epkey) {
-      if (epkey.includes('all')) {
+      if (!epkey || epkey.includes('all')) {
         return 'all'
       } else if (epkey.includes(',')) {
         return epkey.split(/,\s*/)
@@ -255,8 +255,10 @@ program
   The epid format: <vid>-<ep>
   <ep> : int | float | 'all' | <ep>..<ep> | <ep>,<ep>
 
+  If only <vid>, means <vid>-all.
+
   Examples:
-    $ dmhy download ABC-01
+    $ dmhy download ABC-01 DEF
     $ dmhy dl XYZ-5.5 QWE-all ZZZ-1,3..5,6,8
   `)
   .action(function (epids) {
