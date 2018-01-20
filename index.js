@@ -314,10 +314,17 @@ for (const anime of db) {
       }
 
       const dmhyEpisodes = titles.map((t, i) => {
+        // [01]        => 1
+        // [03v2]      => 3
+        // [5.5]       => 5.5
+        // [第8話]      => 8
+        // [24 END]    => 24
+        // [MP4] [mp4] => x
+        // [V2] [v3]   => x
         return {
           title: t,
           link: magnets[i],
-          ep: parseFloat(t.replace(/.*\[(\d\.?\d?)(v\d*)?\].*/, '$1'))
+          ep: parseFloat(t.replace(/.*\[[^\dMPVvmp]*(\d{1,2}(?:\.\d+)?)(?:[vV]\d+)?\D*\].*/, '$1'))
         }
       })
 
