@@ -326,7 +326,7 @@ for (const anime of db) {
         return {
           title: t,
           link: magnets[i],
-          ep: parseFloat(t.replace(/.*\[[^\dMPVvmp]*(\d{1,2}(?:\.\d+)?)(?:[vV]\d+)?\D*\].*/, '$1'))
+          ep: parseFloat(t.replace(/.*\[[^\dMPVvmp]*(\d{1,2}(?:\.\d+)?)(?:[vV]\d+|\+.*|\D*)?\].*/, '$1'))
         }
       })
 
