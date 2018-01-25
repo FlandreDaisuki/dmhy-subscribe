@@ -41,6 +41,7 @@ class Database {
     }
   }
   save () {
+    this.data.sort((a, b) => b.episodes.length - a.episodes.length)
     for (const anime of this.data) {
       anime.episodes.sort((a, b) => b.ep - a.ep)
     }
