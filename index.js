@@ -41,6 +41,9 @@ class Database {
     }
   }
   save () {
+    for (const anime of this.data) {
+      anime.episodes.sort((a, b) => b.ep - a.ep)
+    }
     fs.writeFileSync('fakedb.json', JSON.stringify(this.data))
   }
   list () {
