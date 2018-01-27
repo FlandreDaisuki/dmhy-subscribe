@@ -41,10 +41,15 @@ class Database {
     }
   }
   save () {
-    for (const anime of this.data) {
-      anime.episodes.sort((a, b) => b.ep - a.ep)
+    try {
+      for (const anime of this.data) {
+        anime.episodes.sort((a, b) => b.ep - a.ep)
+      }
+      this.data.sort((a, b) => b.episodes[0].ep - a.episodes[0].ep)
+    } catch (error) {
+      // new anime added
     }
-    this.data.sort((a, b) => b.episodes[0].ep - a.episodes[0].ep)
+
     fs.writeFileSync('fakedb.json', JSON.stringify(this.data))
   }
   list () {
@@ -109,18 +114,23 @@ class Database {
     }
   }
   download (episode) {
-    const task = spawn('deluge-console', ['add', `"${episode.link}"`])
+    return new Promise((resolve, reject) => {
+      const task = spawn('deluge-console', ['add', `"${episode.link}"`])
 
-    task.on('close', code => {
-      if (code === 0) {
-        console.log(`Add ${episode.title}.`)
-      } else {
-        console.error(`Failed to add ${episode.title}.`)
-      }
-    })
+      task.on('close', code => {
+        if (code === 0) {
+          console.log(`Add ${episode.title}.`)
+          resolve(code)
+        } else {
+          console.error(`Failed to add ${episode.title}.`)
+          reject(code)
+        }
+      })
 
-    task.on('error', () => {
-      console.error('Failed to start subprocess.')
+      task.on('error', err => {
+        console.error('Failed to start subprocess.')
+        reject(err)
+      })
     })
   }
   createAnime (str) {
@@ -270,13 +280,15 @@ program
       this.help()
     } else {
       for (const epid of epids) {
-        for (const episode of db.query('epid', epid)) {
-          db.download(episode)
-        }
+        Promise.all(db.query('epid', epid).map(db.download))
+          .then(ok => {
+            process.exit(ok)
+          })
+          .catch(error => {
+            process.exit(error)
+          })
       }
     }
-
-    process.exit()
   })
 
 program
