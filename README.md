@@ -4,6 +4,17 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
+* [Demo](#demo)
+* [Requirement](#requirement)
+  + [node & npm](#node--npm)
+  + [deluge & deluge-console](#deluge--deluge-console)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Work with crontab/pm2](#work-with-crontabpm2)
+  + [Linux](#linux)
+  + [Windows 10](#windows-10)
+  + [Windows 10 中文版](#windows-10-%E4%B8%AD%E6%96%87%E7%89%88)
+
 ## Demo
 
 <p align="center">
@@ -152,7 +163,7 @@ Windows 10 需要做些前置作業:
   ```
 - 到 deluge 路徑執行 `deluged.exe` *或*  打開 **PowerShell(系統管理員)** 並輸入 `deluged` 執行服務
 
-用 PowerShell 測試前置作業是否成功 :
+用 PowerShell 測試前置作業是否成功:
 ```
 PS C:\>  deluge-console info
 # 如果沒有錯誤就完成了.
