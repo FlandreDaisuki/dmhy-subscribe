@@ -114,7 +114,7 @@ $ pm2 ls
 
 There are some previous work for Windows 10:
 
-- Add deluge path (`C:\Program Files (x86)\deluge` in default) into environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
+- Add deluge path (`C:\Program Files (x86)\deluge` in default) into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
   ```shell
   PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # Your deluge path
   PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
@@ -126,13 +126,42 @@ There are some previous work for Windows 10:
 
 Test previous work with PowerShell:
 ```
-> deluge-console info
-# if no error, OK
+PS C:\>  deluge-console info
+# if no error, OK.
+# if error message is "Failed to connect to ..." means deluged.exe isn't opened.
 ```
 
 Use [pm2](http://pm2.keymetrics.io/) with PowerShell
 ```
-> npm i -g pm2
-> pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
-> pm2 ls
+PS C:\>  npm i -g pm2 # Install pm2
+PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
+PS C:\>  pm2 ls
+```
+
+### Windows 10 中文版
+
+Windows 10 需要做些前置作業:
+
+- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
+  ```shell
+  PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # 你的 deluge 路徑
+  PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
+  PS C:\>  $newpath = "$oldpath;$delugepath"
+  PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
+  PS C:\>  exit # 關掉重開是必須的
+  ```
+- 到 deluge 路徑執行 `deluged.exe` *或*  打開 **PowerShell(系統管理員)** 並輸入 `deluged` 執行服務
+
+用 PowerShell 測試前置作業是否成功 :
+```
+PS C:\>  deluge-console info
+# 如果沒有錯誤就完成了.
+# 如果錯誤訊息是 "Failed to connect to ..." 代表 deluged.exe 沒打開
+```
+
+在 PowerShell 使用 [pm2](http://pm2.keymetrics.io/)
+```
+PS C:\>  npm i -g pm2 # 安裝 pm2
+PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
+PS C:\>  pm2 ls
 ```
