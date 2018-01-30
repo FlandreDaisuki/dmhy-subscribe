@@ -114,8 +114,15 @@ $ pm2 ls
 
 There are some previous work for Windows 10:
 
-- Add deluge path (`C:\Program Files (x86)\deluge` in default) into environment variable
-- Open PowerShell and type `deluged` to execute deamon
+- Add deluge path (`C:\Program Files (x86)\deluge` in default) into environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
+  ```shell
+  PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # Your deluge path
+  PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
+  PS C:\>  $newpath = "$oldpath;$delugepath"
+  PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
+  PS C:\>  exit # To reload profile
+  ```
+- Goto your deluge path and execute `deluged.exe` *or* open **PowerShell(Administrator)** and type `deluged` to execute deamon
 
 Test previous work with PowerShell:
 ```
