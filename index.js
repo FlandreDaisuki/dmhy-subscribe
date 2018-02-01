@@ -292,16 +292,36 @@ program
   })
 
 program
-  .command('list')
+  .command('list [vid]')
   .alias('ls')
   .option('-a, --addable', 'List addable format.')
   .description(`
-  List all <anime> which are subscribed.
+  List <anime> of <vid> which are subscribed or
+  all <anime> are listed if no <vid>.
+
+  Examples:
+    $ dmhy list ABC
+    $ dmhy ls -a
   `)
-  .action(function (cmd) {
+  .action(function (vid, cmd) {
     if (cmd.addable) {
       for (const anime of db) {
         console.log([anime.name, ...anime.keywords].join())
+      }
+    } else if (vid) {
+      const anime = db.query('vid', vid)
+      if (anime) {
+        const episodes = anime.episodes.slice().sort((a, b) => a.ep - b.ep)
+
+        console.log('Name:', anime.name)
+        console.log('Addible format:', [anime.name, ...anime.keywords].join(','))
+        console.log()
+        console.log('Episode | Title')
+        for (const episode of episodes) {
+          console.log(`${episode.ep.toString().padEnd(7, ' ')} | ${episode.title}`)
+        }
+      } else {
+        console.error('vid:', vid, 'is not found.')
       }
     } else {
       db.list()
