@@ -16,6 +16,23 @@ if (!fs.existsSync('fakedb.json')) {
   fs.writeFileSync('fakedb.json', '[]')
 }
 
+function arrayize (...args) {
+  return args.reduce((prev, cur) => {
+    return prev.concat(cur)
+  }, [])
+}
+
+function intersection (a, b) {
+  const [setA, setB] = [new Set(a), new Set(b)]
+  const intersection = new Set()
+  for (const elem of setB) {
+    if (setA.has(elem)) {
+      intersection.add(elem)
+    }
+  }
+  return [...intersection]
+}
+
 class Database {
   constructor (fakedb) {
     this.data = fakedb
@@ -43,9 +60,9 @@ class Database {
   save () {
     try {
       for (const anime of this.data) {
-        anime.episodes.sort((a, b) => b.ep - a.ep)
+        anime.episodes.sort((a, b) => arrayize(b.ep)[0] - arrayize(a.ep)[0])
       }
-      this.data.sort((a, b) => b.episodes[0].ep - a.episodes[0].ep)
+      this.data.sort((a, b) => arrayize(b.episodes[0].ep)[0] - arrayize(a.episodes[0].ep)[0])
     } catch (error) {
       // new anime added
     }
@@ -57,7 +74,7 @@ class Database {
     console.log()
     for (const anime of this.data) {
       const lastEpisode = anime.episodes[0]
-      const latest = (lastEpisode ? lastEpisode.ep : '--').toString().padStart(2, '0')
+      const latest = (lastEpisode ? arrayize(lastEpisode.ep).slice(-1).toString().padStart(2, '0') : '--')
       console.log(`${anime.vid} |   ${latest}   | ${anime.name}`)
     }
   }
@@ -105,7 +122,7 @@ class Database {
         if (epkeys === 'all') {
           return anime.episodes
         } else {
-          return anime.episodes.filter(episode => [].concat(epkeys).includes(episode.ep))
+          return anime.episodes.filter(episode => intersection(epkeys, arrayize(episode.ep)).length)
         }
       }
 
@@ -200,7 +217,9 @@ program
       this.help()
     } else {
       if (cmd.file) {
-        const file = fs.readFileSync(path.normalize(path.join(CWD, cmd.file)), 'utf8')
+        process.chdir(CWD)
+        const file = fs.readFileSync(path.normalize(cmd.file), 'utf8')
+        process.chdir(__dirname)
         for (const animeStr of file.split(/\r?\n/)) {
           if (animeStr) {
             animes.push(animeStr)
@@ -311,14 +330,14 @@ program
     } else if (vid) {
       const anime = db.query('vid', vid)
       if (anime) {
-        const episodes = anime.episodes.slice().sort((a, b) => a.ep - b.ep)
+        const episodes = anime.episodes.slice().sort((a, b) => arrayize(a.ep)[0] - arrayize(b.ep)[0])
 
         console.log('Name:', anime.name)
         console.log('Addible format:', [anime.name, ...anime.keywords].join(','))
         console.log()
         console.log('Episode | Title')
         for (const episode of episodes) {
-          console.log(`${episode.ep.toString().padEnd(7, ' ')} | ${episode.title}`)
+          console.log(`${arrayize(episode.ep).join(',').padEnd(7, ' ')} | ${episode.title}`)
         }
       } else {
         console.error('vid:', vid, 'is not found.')
@@ -331,6 +350,43 @@ program
   })
 
 program.parse(process.argv)
+
+function parseEpisodeFromTitle (title) {
+  const blacklistTokenSet = new Set([
+    '1280x720',
+    '720p',
+    '1080p',
+    'mp4',
+    'big5',
+    'v2'
+  ])
+  const tokens = title.split(/[[\]]/g)
+    .map(x => x.toLowerCase())
+    .filter(x => /\d/.test(x) && !blacklistTokenSet.has(x))
+
+  for (const token of tokens) {
+    const tok = token
+      .replace(/\s*end$/, '') // [24 end]
+      .replace(/\s*v\d+$/, '') // [20v2]
+      .replace(/\s*\+.*$/, '') // [20+sp1]
+      .replace(/[第話话]/g, '') // [第8話]
+
+    if (/^[\d.]+$/.test(tok)) {
+      return parseFloat(tok)
+    } else if (/^[\d.]+-[\d.]+$/.test(tok)) {
+      const [head, tail] = tok.split(/\s*-\s*/).map(parseFloat)
+      const rangeEps = []
+      for (let i = head; i <= tail; i++) {
+        rangeEps.push(i)
+      }
+      return rangeEps
+    }
+  }
+
+  console.log('This should never print unless having bugs.')
+  console.log('title:', title)
+  console.log('tokens:', tokens)
+}
 
 for (const anime of db) {
   const kw = [anime.name, ...anime.keywords].join('+')
@@ -351,25 +407,15 @@ for (const anime of db) {
         throw new Error('titles.length !== magnets.length')
       }
 
-      const dmhyEpisodes = titles.map((t, i) => {
-        // [01]        => 1
-        // [03v2]      => 3
-        // [5.5]       => 5.5
-        // [第8話]      => 8
-        // [24 END]    => 24
-        // [MP4] [mp4] => x
-        // [V2] [v3]   => x
-        // [BIG5] [big5]   => x
-        return {
-          title: t,
-          link: magnets[i],
-          ep: parseFloat(t.replace(/.*\[[^\dMPVBIGvmpbig]*(\d{1,2}(?:\.\d+)?)(?:[vV]\d+|\+.*|\D*)?\].*/, '$1'))
-        }
-      })
+      const dmhyEpisodes = titles.map((t, i) => ({
+        title: t,
+        link: magnets[i],
+        ep: parseEpisodeFromTitle(t)
+      }))
 
       if (dmhyEpisodes.length !== anime.episodes.length) {
         for (const dep of dmhyEpisodes) {
-          const existed = anime.episodes.find(episode => episode.ep === dep.ep)
+          const existed = anime.episodes.find(episode => episode.link === dep.link)
           if (!existed) {
             db.download(dep)
             anime.episodes.push(dep)
