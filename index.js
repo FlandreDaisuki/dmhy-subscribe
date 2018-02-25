@@ -127,7 +127,7 @@ program
   .command('list [sid...]')
   .alias('ls')
   .option('-s, --subscribable', 'List subscribable format.')
-  .description('List the {subscription}s or the {thread}s of the {subscription}s')
+  .description('List the {subscription}s or the {thread}s of the {subscription}s.')
   .action(function (sids, cmd) {
     if (cmd.subscribable) {
       for (const s of db.subscriptions) {
