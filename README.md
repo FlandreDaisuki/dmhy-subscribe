@@ -23,9 +23,9 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 ## Demo
 
 <p align="center">
-
-  [![Youtube Demo](https://img.youtube.com/vi/sGjh77-72vE/0.jpg)](https://www.youtube.com/watch?v=sGjh77-72vE)
-
+  <a href="https://www.youtube.com/watch?v=sGjh77-72vE">
+    <img src="https://img.youtube.com/vi/sGjh77-72vE/0.jpg">
+  </a>
 </p>
 
 ## Requirement 必須軟體
