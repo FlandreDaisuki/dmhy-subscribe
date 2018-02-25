@@ -1,205 +1,76 @@
 #!/usr/bin/env node
 
+const { fetchThreads } = require('./crawler')
+const { Subscription, Database } = require('./fakedb')
+
 const fs = require('fs')
-const path = require('path')
-const axios = require('axios')
-const cheerio = require('cheerio')
 const program = require('commander')
-const { spawn } = require('child_process')
-const pkg = require('./package.json')
+const { question } = require('readline-sync')
 
-const CWD = process.cwd()
-// Make cwd to source
-process.chdir(__dirname)
-
-if (!fs.existsSync('fakedb.json')) {
-  fs.writeFileSync('fakedb.json', '[]')
-}
-
-function arrayize (...args) {
-  return args.reduce((prev, cur) => {
-    return prev.concat(cur)
-  }, [])
-}
-
-function intersection (a, b) {
-  const [setA, setB] = [new Set(a), new Set(b)]
-  const intersection = new Set()
-  for (const elem of setB) {
-    if (setA.has(elem)) {
-      intersection.add(elem)
-    }
-  }
-  return [...intersection]
-}
-
-class Database {
-  constructor (fakedb) {
-    this.data = fakedb
-  }
-
-  * [Symbol.iterator] () {
-    for (const anime of this.data) {
-      yield anime
-    }
-  }
-
-  push (anime) {
-    if (anime) {
-      this.data.push(anime)
-    }
-  }
-  pop (anime) {
-    const index = this.data.findIndex(elem => {
-      return elem.vid === anime.vid
-    })
-    if (index >= 0) {
-      this.data.splice(index, 1)
-    }
-  }
-  save () {
-    try {
-      for (const anime of this.data) {
-        anime.episodes.sort((a, b) => arrayize(b.ep)[0] - arrayize(a.ep)[0])
-      }
-      this.data.sort((a, b) => arrayize(b.episodes[0].ep)[0] - arrayize(a.episodes[0].ep)[0])
-    } catch (error) {
-      // new anime added
-    }
-
-    fs.writeFileSync('fakedb.json', JSON.stringify(this.data))
-  }
-  list () {
-    console.log(`vid | latest | name`)
-    console.log()
-    for (const anime of this.data) {
-      const lastEpisode = anime.episodes[0]
-      const latest = (lastEpisode ? arrayize(lastEpisode.ep).slice(-1).toString().padStart(2, '0') : '--')
-      console.log(`${anime.vid} |   ${latest}   | ${anime.name}`)
-    }
-  }
-  query (key, val) {
-    function parseEpkey (episodes, epkey) {
-      if (!epkey || epkey.includes('all')) {
-        return 'all'
-      } else if (epkey.includes(',')) {
-        return epkey.split(/,\s*/)
-          .map(epk => parseEpkey(episodes, epk))
-          .reduce((acc, val) => val >= 0 ? acc.concat(val) : acc, [])
-      } else if (epkey.includes('..')) {
-        let [p, q] = epkey.split('..')
-        p = parseFloat(p)
-        q = parseFloat(q)
-        if (p > q) {
-          [p, q] = [q, p]
-        }
-
-        const P = episodes.findIndex(episode => episode.ep >= p)
-        let Q = episodes.findIndex(episode => episode.ep > q)
-        Q = Q < 0 ? episodes.length : Q + 1
-
-        return episodes.slice(P, Q).map(episode => episode.ep)
-      } else if (epkey.match(/\d+\.?\d*/)) {
-        return parseFloat(epkey)
-      } else {
-        console.error('parseEpkey: Unknown epkey: ', epkey)
-        return null
-      }
-    }
-
-    switch (key) {
-      case 'vid':
-      case 'name':
-        return this.data.find(anime => anime[key] === val) || null
-
-      case 'epid': {
-        const [vid, epkeyStr] = val.split('-')
-        const anime = this.data.find(anime => anime.vid === vid)
-        if (!anime) {
-          return null
-        }
-        const epkeys = parseEpkey(anime.episodes, epkeyStr)
-        if (epkeys === 'all') {
-          return anime.episodes
-        } else {
-          return anime.episodes.filter(episode => intersection(epkeys, arrayize(episode.ep)).length)
-        }
-      }
-
-      default:
-        return null
-    }
-  }
-  download (episode) {
-    return new Promise((resolve, reject) => {
-      const task = spawn('deluge-console', ['add', `"${episode.link}"`])
-
-      task.on('close', code => {
-        if (code === 0) {
-          console.log(`Add ${episode.title}.`)
-          resolve(code)
-        } else {
-          console.error(`Failed to add ${episode.title}.`)
-          reject(code)
-        }
-      })
-
-      task.on('error', err => {
-        console.error('Failed to start subprocess.')
-        reject(err)
-      })
-    })
-  }
-  createAnime (str) {
-    const [name, ...keywords] = str.split(',')
-    return {
-      vid: this.generateVid(name),
-      name,
-      keywords,
-      episodes: []
-    }
-  }
-  generateVid (name) {
-    const hash = Buffer.from(name).toString('base64')
-      .replace(/[\W\d]/g, '')
-      .toUpperCase()
-      .split('')
-      .reverse()
-      .join('')
-
-    for (let offset = 0; offset <= hash.length - 3; offset++) {
-      const vid = hash.slice(offset).slice(0, 3)
-      if (vid.length === 3 && !this.query('vid', vid)) {
-        return vid
-      }
-    }
-
-    return this.generateVid(name + hash)
-  }
-}
-
-let fakedb = []
-
-try {
-  fakedb = JSON.parse(fs.readFileSync('fakedb.json'))
-} catch (error) {
-  fakedb = []
-}
-
-const db = new Database(fakedb)
+const db = new Database({dbfile: 'fakedb.json'})
 
 program
-  .version(pkg.version)
+  .version(db.version)
+  .on('--help', function () {
+    console.log(`
+  Examples:
+
+    $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+    $ dmhy
+  `)
+  })
 
 program
-  .command('add [anime...]')
-  .option('-f, --file <path>', 'Add from file.')
-  .description(`
-  Add <anime> to subscribe.
+  .command('add [subscribable...]')
+  .option('-f, --file <path>', 'Add subscribables from a file.')
+  .option('-y, --yes', 'Always add if {subscribable} name existed.')
+  .option('-n, --no', 'Never add if {subscribable} name existed.')
+  .description('Add {subscribable} to subscribe.')
+  .action(function (subscribables, cmd) {
+    if (!subscribables.length && !cmd.file) {
+      this.help()
+    }
 
-  A <anime> contains a name and following keywords
-  to identify series you want to download, then
-  joins them by CSV format in a string.
+    if (cmd.file) {
+      const file = fs.readFileSync(cmd.file, 'utf8')
+      subscribables = file.split(/\r?\n/).filter(_ => _)
+    }
+
+    for (const subscribable of subscribables) {
+      if (subscribable) {
+        const s = new Subscription(subscribable)
+        let toAdd = true
+        if (db.has('name', s.name)) {
+          if (cmd.no && !cmd.yes) {
+            toAdd = false
+          } else if (!cmd.no && cmd.yes) {
+            toAdd = true
+          } else {
+            const ans = question(`The subscription{${s.name}} is existed, still add? [y/n]:`)
+            if (/^n/i.test(ans)) {
+              toAdd = false
+            } else if (/^y/i.test(ans)) {
+              toAdd = true
+            } else {
+              toAdd = null
+            }
+          }
+        }
+        if (typeof (toAdd) === 'boolean' && toAdd) {
+          db.add(s)
+        }
+      }
+    }
+
+    db.save()
+    process.exit()
+  })
+  .on('--help', function () {
+    console.log(`
+  Details:
+
+  A {subscribable} contains a name and following keywords to identify series
+  you want to download, then joins them by CSV format in a string.
 
   Examples:
 
@@ -208,139 +79,66 @@ program
       $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
 
     File:
-      $ dmhy ls --addable > a.txt
+      $ dmhy ls --subscribable > a.txt
       $ dmhy rm --all
       $ dmhy add --file a.txt
   `)
-  .action(function (animes, cmd) {
-    if (!animes.length && !cmd.file) {
-      this.help()
-    } else {
-      if (cmd.file) {
-        process.chdir(CWD)
-        const file = fs.readFileSync(path.normalize(cmd.file), 'utf8')
-        process.chdir(__dirname)
-        for (const animeStr of file.split(/\r?\n/)) {
-          if (animeStr) {
-            animes.push(animeStr)
-          }
-        }
-      }
-
-      for (const animeStr of animes) {
-        const anime = db.createAnime(animeStr)
-        if (!db.query('name', anime.name)) {
-          db.push(anime)
-          console.log(`Add ${anime.name} successfully.`)
-        } else {
-          console.error(`Anime ${anime.name} has existed.`)
-        }
-      }
-
-      db.save()
-      process.exit()
-    }
   })
 
 program
-  .command('remove [vid...]')
+  .command('remove [sid...]')
   .alias('rm')
-  .option('-a, --all', 'Remove all subscribed <anime>.')
-  .description(`
-  Unsubscribe <anime> by <vid>.
+  .option('-a, --all', 'Remove all subscribed {subscription}.')
+  .description(`Remove {subscription} by {sid}.`)
+  .action(function (sids, cmd) {
+    if (!sids.length && !cmd.all) {
+      this.help()
+    }
 
-  The <vid> are listed at \`$ dmhy list\`.
+    if (cmd.all) {
+      sids = [...db].map(s => s.sid)
+    }
+
+    for (const sid of sids) {
+      const subscription = db.query('sid', sid)
+      if (subscription) {
+        db.remove(subscription)
+      } else {
+        console.error(`Not found subscription with sid: ${sid}.`)
+      }
+    }
+
+    db.save()
+    process.exit()
+  })
+  .on('--help', function () {
+    console.log(`
+  Details:
+
+  The {sid} are listed at \`dmhy list\`.
 
   Examples:
     $ dmhy rm XYZ ABC
-    $ dmhy rm -a
+    $ dmhy rm --all
   `)
-  .action(function (vids, cmd) {
-    if (!vids.length && !cmd.all) {
-      this.help()
-    } else {
-      if (cmd.all) {
-        vids = [...db].map(anime => anime.vid)
-      }
-
-      for (const vid of vids) {
-        const anime = db.query('vid', vid)
-        if (anime) {
-          console.log('Remove', anime.name)
-          db.pop(anime)
-        } else {
-          console.error(`Not found vid: ${vid}.`)
-        }
-      }
-
-      db.save()
-      process.exit()
-    }
   })
 
 program
-  .command('download [epid...]')
-  .alias('dl')
-  .usage('[epid...]')
-  .description(`
-  Download <episode> of <anime> which are subscribed.
-
-  The epid format: <vid>-<ep>
-  <ep> : int | float | 'all' | <ep>..<ep> | <ep>,<ep>
-
-  If only <vid>, means <vid>-all.
-
-  Examples:
-    $ dmhy download ABC-01 DEF
-    $ dmhy dl XYZ-5.5 QWE-all ZZZ-1,3..5,6,8
-  `)
-  .action(function (epids) {
-    if (!epids.length) {
-      this.help()
-    } else {
-      for (const epid of epids) {
-        Promise.all(db.query('epid', epid).map(db.download))
-          .then(ok => {
-            process.exit(ok)
-          })
-          .catch(error => {
-            process.exit(error)
-          })
-      }
-    }
-  })
-
-program
-  .command('list [vid]')
+  .command('list [sid...]')
   .alias('ls')
-  .option('-a, --addable', 'List addable format.')
-  .description(`
-  List <anime> of <vid> which are subscribed or
-  all <anime> are listed if no <vid>.
-
-  Examples:
-    $ dmhy list ABC
-    $ dmhy ls -a
-  `)
-  .action(function (vid, cmd) {
-    if (cmd.addable) {
-      for (const anime of db) {
-        console.log([anime.name, ...anime.keywords].join())
+  .option('-s, --subscribable', 'List subscribable format.')
+  .description('List the {subscription}s or the {thread}s of the {subscription}s')
+  .action(function (sids, cmd) {
+    if (cmd.subscribable) {
+      for (const s of db.subscriptions) {
+        console.log([s.name, ...s.keywords].join(','))
       }
-    } else if (vid) {
-      const anime = db.query('vid', vid)
-      if (anime) {
-        const episodes = anime.episodes.slice().sort((a, b) => arrayize(a.ep)[0] - arrayize(b.ep)[0])
-
-        console.log('Name:', anime.name)
-        console.log('Addible format:', [anime.name, ...anime.keywords].join(','))
-        console.log()
-        console.log('Episode | Title')
-        for (const episode of episodes) {
-          console.log(`${arrayize(episode.ep).join(',').padEnd(7, ' ')} | ${episode.title}`)
+    } else if (sids.length) {
+      for (const sid of sids) {
+        const s = db.query('sid', sid)
+        if (s) {
+          cmd.subscribable ? console.log([s.name, ...s.keywords].join(',')) : s.list()
         }
-      } else {
-        console.error('vid:', vid, 'is not found.')
       }
     } else {
       db.list()
@@ -348,84 +146,92 @@ program
 
     process.exit()
   })
+  .on('--help', function () {
+    console.log(`
+  Examples:
+    $ dmhy list ABC
+    $ dmhy ls -s`)
+  })
+
+program
+  .command('download [thid...]')
+  .alias('dl')
+  .usage('[thid...]')
+  .description('Download the {thread}s of the {subsciption}s which are subscribed in list.')
+  .action(function (thids) {
+    if (!thids.length) {
+      this.help()
+    } else {
+      for (const thid of thids) {
+        const [sid, epstr] = thid.split('-')
+        const s = db.query('sid', sid)
+        if (s) {
+          Promise.all(s.getThreads(epstr).map(db.download))
+            .then(ok => {
+              process.exit(ok)
+            })
+            .catch(error => {
+              process.exit(error)
+            })
+        }
+      }
+    }
+  })
+  .on('--help', function () {
+    console.log(`
+  Details:
+  The {thid} format: {sid}-{ep}
+  The {ep} format: int | float | {int|float}..{int|float} | {ep},{ep} | 'all'
+
+  If only {sid}, means {sid}-all.
+
+  Examples:
+    $ dmhy ls
+    sid  latest  name
+    ---  ------  --------------
+    AAA  09      nameAAA
+    BBB  07      nameBBB(which has ep5.5)
+
+    $ dmhy download AAA-01 BBB-5.5,7 # download (1 + 2) threads
+
+    which is the same as following
+
+    $ dmhy download AAA-01 BBB-5.5 BBB-7
+
+  More complicated example:
+
+    $ dmhy dl AAA BBB-5..6,9 # download (9 + 3) threads
+
+    which download all AAA threads and ep 5, 5.5, 6 in BBB threads
+
+    $ dmhy ls AAA
+    Episode  Title
+    -------  --------------
+    1        [字幕組][nameAAA][01]
+    2,3      [字幕組][nameAAA][02-03]
+
+    $ dmhy dl AAA-02 # download 1 threads which has 2 episodes
+  `)
+  })
 
 program.parse(process.argv)
 
-function parseEpisodeFromTitle (title) {
-  const blacklistTokenSet = new Set([
-    '1280x720',
-    '720p',
-    '1080p',
-    'mp4',
-    'big5',
-    'v2'
-  ])
-  const tokens = title.split(/[[\]]/g)
-    .map(x => x.toLowerCase())
-    .filter(x => /\d/.test(x) && !blacklistTokenSet.has(x))
+// $ dmhy
 
-  for (const token of tokens) {
-    const tok = token
-      .replace(/\s*end$/, '') // [24 end]
-      .replace(/\s*v\d+$/, '') // [20v2]
-      .replace(/\s*\+.*$/, '') // [20+sp1]
-      .replace(/[第話话]/g, '') // [第8話]
-
-    if (/^[\d.]+$/.test(tok)) {
-      return parseFloat(tok)
-    } else if (/^[\d.]+-[\d.]+$/.test(tok)) {
-      const [head, tail] = tok.split(/\s*-\s*/).map(parseFloat)
-      const rangeEps = []
-      for (let i = head; i <= tail; i++) {
-        rangeEps.push(i)
-      }
-      return rangeEps
-    }
-  }
-
-  console.log('This should never print unless having bugs.')
-  console.log('title:', title)
-  console.log('tokens:', tokens)
-}
-
-for (const anime of db) {
-  const kw = [anime.name, ...anime.keywords].join('+')
-
-  axios.get(encodeURI(`https://share.dmhy.org/topics/list?keyword=${kw}`))
-    .then(response => {
-      if (response.status !== 200) {
-        throw new Error(response)
-      }
-      const $ = cheerio.load(response.data)
-      const titleTexts = $('#topic_list tr:nth-child(n+1) .title > a').text()
-      const titles = titleTexts.split(/[\n\t]+/).filter(x => x)
-
-      const magnetElements = $('#topic_list tr:nth-child(n+1) a.download-arrow').toArray()
-      const magnets = magnetElements.map(x => x.attribs.href)
-
-      if (titles.length !== magnets.length) {
-        throw new Error('titles.length !== magnets.length')
-      }
-
-      const dmhyEpisodes = titles.map((t, i) => ({
-        title: t,
-        link: magnets[i],
-        ep: parseEpisodeFromTitle(t)
-      }))
-
-      if (dmhyEpisodes.length !== anime.episodes.length) {
-        for (const dep of dmhyEpisodes) {
-          const existed = anime.episodes.find(episode => episode.link === dep.link)
-          if (!existed) {
-            db.download(dep)
-            anime.episodes.push(dep)
-          }
+Promise.all(db.subscriptions.map(s => {
+  return fetchThreads(s)
+    .then(newThreads => {
+      for (const nth of newThreads) {
+        if (!s.threads.map(th => th.title).includes(nth.title)) {
+          db.download(nth)
+          s.add(nth)
         }
       }
-
-      db.save()
     })
     .catch(error => {
       console.error(error)
     })
-}
+})).then(() => {
+  db.sort()
+  db.save()
+})

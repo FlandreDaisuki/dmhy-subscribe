@@ -1,13 +1,13 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.3.10",
+  "version": "0.4.0",
   "bin": {
     "dmhy": "./index.js"
   },
   "description": "Subscribe by keywords and download megnets",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
   "devDependencies": {
-    "eslint": "^4.15.0",
+    "ajv": "^6.1.1",
+    "eslint": "^4.18.1",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
@@ -30,6 +31,9 @@
   "dependencies": {
     "axios": "^0.17.1",
     "cheerio": "^1.0.0-rc.2",
-    "commander": "^2.13.0"
+    "commander": "^2.13.0",
+    "compare-versions": "^3.1.0",
+    "console.table": "^0.10.0",
+    "readline-sync": "^1.4.9"
   }
 }
