@@ -158,7 +158,7 @@ $ pm2 ls
 Use [pm2](http://pm2.keymetrics.io/) with PowerShell
 ```
 PS C:\>  npm i -g pm2 # Install pm2
-PS C:\>  pm2 start dmhy --cron '0 */6 * * *'
+PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name="dmhy" --cron '0 */6 * * *'
 PS C:\>  pm2 ls
 ```
 
@@ -167,6 +167,6 @@ PS C:\>  pm2 ls
 在 PowerShell 使用 [pm2](http://pm2.keymetrics.io/)
 ```
 PS C:\>  npm i -g pm2 # 安裝 pm2
-PS C:\>  pm2 start dmhy --cron '0 */6 * * *'
+PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name="dmhy" --cron '0 */6 * * *'
 PS C:\>  pm2 ls
 ```
