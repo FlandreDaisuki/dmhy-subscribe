@@ -60,7 +60,7 @@ $ deluge-console info # if no error, OK.
 
 There are some previous work for Windows 10:
 
-- Add deluge path (`C:\Program Files (x86)\deluge` in default) and npm modules path (`%appdata\npm%` in default)into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
+- Add deluge path (`C:\Program Files (x86)\deluge` in default) and npm modules path (`%appdata%\npm` in default)into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
   ```shell
   PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # Your deluge path
   PS C:\>  $npmpath = '%appdata%\npm' # Your npm modules path
@@ -88,7 +88,7 @@ PS C:\>  dmhy -V
 
 Windows 10 需要做些前置作業:
 
-- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 和 npm modules 路徑 (預設是 `%appdata\npm%`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
+- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 和 npm modules 路徑 (預設是 `%appdata%\npm`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
   ```shell
   PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # 你的 deluge 路徑
   PS C:\>  $npmpath = '%appdata%\npm' # 你的 npm modules 路徑
