@@ -60,11 +60,12 @@ $ deluge-console info # if no error, OK.
 
 There are some previous work for Windows 10:
 
-- Add deluge path (`C:\Program Files (x86)\deluge` in default) into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
+- Add deluge path (`C:\Program Files (x86)\deluge` in default) and npm modules path (`%appdata\npm%` in default)into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
   ```shell
   PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # Your deluge path
+  PS C:\>  $npmpath = '%appdata%\npm' # Your npm modules path
   PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  $newpath = "$oldpath;$delugepath"
+  PS C:\>  $newpath = "$oldpath;$delugepath;$npmpath"
   PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
   PS C:\>  exit # To reload profile
   ```
@@ -75,19 +76,26 @@ Test previous work with PowerShell:
 PS C:\>  deluge-console info
 # if no error, OK.
 # if error message is "Failed to connect to ..." means deluged.exe isn't opened.
+PS C:\>  node -v
+v9.6.1
+# at least LTS(v8.9.4)
+PS C:\>  dmhy -V
+0.4.0
+# if error, add npm modules path to PATH environment variable
 ```
 
 ### Windows 10 中文版
 
 Windows 10 需要做些前置作業:
 
-- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
+- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 和 npm modules 路徑 (預設是 `%appdata\npm%`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
   ```shell
   PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # 你的 deluge 路徑
+  PS C:\>  $npmpath = '%appdata%\npm' # 你的 npm modules 路徑
   PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  $newpath = "$oldpath;$delugepath"
+  PS C:\>  $newpath = "$oldpath;$delugepath;$npmpath"
   PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  exit # 關掉重開是必須的
+  PS C:\>  exit # To reload profile # 關掉重開是必須的
   ```
 - 到 deluge 路徑執行 `deluged.exe` *或*  打開 **PowerShell(系統管理員)** 並輸入 `deluged` 執行服務
 
@@ -96,6 +104,12 @@ Windows 10 需要做些前置作業:
 PS C:\>  deluge-console info
 # 如果沒有錯誤就完成了.
 # 如果錯誤訊息是 "Failed to connect to ..." 代表 deluged.exe 沒打開
+PS C:\>  node -v
+v9.6.1
+# 至少更新到 LTS(v8.9.4)
+PS C:\>  dmhy -V
+0.4.0
+# 如果有錯誤，請將 npm modules 路徑加到 PATH 環境變數
 ```
 
 ## Usage 使用方法
@@ -144,7 +158,7 @@ $ pm2 ls
 Use [pm2](http://pm2.keymetrics.io/) with PowerShell
 ```
 PS C:\>  npm i -g pm2 # Install pm2
-PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
+PS C:\>  pm2 start dmhy --cron '0 */6 * * *'
 PS C:\>  pm2 ls
 ```
 
@@ -153,6 +167,6 @@ PS C:\>  pm2 ls
 在 PowerShell 使用 [pm2](http://pm2.keymetrics.io/)
 ```
 PS C:\>  npm i -g pm2 # 安裝 pm2
-PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name "dmhy" --cron "* */6 * * *"
+PS C:\>  pm2 start dmhy --cron '0 */6 * * *'
 PS C:\>  pm2 ls
 ```
