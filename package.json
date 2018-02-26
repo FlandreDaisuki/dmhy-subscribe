@@ -1,13 +1,16 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "bin": {
     "dmhy": "./index.js"
   },
   "description": "Subscribe by keywords and download megnets",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "preinstall": "npm run compatible-test",
+    "compatible-test": "node compatible-test.js",
+    "prepare": "npm run test",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -26,7 +29,8 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^5.0.1"
   },
   "dependencies": {
     "axios": "^0.17.1",

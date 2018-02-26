@@ -1,9 +1,11 @@
 const fs = require('fs')
 const { spawn } = require('child_process')
-require('console.table')
 const vercmp = require('compare-versions')
-const { version } = require('./package.json')
 const { hash, XSet } = require('./utils')
+const compat = require('./compatible-test')
+const { version } = require('./package.json')
+
+require('console.table')
 
 class Subscription {
   constructor (subscribable) {
@@ -91,7 +93,7 @@ class Database {
     const fakedb = JSON.parse(fs.readFileSync(this.fakedbPath, 'utf8'))
     this.subscriptions = fakedb.subscriptions.map(s => new Subscription(s))
     if (vercmp(fakedb.version, version) === -1) {
-      // doing some update
+      compat()
     }
     this.version = version
   }

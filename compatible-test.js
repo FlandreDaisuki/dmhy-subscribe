@@ -3,10 +3,11 @@ const { version } = require('./package.json')
 
 const fakedbPath = `${__dirname}/fakedb.json`
 
-function upgradeDatabase3to4 () {
+function upgrade03To04 () {
   if (fs.existsSync(fakedbPath)) {
     const olddb = JSON.parse(fs.readFileSync(fakedbPath, 'utf8'))
     if (!olddb.version) {
+      console.log('Upgrade database: 0.3.* → 0.4.0')
       const newdb = {
         version,
         subscriptions: []
@@ -36,4 +37,10 @@ function upgradeDatabase3to4 () {
   }
 }
 
-upgradeDatabase3to4()
+function checkAll () {
+  upgrade03To04()
+}
+
+checkAll()
+
+module.exports = checkAll

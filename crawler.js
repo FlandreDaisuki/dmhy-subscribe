@@ -34,34 +34,55 @@ function parseThreads (html) {
 
 function parseEpisodeFromTitle (title) {
   const blacklistTokenSet = new Set([
+    '1920x1080',
     '1280x720',
-    '720p',
     '1080p',
+    '720p',
+    'x264',
+    'x265',
+    '10bit',
+    'ma10p',
     'mp4',
     'big5',
     'v2'
   ])
 
-  const tokens = title.split(/[[\]]/g)
+  const tokens = title.split(/[[\]【】_\s]/g)
     .map(x => x.toLowerCase())
-    .filter(x => /\d/.test(x) && !blacklistTokenSet.has(x))
+    .filter(x => /\d/.test(x))
+    .filter(x => !blacklistTokenSet.has(x))
+    .filter(x => !/(10bit|ma10p)/.test(x))
+    .map(x => x.trim())
 
-  for (const token of tokens) {
+  function parseRangeEpisode (tok) {
+    const [head, tail] = tok.trim().split('-').map(parseFloat)
+    if (!tail) {
+      return [head]
+    }
+    const rangeEps = []
+    for (let i = head; i <= tail; i++) {
+      rangeEps.push(i)
+    }
+    return rangeEps
+  }
+
+  // Find episode from last is easier
+  for (const token of tokens.reverse()) {
     const tok = token
       .replace(/\s*(end|完)$/, '') // [24 end], [06完]
       .replace(/\s*v\d+$/, '') // [20v2]
-      .replace(/\s*\+.*$/, '') // [20+sp1]
-      .replace(/[第話话]/g, '') // [第8話]
+      .replace(/(ova|sp)/, '') // [OVA1], [SP02]
 
-    if (/^[\d.]+$/.test(tok)) {
-      return [parseFloat(tok)]
-    } else if (/^[\d.]+-[\d.]+$/.test(tok)) {
-      const [head, tail] = tok.split(/\s*-\s*/).map(parseFloat)
-      const rangeEps = []
-      for (let i = head; i <= tail; i++) {
-        rangeEps.push(i)
-      }
-      return rangeEps
+    if (/[+]/.test(tok)) {
+      return tok
+        .split('+')
+        .map(parseEpisodeFromTitle)
+        .reduce((a, b) => a.concat(b), [])
+        .sort((a, b) => a - b)
+    }
+
+    if (/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/.test(tok)) {
+      return parseRangeEpisode(tok.replace(/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/, '$1$2'))
     }
   }
 
