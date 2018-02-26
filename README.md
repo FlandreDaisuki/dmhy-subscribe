@@ -1,6 +1,6 @@
 # dmhy-subscribe
 
-[![npm](https://img.shields.io/npm/v/dmhy-subscribe.svg)](https://www.npmjs.com/package/dmhy-subscribe)
+[![npm](https://img.shields.io/npm/v/dmhy-subscribe.svg)](https://www.npmjs.com/package/dmhy-subscribe) [![Build Status](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe.svg?branch=master)](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe)
 
 Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
