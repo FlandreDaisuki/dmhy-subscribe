@@ -1,4 +1,7 @@
 .eslintrc*
 .vscode
-fakedb.json
+
+.travis.yml
 test
+
+fakedb.json
