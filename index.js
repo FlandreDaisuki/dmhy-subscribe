@@ -166,7 +166,7 @@ program
         const [sid, epstr] = thid.split('-')
         const s = db.query('sid', sid)
         if (s) {
-          Promise.all(s.getThreads(epstr).map(db.download))
+          Promise.all(s.getThreads(epstr).map(th => db.download(th)))
             .then(ok => {
               process.exit(ok)
             })
