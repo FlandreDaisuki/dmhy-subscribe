@@ -79,7 +79,7 @@ class Subscription {
 }
 
 class Database {
-  constructor ({dbfile} = {dbfile: 'fakedb.json'}) {
+  constructor ({ dbfile } = { dbfile: 'fakedb.json' }) {
     this.fakedbPath = `${__dirname}/${dbfile}`
 
     if (!fs.existsSync(this.fakedbPath)) {
@@ -140,7 +140,7 @@ class Database {
     console.table(subList)
   }
 
-  download (thread, {client, destination} = {}) {
+  download (thread, { client, destination } = {}) {
     const dest = destination || systemDownloadsFolder
     const dclient = client || 'deluge-console'
 

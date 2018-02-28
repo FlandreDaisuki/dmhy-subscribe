@@ -7,7 +7,7 @@ const fs = require('fs')
 const program = require('commander')
 const { question } = require('readline-sync')
 
-const db = new Database({dbfile: 'fakedb.json'})
+const db = new Database({ dbfile: 'fakedb.json' })
 const supportedClients = new Set(['aria2c', 'deluge-console'])
 
 program

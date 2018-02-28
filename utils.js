@@ -1,5 +1,5 @@
 const os = require('os')
-const {statSync} = require('fs')
+const { statSync } = require('fs')
 const { execSync } = require('child_process')
 
 class XSet extends Set {
@@ -62,7 +62,7 @@ const systemDownloadsFolder = (() => {
   function unix () {
     let dir
     try {
-      dir = execSync('xdg-user-dir DOWNLOAD', {encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore']})
+      dir = execSync('xdg-user-dir DOWNLOAD', { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] })
     } catch (_) { /**/ }
     if (dir) return dir.trim()
 
