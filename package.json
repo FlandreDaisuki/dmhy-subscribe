@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.4.1",
+  "version": "0.4.2-alpha.1",
   "bin": {
     "dmhy": "./index.js"
   },
@@ -36,8 +36,8 @@
     "axios": "^0.17.1",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.13.0",
-    "compare-versions": "^3.1.0",
     "console.table": "^0.10.0",
-    "readline-sync": "^1.4.9"
+    "readline-sync": "^1.4.9",
+    "semver": "^5.5.0"
   }
 }

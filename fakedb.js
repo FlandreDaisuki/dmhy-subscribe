@@ -1,7 +1,7 @@
 const fs = require('fs')
-const { spawn } = require('child_process')
-const vercmp = require('compare-versions')
-const { hash, XSet } = require('./utils')
+const { exec } = require('child_process')
+const semver = require('semver')
+const { hash, XSet, systemDownloadsFolder } = require('./utils')
 const compat = require('./compatible-test')
 const { version } = require('./package.json')
 
@@ -92,7 +92,7 @@ class Database {
 
     const fakedb = JSON.parse(fs.readFileSync(this.fakedbPath, 'utf8'))
     this.subscriptions = fakedb.subscriptions.map(s => new Subscription(s))
-    if (vercmp(fakedb.version, version) === -1) {
+    if (semver.lt(fakedb.version, version)) {
       compat()
     }
     this.version = version
@@ -140,9 +140,29 @@ class Database {
     console.table(subList)
   }
 
-  download (thread) {
+  download (thread, {client, destination} = {}) {
+    const dest = destination || systemDownloadsFolder
+    const dclient = client || 'deluge-console'
+
+    const argv = {
+      'deluge-console': `deluge-console add '${thread.link}'`,
+      aria2c: `aria2c --dir='${dest}' --quiet=true --seed-time=0 '${thread.link}'`
+    }
+
+    const postproc = {
+      aria2c (task, msg, cb) {
+        console.log(msg)
+        task.unref()
+        cb()
+      }
+    }
+
     return new Promise((resolve, reject) => {
-      const task = spawn('deluge-console', ['add', `"${thread.link}"`])
+      const task = exec(argv[dclient], {
+        shell: true,
+        detached: true,
+        stdio: 'ignore'
+      })
 
       task.on('close', code => {
         if (code === 0) {
@@ -158,6 +178,8 @@ class Database {
         console.error('Failed to start subprocess.')
         reject(err)
       })
+
+      postproc[dclient] && postproc[dclient](task, `Download ${thread.title} to ${dest}`, resolve.bind(null, [0]))
     })
   }
 

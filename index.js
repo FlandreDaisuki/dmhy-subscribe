@@ -8,15 +8,22 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database({dbfile: 'fakedb.json'})
+const supportedClients = new Set(['aria2c', 'deluge-console'])
 
 program
   .version(db.version)
+  .option('--client <client>', `Force using downloader. <client>: "aria2c", "deluge-console"(default)`)
+  .option('-d, --destination <path>', 'Download destination. (default: user downloads folder)')
   .on('--help', function () {
     console.log(`
   Examples:
 
     $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
     $ dmhy
+
+    or
+
+    $ dmhy --client aria2c
   `)
   })
 
@@ -156,25 +163,33 @@ program
 program
   .command('download [thid...]')
   .alias('dl')
-  .usage('[thid...]')
   .description('Download the {thread}s of the {subsciption}s which are subscribed in list.')
-  .action(function (thids) {
+  .action(async function (thids, cmd) {
     if (!thids.length) {
       this.help()
     } else {
+      if (cmd.parent.client && !supportedClients.has(cmd.parent.client)) {
+        console.error('Not support client:', cmd.parent.client)
+        process.exit()
+      }
+
+      const thTasks = []
+
       for (const thid of thids) {
         const [sid, epstr] = thid.split('-')
         const s = db.query('sid', sid)
         if (s) {
-          Promise.all(s.getThreads(epstr).map(th => db.download(th)))
-            .then(ok => {
-              process.exit(ok)
-            })
-            .catch(error => {
-              process.exit(error)
-            })
+          thTasks.push(...s.getThreads(epstr).map(th => db.download(th, {
+            client: cmd.parent.client, destination: cmd.parent.destination
+          })))
         }
       }
+
+      await Promise.all(thTasks).catch(error => {
+        process.exit(error)
+      })
+
+      process.exit(0)
     }
   })
   .on('--help', function () {
@@ -184,6 +199,7 @@ program
   The {ep} format: int | float | {int|float}..{int|float} | {ep},{ep} | 'all'
 
   If only {sid}, means {sid}-all.
+
 
   Examples:
     $ dmhy ls
@@ -197,6 +213,10 @@ program
     which is the same as following
 
     $ dmhy download AAA-01 BBB-5.5 BBB-7
+
+    also support different downloader
+
+    $ dmhy --client aria2c download AAA BBB
 
   More complicated example:
 
@@ -217,21 +237,22 @@ program
 program.parse(process.argv)
 
 // $ dmhy
-
-Promise.all(db.subscriptions.map(s => {
-  return fetchThreads(s)
-    .then(newThreads => {
-      for (const nth of newThreads) {
-        if (!s.threads.map(th => th.title).includes(nth.title)) {
-          db.download(nth)
-          s.add(nth)
+if (program.args.every(arg => !(arg instanceof program.Command))) {
+  Promise.all(db.subscriptions.map(s => {
+    return fetchThreads(s)
+      .then(newThreads => {
+        for (const nth of newThreads) {
+          if (!s.threads.map(th => th.title).includes(nth.title)) {
+            db.download(nth, program).catch(console.err)
+            s.add(nth)
+          }
         }
-      }
-    })
-    .catch(error => {
-      console.error(error)
-    })
-})).then(() => {
-  db.sort()
-  db.save()
-})
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  })).then(() => {
+    db.sort()
+    db.save()
+  })
+}
