@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.4.2-alpha.1",
+  "version": "0.4.2",
   "bin": {
     "dmhy": "./index.js"
   },
