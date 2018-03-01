@@ -12,7 +12,7 @@ const supportedClients = new Set(['aria2crpc', 'deluge-console'])
 
 program
   .version(db.version)
-  .option('--client <client>', `Force using downloader. <client>: "aria2crpc", "deluge-console"(default)`)
+  .option('--client <client>', 'Force using downloader. <client>: "aria2crpc", "deluge-console"(default)')
   .option('--jsonrpc <jsonrpc_uri>', 'jsonrpc url for --client=aria2crpc')
   .option('-d, --destination <path>', 'Download destination. (default: user downloads folder)')
   .on('--help', function () {
@@ -171,7 +171,7 @@ program
     } else {
       if (cmd.parent.client && !supportedClients.has(cmd.parent.client)) {
         console.error('Not support client:', cmd.parent.client)
-        process.exit()
+        process.exit(1)
       }
 
       const thTasks = []
@@ -182,21 +182,18 @@ program
         if (s) {
           thTasks.push(
             ...s.getThreads(epstr).map(th =>
-              db.download(th, {
-                client: cmd.parent.client,
-                destination: cmd.parent.destination,
-                jsonrpc: cmd.parent.jsonrpc
-              })
+              db.download(th, cmd.parent)
             )
           )
         }
       }
 
-      await Promise.all(thTasks).catch(error => {
-        process.exit(error)
+      await Promise.all(thTasks).catch(err => {
+        console.error(err)
+        process.exit(1)
       })
 
-      process.exit(0)
+      process.exit()
     }
   })
   .on('--help', function () {
