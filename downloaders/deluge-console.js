@@ -1,9 +1,10 @@
 const { spawn } = require('child_process')
-const debug = require('debug')
-const log = debug('dmhy:downloaders:deluge')
+const log = require('debug')('dmhy:downloaders:deluge+console')
 
 const args = process.argv.slice(2)
 const thread = JSON.parse(args[0])
+
+log(args)
 
 const task = spawn('deluge-console', ['add', thread.link])
 log(`start deluge-console on pid ${task.pid}`)
