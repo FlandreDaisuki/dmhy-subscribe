@@ -1,6 +1,7 @@
 const fs = require('fs')
-const { exec } = require('child_process')
+const { spawn } = require('child_process')
 const semver = require('semver')
+const path = require('path')
 const { hash, XSet, systemDownloadsFolder } = require('./utils')
 const compat = require('./compatible-test')
 const { version } = require('./package.json')
@@ -9,13 +10,13 @@ require('console.table')
 
 class Subscription {
   constructor (subscribable) {
-    if (typeof (subscribable) === 'string') {
+    if (typeof subscribable === 'string') {
       [this.name, ...this.keywords] = subscribable.split(',')
       this.keywords.sort()
       this.sid = null
       this.threads = []
       this.latest = -1 // last episode of threads
-    } else if (typeof (subscribable) === 'object') {
+    } else if (typeof subscribable === 'object') {
       Object.assign(this, subscribable)
     }
   }
@@ -67,7 +68,10 @@ class Subscription {
       if (isFinite(Number(ep))) {
         collection.union(this.threads.filter(th => th.ep.includes(Number(ep))), true)
       } else {
-        const [epi, epj] = ep.split(/\.{2,}/).map(Number).sort()
+        const [epi, epj] = ep
+          .split(/\.{2,}/)
+          .map(Number)
+          .sort()
         // this.threads := [latest ... earliest]
         const head = this.threads.findIndex(th => th.ep.includes(epj))
         const tail = this.threads.findIndex(th => th.ep.includes(epi))
@@ -130,7 +134,7 @@ class Database {
 
   list () {
     const subList = this.subscriptions.map(s => {
-      const latest = (s.latest > 0 ? s.latest.toString().padStart(2, '0') : '--')
+      const latest = s.latest > 0 ? s.latest.toString().padStart(2, '0') : '--'
       return {
         sid: s.sid,
         latest,
@@ -140,46 +144,23 @@ class Database {
     console.table(subList)
   }
 
-  download (thread, { client, destination } = {}) {
+  download (thread, { client, destination, jsonrpc } = {}) {
     const dest = destination || systemDownloadsFolder
     const dclient = client || 'deluge-console'
 
-    const argv = {
-      'deluge-console': `deluge-console add '${thread.link}'`,
-      aria2c: `aria2c --dir='${dest}' --quiet=true --seed-time=0 '${thread.link}'`
-    }
-
-    const postproc = {
-      aria2c (task, msg, cb) {
-        console.log(msg)
-        task.unref()
-        cb()
-      }
-    }
+    const script = path.resolve(`./downloaders/${dclient}.js`)
+    const args = [thread, { dest, jsonrpc }].map(JSON.stringify)
+    args.unshift(script)
 
     return new Promise((resolve, reject) => {
-      const task = exec(argv[dclient], {
-        shell: true,
-        detached: true,
-        stdio: 'ignore'
+      const task = spawn('node', args, {
+        stdio: 'inherit'
       })
-
       task.on('close', code => {
-        if (code === 0) {
-          console.log(`Download ${thread.title}`)
-          resolve(code)
-        } else {
-          console.error(`Failed to download ${thread.title}.`)
-          reject(code)
-        }
+        if (code === 0) resolve(code)
+        else reject(code)
       })
-
-      task.on('error', err => {
-        console.error('Failed to start subprocess.')
-        reject(err)
-      })
-
-      postproc[dclient] && postproc[dclient](task, `Download ${thread.title} to ${dest}`, resolve.bind(null, [0]))
+      task.on('error', err => reject(err))
     })
   }
 

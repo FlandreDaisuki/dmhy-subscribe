@@ -8,11 +8,12 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database({ dbfile: 'fakedb.json' })
-const supportedClients = new Set(['aria2c', 'deluge-console'])
+const supportedClients = new Set(['aria2crpc', 'deluge-console'])
 
 program
   .version(db.version)
-  .option('--client <client>', `Force using downloader. <client>: "aria2c", "deluge-console"(default)`)
+  .option('--client <client>', `Force using downloader. <client>: "aria2crpc", "deluge-console"(default)`)
+  .option('--jsonrpc <jsonrpc_uri>', 'jsonrpc url for --client=aria2crpc')
   .option('-d, --destination <path>', 'Download destination. (default: user downloads folder)')
   .on('--help', function () {
     console.log(`
@@ -63,7 +64,7 @@ program
             }
           }
         }
-        if (typeof (toAdd) === 'boolean' && toAdd) {
+        if (typeof toAdd === 'boolean' && toAdd) {
           db.add(s)
         }
       }
@@ -179,9 +180,15 @@ program
         const [sid, epstr] = thid.split('-')
         const s = db.query('sid', sid)
         if (s) {
-          thTasks.push(...s.getThreads(epstr).map(th => db.download(th, {
-            client: cmd.parent.client, destination: cmd.parent.destination
-          })))
+          thTasks.push(
+            ...s.getThreads(epstr).map(th =>
+              db.download(th, {
+                client: cmd.parent.client,
+                destination: cmd.parent.destination,
+                jsonrpc: cmd.parent.jsonrpc
+              })
+            )
+          )
         }
       }
 
@@ -238,20 +245,22 @@ program.parse(process.argv)
 
 // $ dmhy
 if (program.args.every(arg => !(arg instanceof program.Command))) {
-  Promise.all(db.subscriptions.map(s => {
-    return fetchThreads(s)
-      .then(newThreads => {
-        for (const nth of newThreads) {
-          if (!s.threads.map(th => th.title).includes(nth.title)) {
-            db.download(nth, program).catch(console.err)
-            s.add(nth)
+  Promise.all(
+    db.subscriptions.map(s => {
+      return fetchThreads(s)
+        .then(newThreads => {
+          for (const nth of newThreads) {
+            if (!s.threads.map(th => th.title).includes(nth.title)) {
+              db.download(nth, program).catch(console.err)
+              s.add(nth)
+            }
           }
-        }
-      })
-      .catch(error => {
-        console.error(error)
-      })
-  })).then(() => {
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    })
+  ).then(() => {
     db.sort()
     db.save()
   })
