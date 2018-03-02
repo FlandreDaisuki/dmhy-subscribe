@@ -1,6 +1,6 @@
 const os = require('os')
-const { statSync } = require('fs')
-const { execSync } = require('child_process')
+const { statSync, existsSync } = require('fs')
+const { execSync, spawnSync } = require('child_process')
 
 class XSet extends Set {
   isSuperset (subset) {
@@ -85,8 +85,66 @@ const systemDownloadsFolder = (() => {
   }[os.platform()]()
 })()
 
+// Modified from https://github.com/sindresorhus/os-locale
+const systemLocale = ((env) => {
+  const LOCALEID = {
+    // https://zh.wikipedia.org/wiki/地區設定
+    '0804': 'zh_CN',
+    '20804': 'zh_CN',
+    '0404': 'zh_TW',
+    '30404': 'zh_TW',
+    '0C04': 'zh_HK'
+  }
+
+  function unix () {
+    return (env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE).replace(/[.].*$/, '')
+  }
+
+  function windows () {
+    const x = spawnSync('wmic', ['os', 'get', 'locale'], { encoding: 'utf-8' })
+    if (x.status === 0) {
+      const lcid = x.stdout.replace('Locale', '').trim()
+      return LOCALEID[lcid]
+    }
+    return ''
+  }
+
+  const localeName = {
+    freebsd: unix,
+    linux: unix,
+    sunos: unix,
+    win32: windows
+  }[os.platform()]() || 'en_US'
+
+  const [lang, territory] = localeName.split('_')
+
+  return { lang, territory }
+})(process.env)
+
+const getLocaleString = (() => {
+  const candidates = [
+    `${__dirname}/locale/en.js`,
+    `${__dirname}/locale/${systemLocale.lang}.js`,
+    `${__dirname}/locale/${systemLocale.lang}_${systemLocale.territory}.js`
+  ]
+
+  const dict = candidates.reduce((prev, cur) => {
+    if (existsSync(cur)) {
+      return Object.assign(prev, require(cur))
+    }
+    return prev
+  }, {})
+
+  return (key, placeholder = {}) => {
+    return Object.entries(placeholder).reduce((prev, cur) => {
+      return prev.replace(`%${cur[0]}%`, cur[1])
+    }, dict[key])
+  }
+})()
+
 module.exports = {
   hash,
   XSet,
-  systemDownloadsFolder
+  systemDownloadsFolder,
+  getLocaleString
 }

@@ -2,6 +2,7 @@
 
 const { fetchThreads } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
+const { getLocaleString: l10n } = require('./utils')
 
 const fs = require('fs')
 const program = require('commander')
@@ -12,28 +13,19 @@ const supportedClients = new Set(['aria2crpc', 'deluge-console'])
 
 program
   .version(db.version)
-  .option('--client <client>', 'Force using downloader. <client>: "aria2crpc", "deluge-console"(default)')
-  .option('--jsonrpc <jsonrpc_uri>', 'jsonrpc url for --client=aria2crpc')
-  .option('-d, --destination <path>', 'Download destination. (default: user downloads folder)')
+  .option('-d, --destination <path>', l10n('MAIN_OPT_DESTINATION_MSG'))
+  .option('--client <client>', l10n('MAIN_OPT_CLIENT_MSG'))
+  .option('--jsonrpc <jsonrpc_uri>', l10n('MAIN_OPT_JSONRPC_MSG'))
   .on('--help', function () {
-    console.log(`
-  Examples:
-
-    $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
-    $ dmhy
-
-    or
-
-    $ dmhy --client aria2c
-  `)
+    console.log(l10n('MAIN_HELP_MSG'))
   })
 
 program
   .command('add [subscribable...]')
-  .option('-f, --file <path>', 'Add subscribables from a file.')
-  .option('-y, --yes', 'Always add if {subscribable} name existed.')
-  .option('-n, --no', 'Never add if {subscribable} name existed.')
-  .description('Add {subscribable} to subscribe.')
+  .option('-f, --file <path>', l10n('CMD_ADD_OPT_FILE_MSG'))
+  .option('-y, --yes', l10n('CMD_ADD_OPT_YES_MSG'))
+  .option('-n, --no', l10n('CMD_ADD_OPT_NO_MSG'))
+  .description(l10n('CMD_ADD_DESC_MSG'))
   .action(function (subscribables, cmd) {
     if (!subscribables.length && !cmd.file) {
       this.help()
@@ -54,7 +46,7 @@ program
           } else if (!cmd.no && cmd.yes) {
             toAdd = true
           } else {
-            const ans = question(`The subscription{${s.name}} is existed, still add? [y/n]:`)
+            const ans = question(l10n('CMD_ADD_EXISTED_QUESTION_MSG', { name: s.name }))
             if (/^n/i.test(ans)) {
               toAdd = false
             } else if (/^y/i.test(ans)) {
@@ -74,30 +66,14 @@ program
     process.exit()
   })
   .on('--help', function () {
-    console.log(`
-  Details:
-
-  A {subscribable} contains a name and following keywords to identify series
-  you want to download, then joins them by CSV format in a string.
-
-  Examples:
-
-    Direct:
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
-
-    File:
-      $ dmhy ls --subscribable > a.txt
-      $ dmhy rm --all
-      $ dmhy add --file a.txt
-  `)
+    console.log(l10n('CMD_ADD_HELP_MSG'))
   })
 
 program
   .command('remove [sid...]')
   .alias('rm')
-  .option('-a, --all', 'Remove all subscribed {subscription}.')
-  .description(`Remove {subscription} by {sid}.`)
+  .option('-a, --all', l10n('CMD_RM_OPT_ALL_MSG'))
+  .description(l10n('CMD_RM_DESC_MSG'))
   .action(function (sids, cmd) {
     if (!sids.length && !cmd.all) {
       this.help()
@@ -112,7 +88,7 @@ program
       if (subscription) {
         db.remove(subscription)
       } else {
-        console.error(`Not found subscription with sid: ${sid}.`)
+        console.error(l10n('CMD_RM_NOTFOUND_MSG', { sid }))
       }
     }
 
@@ -120,22 +96,14 @@ program
     process.exit()
   })
   .on('--help', function () {
-    console.log(`
-  Details:
-
-  The {sid} are listed at \`dmhy list\`.
-
-  Examples:
-    $ dmhy rm XYZ ABC
-    $ dmhy rm --all
-  `)
+    console.log(l10n('CMD_RM_HELP_MSG'))
   })
 
 program
   .command('list [sid...]')
   .alias('ls')
-  .option('-s, --subscribable', 'List subscribable format.')
-  .description('List the {subscription}s or the {thread}s of the {subscription}s.')
+  .option('-s, --subscribable', l10n('CMD_LS_SUBSCRIBABLE_MSG'))
+  .description(l10n('CMD_LS_DESC_MSG'))
   .action(function (sids, cmd) {
     if (cmd.subscribable) {
       for (const s of db.subscriptions) {
@@ -155,22 +123,19 @@ program
     process.exit()
   })
   .on('--help', function () {
-    console.log(`
-  Examples:
-    $ dmhy list ABC
-    $ dmhy ls -s`)
+    console.log(l10n('CMD_LS_HELP_MSG'))
   })
 
 program
   .command('download [thid...]')
   .alias('dl')
-  .description('Download the {thread}s of the {subsciption}s which are subscribed in list.')
+  .description(l10n('CMD_DL_DESC_MSG'))
   .action(async function (thids, cmd) {
     if (!thids.length) {
       this.help()
     } else {
       if (cmd.parent.client && !supportedClients.has(cmd.parent.client)) {
-        console.error('Not support client:', cmd.parent.client)
+        console.error(l10n('CMD_DL_UNKNOWN_CLIENT_MSG', { client: cmd.parent.client }))
         process.exit(1)
       }
 
@@ -197,45 +162,7 @@ program
     }
   })
   .on('--help', function () {
-    console.log(`
-  Details:
-  The {thid} format: {sid}-{ep}
-  The {ep} format: int | float | {int|float}..{int|float} | {ep},{ep} | 'all'
-
-  If only {sid}, means {sid}-all.
-
-
-  Examples:
-    $ dmhy ls
-    sid  latest  name
-    ---  ------  --------------
-    AAA  09      nameAAA
-    BBB  07      nameBBB(which has ep5.5)
-
-    $ dmhy download AAA-01 BBB-5.5,7 # download (1 + 2) threads
-
-    which is the same as following
-
-    $ dmhy download AAA-01 BBB-5.5 BBB-7
-
-    also support different downloader
-
-    $ dmhy --client aria2c download AAA BBB
-
-  More complicated example:
-
-    $ dmhy dl AAA BBB-5..6,9 # download (9 + 3) threads
-
-    which download all AAA threads and ep 5, 5.5, 6 in BBB threads
-
-    $ dmhy ls AAA
-    Episode  Title
-    -------  --------------
-    1        [字幕組][nameAAA][01]
-    2,3      [字幕組][nameAAA][02-03]
-
-    $ dmhy dl AAA-02 # download 1 threads which has 2 episodes
-  `)
+    console.log(l10n('CMD_DL_HELP_MSG'))
   })
 
 program.parse(process.argv)
