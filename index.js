@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { fetchThreads } = require('./crawler')
+const { fetchThreads, search } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
 
 const fs = require('fs')
@@ -180,11 +180,7 @@ program
         const [sid, epstr] = thid.split('-')
         const s = db.query('sid', sid)
         if (s) {
-          thTasks.push(
-            ...s.getThreads(epstr).map(th =>
-              db.download(th, cmd.parent)
-            )
-          )
+          thTasks.push(...s.getThreads(epstr).map(th => db.download(th, cmd.parent)))
         }
       }
 
@@ -236,6 +232,45 @@ program
 
     $ dmhy dl AAA-02 # download 1 threads which has 2 episodes
   `)
+  })
+
+program
+  .command('search <keyword>')
+  .option('--raw', 'Print a json array of threads to console.')
+  .description('Show the search result of the keyword.(seperated by comma)')
+  .action(async function (kw, cmd) {
+    const threads = await search(kw.split(','))
+    if (!cmd.raw) {
+      threads.forEach(t => console.log(t.title))
+      console.log(`Total ${threads.length} result${threads.length > 1 ? 's' : ''}.`)
+    } else {
+      console.log(JSON.stringify(threads))
+    }
+  })
+
+program
+  .command('update [sid...]')
+  .description('Update selected subscriptions, update all if sid is empty.')
+  .action(async function (sid, cmd) {
+    Promise.all(
+      db.subscriptions.filter(s => sid.length === 0 || sid.includes(s.sid)).map(s => {
+        return fetchThreads(s)
+          .then(newThreads => {
+            for (const nth of newThreads) {
+              if (!s.threads.map(th => th.title).includes(nth.title)) {
+                console.log(`Updated: ${nth.title}`)
+                s.add(nth)
+              }
+            }
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      })
+    ).then(() => {
+      db.sort()
+      db.save()
+    })
   })
 
 program.parse(process.argv)
