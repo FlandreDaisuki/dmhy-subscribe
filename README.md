@@ -30,86 +30,40 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 ## Requirement 必須軟體
 
-### node & npm
-- Recommend using [creationix/nvm](https://github.com/creationix/nvm)
- or [tj/n](https://github.com/tj/n) on Linux
-- Recommend using [official installer](https://nodejs.org/) on Windows 10
++ nodejs (v8.9+) & npm
+  * Ubuntu 推薦使用： [creationix/nvm](https://github.com/creationix/nvm)
+    或 [tj/n](https://github.com/tj/n)
+  * Windows 10: 推薦使用：[官方安裝](https://nodejs.org/)
 
-### deluge & deluge-console
+下載器下面兩種擇一即可
 
-Linux:
-```
-$ sudo add-apt-repository ppa:deluge-team/ppa
-$ sudo apt update
-$ sudo apt install deluge deluged deluge-console
-```
-
-Windows 10:
-Use [official installer](http://dev.deluge-torrent.org/wiki/Download)
++ deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
++ aria2c & webui-aria2:  [aria2 安裝教學](docs/aria2.md)
 
 ## Installation 安裝方法
 
-### Linux
+<details close>
+  <summary>確認 nodejs 安裝</summary>
+
+  Ubuntu:
+  ```
+  $ node -v
+  v9.4.0
+  $ npm -v
+  5.6.0
+  ```
+
+  Windows10 (PowerShell):
+  ```
+  PS C:\> node -v
+  v9.4.0
+  PS C:\> npm -v
+  5.6.0
+  ```
+</details>
+
 ```
 $ npm i -g dmhy-subscribe
-$ deluged # Open the daemon
-$ deluge-console info # if no error, OK.
-```
-
-### Windows 10
-
-There are some previous work for Windows 10:
-
-- Add deluge path (`C:\Program Files (x86)\deluge` in default) and npm modules path (`%appdata%\npm` in default)into PATH environment variable *or* open **PowerShell(Administrator)** and type following shell script to complete previous work
-  ```shell
-  PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # Your deluge path
-  PS C:\>  $npmpath = '%appdata%\npm' # Your npm modules path
-  PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  $newpath = "$oldpath;$delugepath;$npmpath"
-  PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  exit # To reload profile
-  ```
-- Goto your deluge path and execute `deluged.exe` *or* open **PowerShell(Administrator)** and type `deluged` to execute deamon
-
-Test previous work with PowerShell:
-```
-PS C:\>  deluge-console info
-# if no error, OK.
-# if error message is "Failed to connect to ..." means deluged.exe isn't opened.
-PS C:\>  node -v
-v9.6.1
-# at least LTS(v8.9.4)
-PS C:\>  dmhy -V
-0.4.0
-# if error, add npm modules path to PATH environment variable
-```
-
-### Windows 10 中文版
-
-Windows 10 需要做些前置作業:
-
-- 把 deluge 路徑 (預設是 `C:\Program Files (x86)\deluge`) 和 npm modules 路徑 (預設是 `%appdata%\npm`) 加到 PATH 環境變數 *或* 打開 **PowerShell(系統管理員)** 並輸入以下指令完成前置作業
-  ```shell
-  PS C:\>  $delugepath = 'C:\Program Files (x86)\deluge' # 你的 deluge 路徑
-  PS C:\>  $npmpath = '%appdata%\npm' # 你的 npm modules 路徑
-  PS C:\>  $oldpath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  $newpath = "$oldpath;$delugepath;$npmpath"
-  PS C:\>  [Environment]::SetEnvironmentVariable("Path", "$newPath", [EnvironmentVariableTarget]::Machine)
-  PS C:\>  exit # To reload profile # 關掉重開是必須的
-  ```
-- 到 deluge 路徑執行 `deluged.exe` *或*  打開 **PowerShell(系統管理員)** 並輸入 `deluged` 執行服務
-
-用 PowerShell 測試前置作業是否成功:
-```
-PS C:\>  deluge-console info
-# 如果沒有錯誤就完成了.
-# 如果錯誤訊息是 "Failed to connect to ..." 代表 deluged.exe 沒打開
-PS C:\>  node -v
-v9.6.1
-# 至少更新到 LTS(v8.9.4)
-PS C:\>  dmhy -V
-0.4.0
-# 如果有錯誤，請將 npm modules 路徑加到 PATH 環境變數
 ```
 
 ## Usage 使用方法
@@ -117,56 +71,33 @@ PS C:\>  dmhy -V
 ```
   Usage: dmhy [options] [command]
 
+
   Options:
 
-    -V, --version  output the version number
-    -h, --help     output usage information
+    -V, --version             output the version number
+    -d, --destination <path>  下載路徑 (預設: 預設下載資料夾)
+    --client <client>         強制使用指定下載器。 <client>: "aria2crpc", "deluge-console"(預設)
+    --jsonrpc <jsonrpc_uri>   jsonrpc url for --client=aria2crpc
+    -h, --help                output usage information
+
 
   Commands:
 
-    add [options] [subscribable...]  Add {subscribable} to subscribe.
-    remove|rm [options] [sid...]     Remove {subscription} by {sid}.
-    list|ls [options] [sid...]       List the {subscription}s or the {thread}s of the {subscription}s.
-    download|dl [thid...]            Download the {thread}s of the {subsciption}s which are subscribed in list.
+    add [options] [subscribable...]  使用 {可訂閱字串} 新增 {訂閱}
+    remove|rm [options] [sid...]     根據 {sid} 刪除 {訂閱}
+    list|ls [options] [sid...]       列出所有 {訂閱} 或指定 {訂閱} 的詳細資訊
+    download|dl [thid...]            根據 {thid} 下載 {訂閱} 中的 {貼文}
 
-  Examples:
+  例子:
 
     $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
     $ dmhy
+
+    或
+
+    $ dmhy --client aria2crpc
 ```
 
-## Work with crontab/pm2 使用 crontab/pm2 自動排程
+## 自動排程
 
-cron format: http://www.nncron.ru/help/EN/working/cron-format.htm
-
-### Linux
-
-Check and fetch every 6 hour
-```
-$ (crontab -l 2>/dev/null; echo "0 */6 * * * `which dmhy`") | crontab -
-```
-
-Use [pm2](http://pm2.keymetrics.io/) instead
-```
-$ npm i -g pm2
-$ pm2 start dmhy --cron '0 */6 * * *'
-$ pm2 ls
-```
-
-### Windows 10
-
-Use [pm2](http://pm2.keymetrics.io/) with PowerShell
-```
-PS C:\>  npm i -g pm2 # Install pm2
-PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name="dmhy" --cron '0 */6 * * *'
-PS C:\>  pm2 ls
-```
-
-### Windows 10 中文版
-
-在 PowerShell 使用 [pm2](http://pm2.keymetrics.io/)
-```
-PS C:\>  npm i -g pm2 # 安裝 pm2
-PS C:\>  pm2 start %appdata%\npm\node_modules\dmhy-subscribe\index.js --name="dmhy" --cron '0 */6 * * *'
-PS C:\>  pm2 ls
-```
+參考[自動排程](docs/scheduling.md)教學
