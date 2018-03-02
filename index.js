@@ -175,6 +175,7 @@ program
     }
   })
 
+<<<<<<< 28c8973f7ed7755f1346584b03e116b708daf32e
 program
   .command('update [sid...]')
   .description('Update selected subscriptions, update all if sid is empty.')
@@ -200,6 +201,8 @@ program
     })
   })
 
+=======
+>>>>>>> support dmhy search & refactor crawler a bit
 program.parse(process.argv)
 
 // $ dmhy
