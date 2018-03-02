@@ -248,6 +248,31 @@ program
     }
   })
 
+program
+  .command('update [sid...]')
+  .description('Update selected subscriptions, update all if sid is empty.')
+  .action(async function (sid, cmd) {
+    Promise.all(
+      db.subscriptions.filter(s => sid.length === 0 || sid.includes(s.sid)).map(s => {
+        return fetchThreads(s)
+          .then(newThreads => {
+            for (const nth of newThreads) {
+              if (!s.threads.map(th => th.title).includes(nth.title)) {
+                console.log(`Updated: ${nth.title}`)
+                s.add(nth)
+              }
+            }
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      })
+    ).then(() => {
+      db.sort()
+      db.save()
+    })
+  })
+
 program.parse(process.argv)
 
 // $ dmhy
