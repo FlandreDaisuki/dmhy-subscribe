@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { fetchThreads } = require('./crawler')
+const { fetchThreads, search } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
 const { getLocaleString: l10n } = require('./utils')
 
@@ -145,11 +145,7 @@ program
         const [sid, epstr] = thid.split('-')
         const s = db.query('sid', sid)
         if (s) {
-          thTasks.push(
-            ...s.getThreads(epstr).map(th =>
-              db.download(th, cmd.parent)
-            )
-          )
+          thTasks.push(...s.getThreads(epstr).map(th => db.download(th, cmd.parent)))
         }
       }
 
@@ -163,6 +159,20 @@ program
   })
   .on('--help', function () {
     console.log(l10n('CMD_DL_HELP_MSG'))
+  })
+
+program
+  .command('search <keyword>')
+  .option('--raw', 'Print a json array of threads to console.')
+  .description('Show the search result of the keyword.(seperated by comma)')
+  .action(async function (kw, cmd) {
+    const threads = await search(kw.split(','))
+    if (!cmd.raw) {
+      threads.forEach(t => console.log(t.title))
+      console.log(`Total ${threads.length} result${threads.length > 1 ? 's' : ''}.`)
+    } else {
+      console.log(JSON.stringify(threads))
+    }
   })
 
 program.parse(process.argv)

@@ -1,35 +1,63 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+const { Subscription } = require('./fakedb')
 
-async function fetchThreads (subscription) {
-  if (subscription.constructor.name !== 'Subscription') {
-    throw new TypeError('Parameter should be a Subscription.')
+class Thread {
+  constructor (title, link) {
+    this.title = title
+    this.link = link
+    this.ep = parseEpisodeFromTitle(title)
   }
-  const kw = [subscription.name, ...subscription.keywords].join('+')
-  const response = await axios.get(encodeURI(`https://share.dmhy.org/topics/list?keyword=${kw}`))
+}
+
+async function getSearchHTML (kws) {
+  const response = await axios.get(
+    `https://share.dmhy.org/topics/list?keyword=${kws.map(encodeURIComponent).join('+')}`
+  )
   if (response.status !== 200) {
     throw new Error(response)
   }
-  return parseThreads(response.data)
+  return response.data
 }
 
-function parseThreads (html) {
-  const $ = cheerio.load(html)
-  const titleTexts = $('#topic_list tr:nth-child(n+1) .title > a').text()
-  const titles = titleTexts.split(/[\n\t]+/).filter(x => x)
+async function fetchThreads (subscription) {
+  if (!(subscription instanceof Subscription)) {
+    throw new TypeError('Parameter should be a Subscription.')
+  }
+  const kws = [subscription.name, ...subscription.keywords]
+  const html = await getSearchHTML(kws)
+  return parseThreads(html)
+}
 
-  const magnetElements = $('#topic_list tr:nth-child(n+1) a.download-arrow').toArray()
-  const magnets = magnetElements.map(x => x.attribs.href)
+async function search (kw) {
+  return getThreadsFromHTML(await getSearchHTML(kw))
+}
+function getThreadsFromHTML (html) {
+  const $ = cheerio.load(html)
+  const titles = getTitlesFromCheerio($)
+  const magnets = getMagnetsFromCheerio($)
 
   if (titles.length !== magnets.length) {
     throw new Error('titles.length !== magnets.length')
   }
 
-  return titles.map((t, i) => ({
-    title: t,
-    link: magnets[i],
-    ep: parseEpisodeFromTitle(t)
-  })).filter(t => t.ep.every(isFinite))
+  return titles.map((t, i) => new Thread(t, magnets[i]))
+}
+
+function getTitlesFromCheerio ($) {
+  return $('#topic_list tr:nth-child(n+1) .title > a')
+    .text()
+    .split(/[\n\t]+/)
+    .filter(x => x)
+}
+function getMagnetsFromCheerio ($) {
+  return $('#topic_list tr:nth-child(n+1) a.download-arrow')
+    .toArray()
+    .map(x => x.attribs.href)
+}
+
+function parseThreads (html) {
+  return getThreadsFromHTML(html).filter(t => t.ep.every(isFinite))
 }
 
 function parseEpisodeFromTitle (title) {
@@ -47,7 +75,8 @@ function parseEpisodeFromTitle (title) {
     'v2'
   ])
 
-  const tokens = title.split(/[[\]【】_\s]/g)
+  const tokens = title
+    .split(/[[\]【】_\s]/g)
     .map(x => x.toLowerCase())
     .filter(x => /\d/.test(x))
     .filter(x => !blacklistTokenSet.has(x))
@@ -55,7 +84,10 @@ function parseEpisodeFromTitle (title) {
     .map(x => x.trim())
 
   function parseRangeEpisode (tok) {
-    const [head, tail] = tok.trim().split('-').map(parseFloat)
+    const [head, tail] = tok
+      .trim()
+      .split('-')
+      .map(parseFloat)
     if (!tail) {
       return [head]
     }
@@ -96,5 +128,6 @@ function parseEpisodeFromTitle (title) {
 module.exports = {
   fetchThreads,
   parseThreads,
-  parseEpisodeFromTitle
+  parseEpisodeFromTitle,
+  search
 }
