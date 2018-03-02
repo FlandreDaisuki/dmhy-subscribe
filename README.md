@@ -6,21 +6,13 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
-* [Demo](#demo)
+* [Demo 範例影片](#demo-%E7%AF%84%E4%BE%8B%E5%BD%B1%E7%89%87)
 * [Requirement 必須軟體](#requirement-%E5%BF%85%E9%A0%88%E8%BB%9F%E9%AB%94)
-  + [node & npm](#node--npm)
-  + [deluge & deluge-console](#deluge--deluge-console)
 * [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-  + [Linux](#linux)
-  + [Windows 10](#windows-10)
-  + [Windows 10 中文版](#windows-10-%E4%B8%AD%E6%96%87%E7%89%88)
 * [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
-* [Work with crontab/pm2 使用 crontab/pm2 自動排程](#work-with-crontabpm2-%E4%BD%BF%E7%94%A8-crontabpm2-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
-  + [Linux](#linux-1)
-  + [Windows 10](#windows-10-1)
-  + [Windows 10 中文版](#windows-10-%E4%B8%AD%E6%96%87%E7%89%88-1)
+* [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
 
-## Demo
+## Demo 範例影片
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=sGjh77-72vE">
@@ -98,6 +90,6 @@ $ npm i -g dmhy-subscribe
     $ dmhy --client aria2crpc
 ```
 
-## 自動排程
+## Scheduling 自動排程
 
 參考[自動排程](docs/scheduling.md)教學
