@@ -7,7 +7,7 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
 * [Demo 範例影片](#demo-%E7%AF%84%E4%BE%8B%E5%BD%B1%E7%89%87)
-* [Requirement 必須軟體](#requirement-%E5%BF%85%E9%A0%88%E8%BB%9F%E9%AB%94)
+* [Requirements 依賴軟體](#requirements-%E4%BE%9D%E8%B3%B4%E8%BB%9F%E9%AB%94)
 * [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
 * [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
 * [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
@@ -20,7 +20,7 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
   </a>
 </p>
 
-## Requirement 必須軟體
+## Requirements 依賴軟體
 
 + nodejs (v8.9+) & npm
   * Ubuntu 推薦使用： [creationix/nvm](https://github.com/creationix/nvm)
