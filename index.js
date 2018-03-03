@@ -8,11 +8,11 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database({ dbfile: 'fakedb.json' })
-const supportedClients = new Set(['aria2crpc', 'deluge-console'])
+const supportedClients = new Set(['aria2rpc', 'deluge-console'])
 
 program
   .version(db.version)
-  .option('--client <client>', 'Force using downloader. <client>: "aria2crpc", "deluge-console"(default)')
+  .option('--client <client>', 'Force using downloader. <client>: "aria2rpc", "deluge-console"(default)')
   .option('--jsonrpc <jsonrpc_uri>', 'jsonrpc url for --client=aria2crpc')
   .option('-d, --destination <path>', 'Download destination. (default: user downloads folder)')
   .on('--help', function () {

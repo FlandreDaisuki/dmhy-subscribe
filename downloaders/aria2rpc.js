@@ -1,6 +1,6 @@
 const Aria2 = require('aria2')
 const { URL } = require('url')
-const log = require('debug')('dmhy:downloaders:aria2crpc')
+const log = require('debug')('dmhy:downloaders:aria2rpc')
 const args = process.argv.slice(2)
 const thread = JSON.parse(args[0])
 const { jsonrpc, dest } = JSON.parse(args[1])
@@ -27,7 +27,7 @@ const client = new Aria2({
   path: u.pathname
 })
 client.onerror = err => {
-  console.error('aria2c connect error: %o', err)
+  console.error('aria2 connect error: %o', err)
 }
 const opts = {}
 if (dest) {
