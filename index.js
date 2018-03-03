@@ -9,7 +9,7 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database({ dbfile: 'fakedb.json' })
-const supportedClients = new Set(['aria2crpc', 'deluge-console'])
+const supportedClients = new Set(['aria2rpc', 'deluge-console'])
 
 program
   .version(db.version)
