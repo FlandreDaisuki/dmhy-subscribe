@@ -76,7 +76,7 @@ _**未來可能**可以把預設 `client` 設成 `aria2`，且不用重複打 `j
 ```shell
 $ dmhy add "搖曳露營,DHR,720,繁體,Yuru"
 $ dmhy --client=aria2 --jsonrpc=http://token:helloworld@localhost:6800/jsonrpc #下載全部
-$ dmhy dl [搖曳露營的sid]-08 --client=aria2 --jsonrpc=http://token:helloworld@localhost:6800/jsonrpc #下載單級
+$ dmhy dl [搖曳露營的sid]-08 --client=aria2 --jsonrpc=http://token:helloworld@localhost:6800/jsonrpc #下載單集
 ```
 
 ## 使用 UI 介面
