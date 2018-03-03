@@ -6,11 +6,11 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
-* [Demo 範例影片](#demo-%E7%AF%84%E4%BE%8B%E5%BD%B1%E7%89%87)
-* [Requirements 依賴軟體](#requirements-%E4%BE%9D%E8%B3%B4%E8%BB%9F%E9%AB%94)
-* [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-* [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
-* [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
+*   [Demo 範例影片](#demo-%E7%AF%84%E4%BE%8B%E5%BD%B1%E7%89%87)
+*   [Requirements 依賴軟體](#requirements-%E4%BE%9D%E8%B3%B4%E8%BB%9F%E9%AB%94)
+*   [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
+*   [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
+*   [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
 
 ## Demo 範例影片
 
@@ -22,36 +22,39 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 ## Requirements 依賴軟體
 
-+ nodejs (v8.9+) & npm
-  * Ubuntu 推薦使用：[creationix/nvm](https://github.com/creationix/nvm)
-    或 [tj/n](https://github.com/tj/n)
-  * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
+*   nodejs (v8.9+) & npm
+    *   Ubuntu 推薦使用：[creationix/nvm](https://github.com/creationix/nvm)
+        或 [tj/n](https://github.com/tj/n)
+    *   Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
 下載器下面兩種擇一即可 (推薦使用 `deluge`)
 
-+ deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
-+ aria2c & webui-aria2: [aria2 安裝教學](docs/aria2.md)
+*   deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
+*   aria2c & (webui-aria2 or AriaNg): [aria2 安裝教學](docs/aria2.md)
 
 ## Installation 安裝方法
 
 <details close>
   <summary>確認 nodejs 安裝</summary>
 
-  Ubuntu:
-  ```
-  $ node -v
-  v9.4.0
-  $ npm -v
-  5.6.0
-  ```
+Ubuntu:
 
-  Windows10 (PowerShell):
-  ```
-  PS C:\> node -v
-  v9.4.0
-  PS C:\> npm -v
-  5.6.0
-  ```
+```
+$ node -v
+v9.4.0
+$ npm -v
+5.6.0
+```
+
+Windows10 (PowerShell):
+
+```
+PS C:\> node -v
+v9.4.0
+PS C:\> npm -v
+5.6.0
+```
+
 </details>
 
 ```
