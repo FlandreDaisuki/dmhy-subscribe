@@ -68,17 +68,19 @@ $ npm i -g dmhy-subscribe
 
     -V, --version             output the version number
     -d, --destination <path>  下載路徑 (預設: 預設下載資料夾)
-    --client <client>         強制使用指定下載器。 <client>: "aria2crpc", "deluge-console"(預設)
-    --jsonrpc <jsonrpc_uri>   jsonrpc url for --client=aria2crpc
+    --client <client>         強制使用指定下載器。 <client>: "aria2", "deluge"(預設)
+    --jsonrpc <jsonrpc_uri>   jsonrpc url for --client=aria2
     -h, --help                output usage information
 
 
   Commands:
 
-    add [options] [subscribable...]  使用 {可訂閱字串} 新增 {訂閱}
-    remove|rm [options] [sid...]     根據 {sid} 刪除 {訂閱}
-    list|ls [options] [sid...]       列出所有 {訂閱} 或指定 {訂閱} 的詳細資訊
-    download|dl [thid...]            根據 {thid} 下載 {訂閱} 中的 {貼文}
+    add [options] [subscribable...]   使用 {可訂閱字串} 新增 {訂閱}
+    remove|rm [options] [sid...]      根據 {sid} 刪除 {訂閱}
+    list|ls [options] [sid...]        列出所有 {訂閱} 或指定 {訂閱} 的詳細資訊
+    download|dl [thid...]             根據 {thid} 下載 {訂閱} 中的 {貼文}
+    search|find [options] <keywords>  直接搜尋 dmhy 網頁結果 (關鍵字用半形逗號分開)
+    update [sid...]                   只更新已訂閱的 {訂閱} 但不下載
 
   例子:
 
@@ -87,7 +89,7 @@ $ npm i -g dmhy-subscribe
 
     或
 
-    $ dmhy --client aria2crpc
+    $ dmhy --client aria2
 ```
 
 ## Scheduling 自動排程
