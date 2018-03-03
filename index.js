@@ -80,7 +80,7 @@ program
     }
 
     if (cmd.all) {
-      sids = [...db].map(s => s.sid)
+      sids = db.subscriptions.map(s => s.sid)
     }
 
     for (const sid of sids) {
