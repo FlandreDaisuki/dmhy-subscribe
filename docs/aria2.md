@@ -20,6 +20,8 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 <details open>
   <summary>aria2.conf</summary>
 
+<p>
+
 ```
   # 開啟 daemon 模式
   enable-rpc=true
@@ -30,6 +32,8 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
   # 這邊請自行設置密碼，這邊以 helloworld 為例
   rpc-secret=helloworld
 ```
+
+</p>
 
 </details>
 
@@ -47,17 +51,17 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 *   Windows 10:
     將下面程式碼存成 `daemonize.vbs` 並雙擊執行，注意路徑
 
-          <details open>
+    <details open>
 
     <summary>daemonize.vbs</summary>
 
-        ```
-        ' https://gist.github.com/aa65535/5e956c4eb4f451ddec29
+    ```
+    ' https://gist.github.com/aa65535/5e956c4eb4f451ddec29
 
         CreateObject("Wscript.Shell").Run "D:\aria2\aria2c.exe --conf-path=D:\aria2\aria2.conf -D", 0
-        ```
+    ```
 
-          </details>
+    </details>
 
 如果要關閉 deamon 請直接 `kill $(pidof aria2c)` 或是到工作管理員終止 `aria2c.exe`
 

@@ -37,6 +37,8 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 <details close>
   <summary>確認 nodejs 安裝</summary>
 
+<p>
+
 Ubuntu:
 
 ```
@@ -54,6 +56,8 @@ v9.4.0
 PS C:\> npm -v
 5.6.0
 ```
+
+</p>
 
 </details>
 
