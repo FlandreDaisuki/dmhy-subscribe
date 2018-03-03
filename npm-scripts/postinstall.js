@@ -26,7 +26,7 @@ if (semver.lt(oldVersion, version)) {
     const upgraded = upgradeDatabaseFunctions.reduce((prev, cur) => {
       return cur(prev)
     }, dbObject)
-    fs.writeFileSync(fakedbFile, upgraded)
+    fs.writeFileSync(fakedbFile, JSON.stringify(upgraded))
   } else {
     (new Database({ dbfile: fakedbFile })).save()
   }
