@@ -5,20 +5,25 @@
 ## Linux cron/crontab
 
 確定 `dmhy-subscribe` 確實安裝完成：
-```sh
+
+```shell
 $ dmhy --version
 0.4.0 # 有版本跳出來
 ```
+
 加入到 crontab
-```sh
+
+```shell
 $ (crontab -l 2>/dev/null; echo "0 * * * * `which dmhy`") | crontab -
 ```
+
 其中 `0 * * * *` 為 cron 語法，表示每小時 0 分時執行，語法詳細請參考[鳥哥](http://linux.vbird.org/linux_basic/0430cron.php#crontab)的介紹
 
 ## Windows 10 排程
 
 到 PowerShell 執行並記住 Source 路徑
-```sh
+
+```shell
 PS C:\> Get-Command dmhy
 ```
 
@@ -30,6 +35,7 @@ PS C:\> Get-Command dmhy
 6. 之後可到左邊側欄的 `工作排程器程式庫` 找到這個工作重新設定
 
 測試是否成功
+
 1. 到 PowerShell 隨便新增一筆訂閱
    ```
    PS C:\> dmhy add "搖曳露營,喵萌,繁體"
@@ -49,10 +55,11 @@ PS C:\> Get-Command dmhy
 
 ## pm2
 
-這是個好東西，至少在 Linux 上很方便，Windows 10 就不推薦了，安裝跟指令都很麻煩zzz
+這是個好東西，至少在 Linux 上很方便，Windows 10 就不推薦了，安裝跟指令都很麻煩 zzz
 
 Ubuntu:
-```sh
+
+```shell
 $ npm i -g pm2
 $ pm2 start dmhy --cron="0 * * * *"
 或

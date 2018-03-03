@@ -22,22 +22,23 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 ## Requirements 依賴軟體
 
-+ nodejs (v8.9+) & npm
+* nodejs (v8.9+) & npm
   * Ubuntu 推薦使用：[creationix/nvm](https://github.com/creationix/nvm)
-    或 [tj/n](https://github.com/tj/n)
+        或 [tj/n](https://github.com/tj/n)
   * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
 下載器下面兩種擇一即可 (推薦使用 `deluge`)
 
-+ deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
-+ aria2c & webui-aria2: [aria2 安裝教學](docs/aria2.md)
+* deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
+* aria2c & (webui-aria2 或 AriaNg): [aria2 安裝教學](docs/aria2.md)
 
 ## Installation 安裝方法
 
 <details close>
   <summary>確認 nodejs 安裝</summary>
-
+  <p>
   Ubuntu:
+
   ```
   $ node -v
   v9.4.0
@@ -46,12 +47,14 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
   ```
 
   Windows10 (PowerShell):
+
   ```
   PS C:\> node -v
   v9.4.0
   PS C:\> npm -v
   5.6.0
   ```
+  </p>
 </details>
 
 ```
