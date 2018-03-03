@@ -146,7 +146,7 @@ class Database {
 
   download (thread, { client, destination, jsonrpc } = {}) {
     const dest = destination || systemDownloadsFolder
-    const dclient = client || 'deluge-console'
+    const dclient = client || 'deluge'
 
     const script = path.resolve(`${__dirname}/downloaders/${dclient}.js`)
     const args = [thread, { dest, jsonrpc }].map(JSON.stringify)
