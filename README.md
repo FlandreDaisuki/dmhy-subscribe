@@ -23,14 +23,14 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 ## Requirements 依賴軟體
 
 + nodejs (v8.9+) & npm
-  * Ubuntu 推薦使用： [creationix/nvm](https://github.com/creationix/nvm)
+  * Ubuntu 推薦使用：[creationix/nvm](https://github.com/creationix/nvm)
     或 [tj/n](https://github.com/tj/n)
-  * Windows 10: 推薦使用：[官方安裝](https://nodejs.org/)
+  * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
-下載器下面兩種擇一即可
+下載器下面兩種擇一即可 (推薦使用 `deluge`)
 
 + deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
-+ aria2c & webui-aria2:  [aria2 安裝教學](docs/aria2.md)
++ aria2c & webui-aria2: [aria2 安裝教學](docs/aria2.md)
 
 ## Installation 安裝方法
 
