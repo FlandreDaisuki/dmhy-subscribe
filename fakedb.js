@@ -1,4 +1,5 @@
 const fs = require('fs')
+const os = require('os')
 const { spawn } = require('child_process')
 const semver = require('semver')
 const path = require('path')
@@ -83,8 +84,8 @@ class Subscription {
 }
 
 class Database {
-  constructor ({ dbfile } = { dbfile: 'fakedb.json' }) {
-    this.fakedbPath = `${__dirname}/${dbfile}`
+  constructor ({ dbfile } = { dbfile: `${os.homedir()}/.dmhy-subscribe/fakedb.json` }) {
+    this.fakedbPath = dbfile
 
     if (!fs.existsSync(this.fakedbPath)) {
       const empty = {
