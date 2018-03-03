@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { fetchThreads, search } = require('./crawler')
+const { fetchThreads, fetchThreadsByKeyword } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
 const { getLocaleString: l10n } = require('./utils')
 
@@ -102,7 +102,7 @@ program
 program
   .command('list [sid...]')
   .alias('ls')
-  .option('-s, --subscribable', l10n('CMD_LS_SUBSCRIBABLE_MSG'))
+  .option('-s, --subscribable', l10n('CMD_LS_OPT_SUBSCRIBABLE_MSG'))
   .description(l10n('CMD_LS_DESC_MSG'))
   .action(function (sids, cmd) {
     if (cmd.subscribable) {
@@ -162,42 +162,50 @@ program
   })
 
 program
-  .command('search <keyword>')
-  .option('--raw', 'Print a json array of threads to console.')
-  .description('Show the search result of the keyword.(seperated by comma)')
+  .command('search <keywords>')
+  .alias('find')
+  .option('--raw', l10n('CMD_FIND_OPT_RAW_MSG'))
+  .description(l10n('CMD_FIND_DESC_MSG'))
   .action(async function (kw, cmd) {
-    const threads = await search(kw.split(','))
+    const threads = await fetchThreadsByKeyword(kw.split(','))
     if (!cmd.raw) {
-      threads.forEach(t => console.log(t.title))
-      console.log(`Total ${threads.length} result${threads.length > 1 ? 's' : ''}.`)
+      threads.forEach(th => console.log(th.title))
+      console.log(l10n('CMD_FIND_SUMMARY_MSG', { total: threads.length }))
     } else {
       console.log(JSON.stringify(threads))
     }
   })
+  .on('--help', function () {
+    console.log(l10n('CMD_FIND_HELP_MSG'))
+  })
 
 program
   .command('update [sid...]')
-  .description('Update selected subscriptions, update all if sid is empty.')
-  .action(async function (sid, cmd) {
+  .description(l10n('CMD_UPDATE_DESC_MSG'))
+  .action(async function (sids, cmd) {
     Promise.all(
-      db.subscriptions.filter(s => sid.length === 0 || sid.includes(s.sid)).map(s => {
-        return fetchThreads(s)
-          .then(newThreads => {
-            for (const nth of newThreads) {
-              if (!s.threads.map(th => th.title).includes(nth.title)) {
-                console.log(`Updated: ${nth.title}`)
-                s.add(nth)
+      db.subscriptions
+        .filter(s => sids.length === 0 || sids.includes(s.sid))
+        .map(s => {
+          return fetchThreads(s)
+            .then(newThreads => {
+              for (const nth of newThreads) {
+                if (!s.threads.map(th => th.title).includes(nth.title)) {
+                  console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
+                  s.add(nth)
+                }
               }
-            }
-          })
-          .catch(error => {
-            console.error(error)
-          })
-      })
+            })
+            .catch(error => {
+              console.error(error)
+            })
+        })
     ).then(() => {
       db.sort()
       db.save()
     })
+  }).on('--help', function () {
+    console.log(l10n('CMD_UPDATE_HELP_MSG'))
   })
 
 program.parse(process.argv)

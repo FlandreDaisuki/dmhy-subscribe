@@ -47,7 +47,7 @@ module.exports = {
     $ dmhy rm XYZ ABC
     $ dmhy rm --all
   `,
-  CMD_LS_SUBSCRIBABLE_MSG: '列出所有已訂閱的 {可訂閱字串}',
+  CMD_LS_OPT_SUBSCRIBABLE_MSG: '列出所有已訂閱的 {可訂閱字串}',
   CMD_LS_DESC_MSG: '列出所有 {訂閱} 或指定 {訂閱} 的詳細資訊',
   CMD_LS_HELP_MSG: `
   例子:
@@ -97,5 +97,13 @@ module.exports = {
     2,3      [字幕組][動畫AAA][02-03]
 
     $ dmhy dl AAA-02 # 下載該包含兩集的 {貼文}
-  `
+  `,
+  CMD_FIND_OPT_RAW_MSG: '顯示 JSON 結果',
+  CMD_FIND_DESC_MSG: '直接搜尋 dmhy 網頁結果 (關鍵字用半形逗號分開)',
+  CMD_FIND_SUMMARY_MSG: '找到 %total% 個結果',
+  CMD_FIND_HELP_MSG: '',
+  CMD_UPDATE_DESC_MSG: '只更新已訂閱的 {訂閱} 但不下載',
+  CMD_UPDATE_UPDATED_MSG: '已更新: %title%',
+  CMD_UPDATE_HELP_MSG: '',
+  UNHANDLED_EP_PARSING_MSG: '這行只有在出現 bug 時會印出。\n請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報'
 }

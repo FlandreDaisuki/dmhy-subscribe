@@ -47,7 +47,7 @@ module.exports = {
     $ dmhy rm XYZ ABC
     $ dmhy rm --all
   `,
-  CMD_LS_SUBSCRIBABLE_MSG: 'List subscribable format.',
+  CMD_LS_OPT_SUBSCRIBABLE_MSG: 'List subscribable format.',
   CMD_LS_DESC_MSG: 'List the {subscription}s or the {thread}s of the {subscription}s.',
   CMD_LS_HELP_MSG: `
   Examples:
@@ -95,5 +95,13 @@ module.exports = {
     2,3      [字幕組][nameAAA][02-03]
 
     $ dmhy dl AAA-02 # download 1 threads which has 2 episodes
-  `
+  `,
+  CMD_FIND_OPT_RAW_MSG: 'Print a json array of threads to console.',
+  CMD_FIND_DESC_MSG: 'Show the search results of the keyword. (seperated by comma)',
+  CMD_FIND_SUMMARY_MSG: 'Total %total% result(s).',
+  CMD_FIND_HELP_MSG: '',
+  CMD_UPDATE_DESC_MSG: 'Just update {description}s without downloading.',
+  CMD_UPDATE_UPDATED_MSG: 'Updated: %title%',
+  CMD_UPDATE_HELP_MSG: '',
+  UNHANDLED_EP_PARSING_MSG: 'This should never print unless having bugs.\nPlease paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.'
 }

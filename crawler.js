@@ -1,6 +1,7 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
 const { Subscription } = require('./fakedb')
+const { getLocaleString: l10n } = require('./utils')
 
 class Thread {
   constructor (title, link) {
@@ -10,7 +11,7 @@ class Thread {
   }
 }
 
-async function getSearchHTML (kws) {
+async function fetchSearchHTML (kws) {
   const response = await axios.get(
     `https://share.dmhy.org/topics/list?keyword=${kws.map(encodeURIComponent).join('+')}`
   )
@@ -25,14 +26,14 @@ async function fetchThreads (subscription) {
     throw new TypeError('Parameter should be a Subscription.')
   }
   const kws = [subscription.name, ...subscription.keywords]
-  const html = await getSearchHTML(kws)
-  return parseThreads(html)
+  return (await fetchThreadsByKeyword(kws)).filter(t => t.ep.every(isFinite))
 }
 
-async function search (kw) {
-  return getThreadsFromHTML(await getSearchHTML(kw))
+async function fetchThreadsByKeyword (kws) {
+  return parseThreadsFromHTML(await fetchSearchHTML(kws))
 }
-function getThreadsFromHTML (html) {
+
+function parseThreadsFromHTML (html) {
   const $ = cheerio.load(html)
   const titles = getTitlesFromCheerio($)
   const magnets = getMagnetsFromCheerio($)
@@ -50,14 +51,11 @@ function getTitlesFromCheerio ($) {
     .split(/[\n\t]+/)
     .filter(x => x)
 }
+
 function getMagnetsFromCheerio ($) {
   return $('#topic_list tr:nth-child(n+1) a.download-arrow')
     .toArray()
     .map(x => x.attribs.href)
-}
-
-function parseThreads (html) {
-  return getThreadsFromHTML(html).filter(t => t.ep.every(isFinite))
 }
 
 function parseEpisodeFromTitle (title) {
@@ -118,8 +116,7 @@ function parseEpisodeFromTitle (title) {
     }
   }
 
-  console.log('This should never print unless having bugs.')
-  console.log('Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.')
+  console.log(l10n('UNHANDLED_EP_PARSING_MSG'))
 
   console.log('title:', title)
   console.log('tokens:', tokens)
@@ -127,7 +124,6 @@ function parseEpisodeFromTitle (title) {
 
 module.exports = {
   fetchThreads,
-  parseThreads,
-  parseEpisodeFromTitle,
-  search
+  fetchThreadsByKeyword,
+  parseEpisodeFromTitle
 }
