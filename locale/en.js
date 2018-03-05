@@ -104,5 +104,7 @@ module.exports = {
   CMD_UPDATE_UPDATED_MSG: 'Updated: %title%',
   CMD_UPDATE_OPT_ALL_MSG: 'Update all subscribed {subscription}.',
   CMD_UPDATE_HELP_MSG: '',
+  CMD_CONFIG_DESC_MSG: '',
+  CMD_CONFIG_HELP_MSG: '',
   UNHANDLED_EP_PARSING_MSG: 'This should never print unless having bugs.\nPlease paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.'
 }

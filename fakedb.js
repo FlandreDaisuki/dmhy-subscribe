@@ -6,6 +6,7 @@ const path = require('path')
 const { hash, XSet, systemDownloadsFolder } = require('./utils')
 const compat = require('./compatible-test')
 const { version } = require('./package.json')
+const config = require('./config')
 
 require('console.table')
 
@@ -147,10 +148,11 @@ class Database {
 
   download (thread, { client, destination, jsonrpc } = {}) {
     const dest = destination || systemDownloadsFolder
-    const dclient = client || 'deluge'
+    const dclient = client || config.get('client')
+    const djsonrpc = jsonrpc || config.get('jsonrpc')
 
     const script = path.resolve(`${__dirname}/downloaders/${dclient}.js`)
-    const args = [thread, { dest, jsonrpc }].map(JSON.stringify)
+    const args = [thread, { dest, jsonrpc: djsonrpc }].map(JSON.stringify)
     args.unshift(script)
 
     return new Promise((resolve, reject) => {

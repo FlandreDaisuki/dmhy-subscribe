@@ -3,6 +3,7 @@
 const { fetchThreads, fetchThreadsByKeyword } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
 const { getLocaleString: l10n } = require('./utils')
+const config = require('./config')
 
 const fs = require('fs')
 const program = require('commander')
@@ -206,6 +207,21 @@ program
   })
   .on('--help', function () {
     console.log(l10n('CMD_UPDATE_HELP_MSG'))
+  })
+
+program
+  .command('config <key> [value]')
+  .alias('cfg')
+  .description(l10n('CMD_CONFIG_DESC_MSG'))
+  .action(function (key, value) {
+    if (value === undefined) { // getter
+      console.log(config.get(key))
+    } else { // setter
+      config.set(key, value)
+    }
+  })
+  .on('--help', function () {
+    console.log(l10n('CMD_CONFIG_HELP_MSG'))
   })
 
 program.parse(process.argv)
