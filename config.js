@@ -11,9 +11,17 @@ class Config {
     this.configfile = configfile
 
     if (!fs.existsSync(this.configfile)) {
-      this.writeConfig(DEFAULT_CONFIG)
+      try {
+        this.writeConfig(DEFAULT_CONFIG)
+      } catch (e) {
+        if (require.main.filename.endsWith('postinstall.js')) {
+          // because postinstall.js require fakedb.js, and fakedb.js require config.js even if ~/dmhy-subscribe not exists
+          // so just ignore it
+          return
+        }
+        throw e
+      }
     }
-
     this.readConfig()
   }
   writeConfig (config = this.config) {
