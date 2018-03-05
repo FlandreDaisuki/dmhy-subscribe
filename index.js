@@ -9,7 +9,6 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database()
-const supportedClients = new Set(['aria2', 'deluge'])
 
 program
   .version(db.version)
@@ -134,7 +133,7 @@ program
     if (!thids.length) {
       this.help()
     } else {
-      if (cmd.parent.client && !supportedClients.has(cmd.parent.client)) {
+      if (cmd.parent.client && !Database.isSupportedClient(cmd.parent.client)) {
         console.error(l10n('CMD_DL_UNKNOWN_CLIENT_MSG', { client: cmd.parent.client }))
         process.exit(1)
       }
@@ -224,12 +223,10 @@ program
       db.config.list()
       process.exit()
     }
-
     if (cmd.reset) {
       db.config.reset(key)
       process.exit()
     }
-
     if (key) {
       if (value) {
         // setter
@@ -239,7 +236,6 @@ program
         console.log(db.config.get(key))
       }
     }
-
     process.exit()
   })
   .on('--help', function () {

@@ -182,6 +182,10 @@ class Database {
     this.subscriptions.forEach(s => s.sort())
     this.subscriptions.sort((a, b) => b.latest - a.latest)
   }
+
+  static isSupportedClient (client) {
+    return (new Set(['aria2', 'deluge'])).has(client)
+  }
 }
 
 module.exports = {
