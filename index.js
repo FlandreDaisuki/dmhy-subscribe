@@ -181,30 +181,30 @@ program
 
 program
   .command('update [sid...]')
+  .option('-a, --all', l10n('CMD_UPDATE_OPT_ALL_MSG'))
   .description(l10n('CMD_UPDATE_DESC_MSG'))
   .action(async function (sids, cmd) {
     Promise.all(
-      db.subscriptions
-        .filter(s => sids.length === 0 || sids.includes(s.sid))
-        .map(s => {
-          return fetchThreads(s)
-            .then(newThreads => {
-              for (const nth of newThreads) {
-                if (!s.threads.map(th => th.title).includes(nth.title)) {
-                  console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
-                  s.add(nth)
-                }
+      db.subscriptions.filter(s => cmd.all || sids.includes(s.sid)).map(s => {
+        return fetchThreads(s)
+          .then(newThreads => {
+            for (const nth of newThreads) {
+              if (!s.threads.map(th => th.title).includes(nth.title)) {
+                console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
+                s.add(nth)
               }
-            })
-            .catch(error => {
-              console.error(error)
-            })
-        })
+            }
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      })
     ).then(() => {
       db.sort()
       db.save()
     })
-  }).on('--help', function () {
+  })
+  .on('--help', function () {
     console.log(l10n('CMD_UPDATE_HELP_MSG'))
   })
 
