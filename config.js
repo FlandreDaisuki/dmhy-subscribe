@@ -9,25 +9,25 @@ const DEFAULT_CONFIG = {
 class Config {
   constructor ({ configFile } = { configFile: `${os.homedir()}/.dmhy-subscribe/config.json` }) {
     this.configPath = configFile
-    this.variables = Object.assign({}, DEFAULT_CONFIG)
+    this.parameters = Object.assign({}, DEFAULT_CONFIG)
 
     if (!fs.existsSync(this.configPath)) {
       this.reset()
     }
-    Object.assign(this.variables, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
+    Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
   }
 
   save () {
-    fs.writeFileSync(this.configPath, JSON.stringify(this.variables))
+    fs.writeFileSync(this.configPath, JSON.stringify(this.parameters))
   }
 
   get (key) {
-    return this.variables[key]
+    return this.parameters[key]
   }
 
   set (key, value) {
     if (Object.keys(DEFAULT_CONFIG).includes(key)) {
-      this.variables[key] = value
+      this.parameters[key] = value
       this.save()
     } else {
       console.error('Invalid key:', key)
@@ -35,14 +35,14 @@ class Config {
   }
 
   list () {
-    console.log(JSON.stringify(this.variables, null, '  '))
+    console.log(JSON.stringify(this.parameters, null, '  '))
   }
 
   reset (key = null) {
     if (key) {
-      this.variables[key] = DEFAULT_CONFIG[key]
+      this.parameters[key] = DEFAULT_CONFIG[key]
     } else {
-      Object.assign(this.variables, DEFAULT_CONFIG)
+      Object.assign(this.parameters, DEFAULT_CONFIG)
     }
     this.save()
   }
