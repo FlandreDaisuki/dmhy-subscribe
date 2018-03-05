@@ -174,6 +174,7 @@ program
     } else {
       console.log(JSON.stringify(threads))
     }
+    process.exit()
   })
   .on('--help', function () {
     console.log(l10n('CMD_FIND_HELP_MSG'))
@@ -184,7 +185,7 @@ program
   .option('-a, --all', l10n('CMD_UPDATE_OPT_ALL_MSG'))
   .description(l10n('CMD_UPDATE_DESC_MSG'))
   .action(async function (sids, cmd) {
-    Promise.all(
+    await Promise.all(
       db.subscriptions
         .filter(s => cmd.all || sids.includes(s.sid))
         .map(s => {
@@ -199,29 +200,47 @@ program
             })
             .catch(error => {
               console.error(error)
+              process.exit(1)
             })
         })
-    ).then(() => {
-      db.sort()
-      db.save()
-    })
+    )
+
+    db.sort()
+    db.save()
+    process.exit()
   })
   .on('--help', function () {
     console.log(l10n('CMD_UPDATE_HELP_MSG'))
   })
 
 program
-  .command('config <key> [value]')
+  .command('config [key] [value]')
   .alias('cfg')
+  .option('-r, --reset', l10n('CMD_CFG_OPT_RESET_MSG'))
+  .option('--list-all', l10n('CMD_CFG_OPT_LIST_ALL_MSG'))
   .description(l10n('CMD_CFG_DESC_MSG'))
-  .action(function (key, value) {
-    if (value) {
-      // setter
-      db.config.set(key, value)
-    } else {
-      // getter
-      console.log(db.config.get(key))
+  .action(function (key, value, cmd) {
+    if (cmd.listAll) {
+      db.config.list()
+      process.exit()
     }
+
+    if (cmd.reset) {
+      db.config.reset(key)
+      process.exit()
+    }
+
+    if (key) {
+      if (value) {
+        // setter
+        db.config.set(key, value)
+      } else {
+        // getter
+        console.log(db.config.get(key))
+      }
+    }
+
+    process.exit()
   })
   .on('--help', function () {
     console.log(l10n('CMD_CFG_HELP_MSG'))
