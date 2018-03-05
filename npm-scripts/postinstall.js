@@ -41,6 +41,6 @@ if (semver.lt(oldVersion, version)) {
     }, dbObject)
     fs.writeFileSync(fakedbFile, JSON.stringify(upgraded))
   } else {
-    (new Database({ dbFile: fakedbFile })).save()
+    (new Database({ dbFile: fakedbFile, config: new Config({ configFile }) })).save()
   }
 }
