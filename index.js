@@ -3,7 +3,6 @@
 const { fetchThreads, fetchThreadsByKeyword } = require('./crawler')
 const { Subscription, Database } = require('./fakedb')
 const { getLocaleString: l10n } = require('./utils')
-const config = require('./config')
 
 const fs = require('fs')
 const program = require('commander')
@@ -186,20 +185,22 @@ program
   .description(l10n('CMD_UPDATE_DESC_MSG'))
   .action(async function (sids, cmd) {
     Promise.all(
-      db.subscriptions.filter(s => cmd.all || sids.includes(s.sid)).map(s => {
-        return fetchThreads(s)
-          .then(newThreads => {
-            for (const nth of newThreads) {
-              if (!s.threads.map(th => th.title).includes(nth.title)) {
-                console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
-                s.add(nth)
+      db.subscriptions
+        .filter(s => cmd.all || sids.includes(s.sid))
+        .map(s => {
+          return fetchThreads(s)
+            .then(newThreads => {
+              for (const nth of newThreads) {
+                if (!s.threads.map(th => th.title).includes(nth.title)) {
+                  console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
+                  s.add(nth)
+                }
               }
-            }
-          })
-          .catch(error => {
-            console.error(error)
-          })
-      })
+            })
+            .catch(error => {
+              console.error(error)
+            })
+        })
     ).then(() => {
       db.sort()
       db.save()
@@ -212,16 +213,18 @@ program
 program
   .command('config <key> [value]')
   .alias('cfg')
-  .description(l10n('CMD_CONFIG_DESC_MSG'))
+  .description(l10n('CMD_CFG_DESC_MSG'))
   .action(function (key, value) {
-    if (value === undefined) { // getter
-      console.log(config.get(key))
-    } else { // setter
-      config.set(key, value)
+    if (value) {
+      // setter
+      db.config.set(key, value)
+    } else {
+      // getter
+      console.log(db.config.get(key))
     }
   })
   .on('--help', function () {
-    console.log(l10n('CMD_CONFIG_HELP_MSG'))
+    console.log(l10n('CMD_CFG_HELP_MSG'))
   })
 
 program.parse(process.argv)

@@ -106,7 +106,7 @@ module.exports = {
   CMD_UPDATE_UPDATED_MSG: '已更新: %title%',
   CMD_UPDATE_OPT_ALL_MSG: '更新所有 {訂閱}',
   CMD_UPDATE_HELP_MSG: '',
-  CMD_CONFIG_DESC_MSG: '',
-  CMD_CONFIG_HELP_MSG: '',
+  CMD_CFG_DESC_MSG: '設定內部參數',
+  CMD_CFG_HELP_MSG: '',
   UNHANDLED_EP_PARSING_MSG: '這行只有在出現 bug 時會印出。\n請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報'
 }

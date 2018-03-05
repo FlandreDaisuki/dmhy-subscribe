@@ -6,7 +6,7 @@ const path = require('path')
 const { hash, XSet, systemDownloadsFolder } = require('./utils')
 const compat = require('./compatible-test')
 const { version } = require('./package.json')
-const config = require('./config')
+const { Config } = require('./config')
 
 require('console.table')
 
@@ -85,8 +85,9 @@ class Subscription {
 }
 
 class Database {
-  constructor ({ dbfile } = { dbfile: `${os.homedir()}/.dmhy-subscribe/fakedb.json` }) {
-    this.fakedbPath = dbfile
+  constructor ({ dbFile, config } = { dbFile: `${os.homedir()}/.dmhy-subscribe/fakedb.json`, config: new Config() }) {
+    this.fakedbPath = dbFile
+    this.config = config
 
     if (!fs.existsSync(this.fakedbPath)) {
       const empty = {
@@ -148,8 +149,8 @@ class Database {
 
   download (thread, { client, destination, jsonrpc } = {}) {
     const dest = destination || systemDownloadsFolder
-    const dclient = client || config.get('client')
-    const djsonrpc = jsonrpc || config.get('jsonrpc')
+    const dclient = client || this.config.get('client')
+    const djsonrpc = jsonrpc || this.config.get('jsonrpc')
 
     const script = path.resolve(`${__dirname}/downloaders/${dclient}.js`)
     const args = [thread, { dest, jsonrpc: djsonrpc }].map(JSON.stringify)

@@ -7,55 +7,32 @@ const DEFAULT_CONFIG = {
 }
 
 class Config {
-  constructor ({ configfile } = { configfile: `${os.homedir()}/.dmhy-subscribe/config.json` }) {
-    this.configfile = configfile
+  constructor ({ configFile } = { configFile: `${os.homedir()}/.dmhy-subscribe/config.json` }) {
+    this.configPath = configFile
 
-    if (!fs.existsSync(this.configfile)) {
-      try {
-        this.writeConfig(DEFAULT_CONFIG)
-      } catch (e) {
-        if (require.main.filename.endsWith('postinstall.js')) {
-          // because postinstall.js require fakedb.js, and fakedb.js require config.js even if ~/dmhy-subscribe not exists
-          // so just ignore it
-          return
-        }
-        throw e
-      }
+    if (!fs.existsSync(this.configPath)) {
+      Object.assign(this, DEFAULT_CONFIG)
+      this.save()
     }
-    this.readConfig()
+    Object.assign(this, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
   }
-  writeConfig (config = this.config) {
-    fs.writeFileSync(this.configfile, JSON.stringify(config))
-  }
-  readConfig () {
-    this.config = JSON.parse(fs.readFileSync(this.configfile, 'utf8'))
-  }
-  get (path) {
-    return path
-      .replace(/\[([^[\]]*)\]/g, '.$1.')
-      .split('.')
-      .filter(t => t !== '')
-      .reduce((prev, cur) => prev && prev[cur], this.config)
-  }
-  set (path, value) {
-    const paths = path
-      .replace(/\[([^[\]]*)\]/g, '.$1.')
-      .split('.')
-      .filter(t => t !== '')
-    function _set (paths, cur) {
-      const pname = paths.shift()
-      if (paths.length === 0) {
-        cur[pname] = value
-      } else {
-        if (!cur.hasOwnProperty(pname))cur[pname] = {}
-        _set(paths, cur[pname])
-      }
-    }
-    _set(paths, this.config)
 
-    this.writeConfig(this.config)
+  save () {
+    const sav = Object.assign({}, this)
+    delete sav.configPath
+    fs.writeFileSync(this.configPath, JSON.stringify(sav))
+  }
+
+  get (key) {
+    return this[key]
+  }
+
+  set (key, value) {
+    this[key] = value
+    this.save()
   }
 }
-module.exports = new Config()
-exports.Config = Config
-exports.DEFAULT_CONFIG = DEFAULT_CONFIG
+
+module.exports = {
+  Config
+}
