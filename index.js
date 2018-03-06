@@ -230,10 +230,18 @@ program
     if (key) {
       if (value) {
         // setter
-        db.config.set(key, value)
+        const ret = db.config.set(key, value)
+        if (ret === undefined) {
+          console.error(`Invalid key: ${key}`)
+        }
       } else {
         // getter
-        console.log(db.config.get(key))
+        const val = db.config.get(key)
+        if (val === undefined) {
+          console.error(`Invalid key: ${key}`)
+        } else {
+          console.log(val)
+        }
       }
     }
     process.exit()
