@@ -102,6 +102,28 @@ module.exports = {
   CMD_FIND_HELP_MSG: '',
   CMD_UPDATE_DESC_MSG: 'Just update {description}s without downloading.',
   CMD_UPDATE_UPDATED_MSG: 'Updated: %title%',
+  CMD_UPDATE_OPT_ALL_MSG: 'Update all subscribed {subscription}.',
   CMD_UPDATE_HELP_MSG: '',
+  CMD_CFG_OPT_RESET_MSG: 'Reset to default internal parameters.',
+  CMD_CFG_OPT_LIST_ALL_MSG: 'List all internal parameters.',
+  CMD_CFG_DESC_MSG: 'Configure internal parameters.',
+  CMD_CFG_HELP_MSG: `
+  Details:
+
+  Configure internal parameters to reduce command-line parameters.
+  The internal parameters will be saved to next call.
+
+  Examples:
+
+  $ dmhy --client="aria2" --jsonrpc="http://token:{SECRETTOKEN}@localhost:6800/jsonrpc"
+  $ dmhy download AAA --client="aria2" --jsonrpc="http://token:{SECRETTOKEN}@localhost:6800/jsonrpc"
+
+  is the same as following commands.
+
+  $ dmhy config client aria2
+  $ dmhy config jsonrpc "http://token:{SECRETTOKEN}@localhost:6800/jsonrpc"
+  $ dmhy
+  $ dmhy download AAA
+  `,
   UNHANDLED_EP_PARSING_MSG: 'This should never print unless having bugs.\nPlease paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.'
 }

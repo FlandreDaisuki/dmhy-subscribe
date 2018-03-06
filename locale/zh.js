@@ -104,6 +104,27 @@ module.exports = {
   CMD_FIND_HELP_MSG: '',
   CMD_UPDATE_DESC_MSG: '只更新已訂閱的 {訂閱} 但不下載',
   CMD_UPDATE_UPDATED_MSG: '已更新: %title%',
+  CMD_UPDATE_OPT_ALL_MSG: '更新所有 {訂閱}',
   CMD_UPDATE_HELP_MSG: '',
+  CMD_CFG_OPT_RESET_MSG: '重設回預設內部參數',
+  CMD_CFG_OPT_LIST_ALL_MSG: '列出所有已存內部參數',
+  CMD_CFG_DESC_MSG: '設定內部參數',
+  CMD_CFG_HELP_MSG: `
+  詳細解釋:
+
+  藉由調整內部參數減少指令列參數。內部參數將會儲存以便下次使用。
+
+  例子：
+
+  $ dmhy --client="aria2" --jsonrpc="http://token:{密碼}@localhost:6800/jsonrpc"
+  $ dmhy download AAA --client="aria2" --jsonrpc="http://token:{密碼}@localhost:6800/jsonrpc"
+
+  和下面指令等價
+
+  $ dmhy config client aria2
+  $ dmhy config jsonrpc "http://token:{密碼}@localhost:6800/jsonrpc"
+  $ dmhy
+  $ dmhy download AAA
+  `,
   UNHANDLED_EP_PARSING_MSG: '這行只有在出現 bug 時會印出。\n請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報'
 }

@@ -6,6 +6,7 @@ const path = require('path')
 const { hash, XSet, systemDownloadsFolder } = require('./utils')
 const compat = require('./compatible-test')
 const { version } = require('./package.json')
+const { Config } = require('./config')
 
 require('console.table')
 
@@ -84,8 +85,9 @@ class Subscription {
 }
 
 class Database {
-  constructor ({ dbfile } = { dbfile: `${os.homedir()}/.dmhy-subscribe/fakedb.json` }) {
-    this.fakedbPath = dbfile
+  constructor ({ dbFile, config } = { dbFile: `${os.homedir()}/.dmhy-subscribe/fakedb.json`, config: new Config() }) {
+    this.fakedbPath = dbFile
+    this.config = config
 
     if (!fs.existsSync(this.fakedbPath)) {
       const empty = {
@@ -147,10 +149,11 @@ class Database {
 
   download (thread, { client, destination, jsonrpc } = {}) {
     const dest = destination || systemDownloadsFolder
-    const dclient = client || 'deluge'
+    const dclient = client || this.config.get('client')
+    const djsonrpc = jsonrpc || this.config.get('jsonrpc')
 
     const script = path.resolve(`${__dirname}/downloaders/${dclient}.js`)
-    const args = [thread, { dest, jsonrpc }].map(JSON.stringify)
+    const args = [thread, { dest, jsonrpc: djsonrpc }].map(JSON.stringify)
     args.unshift(script)
 
     return new Promise((resolve, reject) => {
@@ -178,6 +181,10 @@ class Database {
   sort () {
     this.subscriptions.forEach(s => s.sort())
     this.subscriptions.sort((a, b) => b.latest - a.latest)
+  }
+
+  static isSupportedClient (client) {
+    return (new Set(['aria2', 'deluge'])).has(client)
   }
 }
 

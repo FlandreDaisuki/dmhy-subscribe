@@ -9,7 +9,6 @@ const program = require('commander')
 const { question } = require('readline-sync')
 
 const db = new Database()
-const supportedClients = new Set(['aria2', 'deluge'])
 
 program
   .version(db.version)
@@ -134,7 +133,7 @@ program
     if (!thids.length) {
       this.help()
     } else {
-      if (cmd.parent.client && !supportedClients.has(cmd.parent.client)) {
+      if (cmd.parent.client && !Database.isSupportedClient(cmd.parent.client)) {
         console.error(l10n('CMD_DL_UNKNOWN_CLIENT_MSG', { client: cmd.parent.client }))
         process.exit(1)
       }
@@ -174,6 +173,7 @@ program
     } else {
       console.log(JSON.stringify(threads))
     }
+    process.exit()
   })
   .on('--help', function () {
     console.log(l10n('CMD_FIND_HELP_MSG'))
@@ -181,11 +181,12 @@ program
 
 program
   .command('update [sid...]')
+  .option('-a, --all', l10n('CMD_UPDATE_OPT_ALL_MSG'))
   .description(l10n('CMD_UPDATE_DESC_MSG'))
   .action(async function (sids, cmd) {
-    Promise.all(
+    await Promise.all(
       db.subscriptions
-        .filter(s => sids.length === 0 || sids.includes(s.sid))
+        .filter(s => cmd.all || sids.includes(s.sid))
         .map(s => {
           return fetchThreads(s)
             .then(newThreads => {
@@ -198,14 +199,55 @@ program
             })
             .catch(error => {
               console.error(error)
+              process.exit(1)
             })
         })
-    ).then(() => {
-      db.sort()
-      db.save()
-    })
-  }).on('--help', function () {
+    )
+
+    db.sort()
+    db.save()
+    process.exit()
+  })
+  .on('--help', function () {
     console.log(l10n('CMD_UPDATE_HELP_MSG'))
+  })
+
+program
+  .command('config [key] [value]')
+  .alias('cfg')
+  .option('-r, --reset', l10n('CMD_CFG_OPT_RESET_MSG'))
+  .option('--list-all', l10n('CMD_CFG_OPT_LIST_ALL_MSG'))
+  .description(l10n('CMD_CFG_DESC_MSG'))
+  .action(function (key, value, cmd) {
+    if (cmd.listAll) {
+      db.config.list()
+      process.exit()
+    }
+    if (cmd.reset) {
+      db.config.reset(key)
+      process.exit()
+    }
+    if (key) {
+      if (value) {
+        // setter
+        const ret = db.config.set(key, value)
+        if (ret === undefined) {
+          console.error(`Invalid key: ${key}`)
+        }
+      } else {
+        // getter
+        const val = db.config.get(key)
+        if (val === undefined) {
+          console.error(`Invalid key: ${key}`)
+        } else {
+          console.log(val)
+        }
+      }
+    }
+    process.exit()
+  })
+  .on('--help', function () {
+    console.log(l10n('CMD_CFG_HELP_MSG'))
   })
 
 program.parse(process.argv)
