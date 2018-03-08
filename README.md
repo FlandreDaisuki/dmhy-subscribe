@@ -1,4 +1,6 @@
 # dmhy-subscribe
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors)
 
 [![npm](https://img.shields.io/npm/v/dmhy-subscribe.svg)](https://www.npmjs.com/package/dmhy-subscribe) [![Build Status](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe.svg?branch=master)](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe)
 
@@ -98,3 +100,18 @@ $ npm i -g dmhy-subscribe
 ## Scheduling 自動排程
 
 參考[自動排程](docs/scheduling.md)教學
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars0.githubusercontent.com/u/5981459?v=4" width="100px;"/><br /><sub><b>Chun-Hao Lien</b></sub>](https://github.com/FlandreDaisuki)<br />[💻](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Code") [📖](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Documentation") [⚠️](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Tests") [👀](#review-FlandreDaisuki "Reviewed Pull Requests") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
