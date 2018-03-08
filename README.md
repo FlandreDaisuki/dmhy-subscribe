@@ -1,5 +1,5 @@
 # dmhy-subscribe
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 [![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors)
 
 [![npm](https://img.shields.io/npm/v/dmhy-subscribe.svg)](https://www.npmjs.com/package/dmhy-subscribe) [![Build Status](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe.svg?branch=master)](https://travis-ci.org/FlandreDaisuki/dmhy-subscribe)
@@ -105,8 +105,8 @@ $ npm i -g dmhy-subscribe
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars0.githubusercontent.com/u/5981459?v=4" width="100px;"/><br /><sub><b>Chun-Hao Lien</b></sub>](https://github.com/FlandreDaisuki)<br />[💻](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Code") [📖](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Documentation") [⚠️](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Tests") [👀](#review-FlandreDaisuki "Reviewed Pull Requests") |
-| :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/5981459?v=4" width="100px;"/><br /><sub><b>Chun-Hao Lien</b></sub>](https://github.com/FlandreDaisuki)<br />[💻](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Code") [📖](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Documentation") [⚠️](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=FlandreDaisuki "Tests") [👀](#review-FlandreDaisuki "Reviewed Pull Requests") | [<img src="https://avatars1.githubusercontent.com/u/9370547?v=4" width="100px;"/><br /><sub><b>maple</b></sub>](https://blog.maple3142.net/)<br />[💻](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=maple3142 "Code") [📖](https://github.com/FlandreDaisuki/dmhy-subscribe/commits?author=maple3142 "Documentation") [🤔](#ideas-maple3142 "Ideas, Planning, & Feedback") [🐛](https://github.com/FlandreDaisuki/dmhy-subscribe/issues?q=author%3Amaple3142 "Bug reports") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
