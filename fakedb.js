@@ -1,10 +1,8 @@
 const fs = require('fs')
 const os = require('os')
 const { spawn } = require('child_process')
-const semver = require('semver')
 const path = require('path')
 const { hash, XSet, systemDownloadsFolder } = require('./utils')
-const compat = require('./compatible-test')
 const { version } = require('./package.json')
 const { Config } = require('./config')
 
@@ -99,9 +97,6 @@ class Database {
 
     const fakedb = JSON.parse(fs.readFileSync(this.fakedbPath, 'utf8'))
     this.subscriptions = fakedb.subscriptions.map(s => new Subscription(s))
-    if (semver.lt(fakedb.version, version)) {
-      compat()
-    }
     this.version = version
   }
 
