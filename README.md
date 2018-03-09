@@ -87,7 +87,7 @@ $ npm i -g dmhy-subscribe
 
   例子:
 
-    $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
     $ dmhy
 
     或
