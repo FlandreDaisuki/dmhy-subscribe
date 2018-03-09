@@ -2,7 +2,7 @@ module.exports = {
   MAIN_HELP_MSG: `
   Examples:
 
-    $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
     $ dmhy
 
     or
@@ -26,8 +26,8 @@ module.exports = {
   Examples:
 
     Direct:
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
+      $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
+      $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P" "pop team epic,極影,BIG5"
 
     File:
       $ dmhy ls --subscribable > a.txt  # output all {subscribable}s to a.txt

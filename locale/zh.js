@@ -2,7 +2,7 @@ module.exports = {
   MAIN_HELP_MSG: `
   例子:
 
-    $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
     $ dmhy
 
     或
@@ -26,8 +26,8 @@ module.exports = {
   例子:
 
     直接使用 {可訂閱字串}:
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P'
-      $ dmhy add '紫羅蘭永恆花園,動漫國,繁體,1080P' 'pop team epic,極影,BIG5'
+      $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
+      $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P" "pop team epic,極影,BIG5"
 
     從檔案新增:
       $ dmhy ls --subscribable > a.txt  # 輸出所有 {可訂閱字串} 到 a.txt
