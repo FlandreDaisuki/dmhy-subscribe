@@ -4,6 +4,7 @@ const semver = require('semver')
 const { version } = require('../package.json')
 const { Database } = require('../fakedb')
 const { Config } = require('../config')
+const { systemDownloadsFolder } = require('../utils')
 
 const projectDataDir = `${os.homedir()}/.dmhy-subscribe`
 const fakedbFile = `${projectDataDir}/fakedb.json`
@@ -19,7 +20,10 @@ if (!fs.existsSync(versionFile)) {
 }
 
 const upgradeDatabaseFunctions = []
-const upgradeConfigFunctions = []
+const upgradeConfigFunctions = [cfg => {
+  if (typeof cfg.destination === 'undefined')cfg.destination = systemDownloadsFolder
+  return cfg
+}]
 
 const oldVersion = fs.readFileSync(versionFile, { encoding: 'utf-8' })
 

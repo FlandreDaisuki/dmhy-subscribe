@@ -1,11 +1,13 @@
 const os = require('os')
 const fs = require('fs')
+const { systemDownloadsFolder } = require('./utils')
 
 require('console.table')
 
 const DEFAULT_CONFIG = {
   client: 'deluge',
-  jsonrpc: ''
+  jsonrpc: '',
+  destination: systemDownloadsFolder
 }
 
 class Config {
