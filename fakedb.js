@@ -146,7 +146,7 @@ class Database {
     const dest = destination || this.config.get('destination')
     const dclient = client || this.config.get('client')
     const djsonrpc = jsonrpc || this.config.get('jsonrpc')
-    console.log(dest)
+
     const script = path.resolve(`${__dirname}/downloaders/${dclient}.js`)
     const args = [thread, { dest, jsonrpc: djsonrpc }].map(JSON.stringify)
     args.unshift(script)
