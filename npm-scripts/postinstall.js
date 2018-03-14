@@ -20,10 +20,7 @@ if (!fs.existsSync(versionFile)) {
 }
 
 const upgradeDatabaseFunctions = []
-const upgradeConfigFunctions = [cfg => {
-  if (typeof cfg.destination === 'undefined')cfg.destination = systemDownloadsFolder
-  return cfg
-}]
+const upgradeConfigFunctions = []
 
 const oldVersion = fs.readFileSync(versionFile, { encoding: 'utf-8' })
 
