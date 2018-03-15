@@ -19,6 +19,10 @@ class Config {
       this.reset()
     }
     Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
+
+    if (!fs.existsSync(this.parameters.destination)) {
+      this.parameters.destination = DEFAULT_CONFIG.destination
+    }
     this.save()
   }
 
