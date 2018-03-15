@@ -21,7 +21,7 @@ class Config {
     Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
 
     if (!fs.existsSync(this.parameters.destination)) {
-      this.parameters.destination = DEFAULT_CONFIG.destination
+      console.warn(`Warning! config.destination{${this.parameters.destination}} not found.`)
     }
     this.save()
   }
