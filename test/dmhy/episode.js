@@ -6,9 +6,9 @@ const {
   descendEpisodeCompare
 } = require('../../src/dmhy/episode')
 
-describe('src/dmhy/episode', () => {
+describe('dmhy/episode', () => {
   const ep0 = new Episode({ ep: 0 })
-  const ep1 = new Episode()
+  const ep1 = new Episode({ ep: 1 })
   const ep3 = new Episode({ ep: 3 })
   const ep4 = new Episode({ ep: 4 })
   const ep5 = new Episode({ ep: 5 })
@@ -59,33 +59,30 @@ describe('src/dmhy/episode', () => {
     assert.deepEqual(`${ep1}`, '01')
   })
 
-  it('Episode JSON.stringify', () => {
+  it('Episode serialization', () => {
     assert.equal(JSON.stringify(ep1), '{"ep":1,"type":""}')
     assert.equal(JSON.stringify(epsp2), '{"ep":2,"type":"SP"}')
     assert.equal(JSON.stringify(epova3), '{"ep":3,"type":"OVA"}')
-  })
-
-  it('Episode JSON.parse', () => {
     assert.deepEqual(new Episode(JSON.parse(JSON.stringify(ep1))), ep1)
     assert.deepEqual(new Episode(JSON.parse(JSON.stringify(epsp2))), epsp2)
     assert.deepEqual(new Episode(JSON.parse(JSON.stringify(epova3))), epova3)
   })
 
   it('ComplexEpisode ctor', () => {
-    assert.deepEqual(xep345.episodes, [ep3, ep4, ep5])
-    assert.deepEqual(xep345.head, ep3)
-    assert.deepEqual(xep345.tail, ep5)
+    assert.deepEqual(xep345.episodes, [ep5, ep4, ep3])
+    assert.deepEqual(xep345.head, ep5)
+    assert.deepEqual(xep345.tail, ep3)
 
-    assert.deepEqual(xepova4321.episodes, [epova1, epova2, epova3, epova4])
-    assert.deepEqual(xepova4321.head, epova1)
-    assert.deepEqual(xepova4321.tail, epova4)
+    assert.deepEqual(xepova4321.episodes, [epova4, epova3, epova2, epova1])
+    assert.deepEqual(xepova4321.head, epova4)
+    assert.deepEqual(xepova4321.tail, epova1)
 
     assert.throws(() => new ComplexEpisode(''), TypeError)
   })
 
   it('ComplexEpisode toString', () => {
-    assert.equal(`${xep345}`, '03, 04, 05')
-    assert.equal(`${xepova4321}`, 'OVA01, OVA02, OVA03, OVA04')
+    assert.equal(`${xep345}`, '05, 04, 03')
+    assert.equal(`${xepova4321}`, 'OVA04, OVA03, OVA02, OVA01')
   })
 
   it('ascendEpisodeCompare', () => {

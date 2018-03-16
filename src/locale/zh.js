@@ -16,6 +16,7 @@ module.exports = {
   CMD_ADD_OPT_YES_MSG: '如果 {可訂閱字串} 名字存在，自動加入',
   CMD_ADD_OPT_NO_MSG: '如果 {可訂閱字串} 名字存在，自動捨棄',
   CMD_ADD_DESC_MSG: '使用 {可訂閱字串} 新增 {訂閱}',
+  CMD_ADD_SUCCESS_MSG: '成功新增 訂閱{%name%}',
   CMD_ADD_EXISTED_QUESTION_MSG: '訂閱{%name%} 已存在, 繼續新增? [y/n]:',
   CMD_ADD_HELP_MSG: `
   詳細解釋:
@@ -36,7 +37,8 @@ module.exports = {
   `,
   CMD_RM_OPT_ALL_MSG: '刪除所有 {訂閱}',
   CMD_RM_DESC_MSG: '根據 {sid} 刪除 {訂閱}',
-  CMD_RM_NOTFOUND_MSG: '找不到 {訂閱} 為此 {sid}: %sid%.',
+  CMD_RM_NOTFOUND_MSG: '找不到 {訂閱} 為此 {sid}: %sid%',
+  CMD_RM_SUCCESS_MSG: '成功刪除 訂閱{%name%}',
   CMD_RM_HELP_MSG: `
   詳細解釋:
 
@@ -60,7 +62,8 @@ module.exports = {
   CMD_DL_HELP_MSG: `
   詳細解釋:
 
-  {thid} 的格式: {sid}-{ep}
+  {thid} 的格式: {sid}-{type}{ep}
+  {type} 的格式: '' | 'SP' | 'OVA'
   {ep} 的格式: 整數 | 小數 | {整數|小數}..{整數|小數} | {ep},{ep} | 'all'
   如果 {thid} 只有 {sid} 表示 {sid}-all。
 
@@ -104,8 +107,12 @@ module.exports = {
   CMD_FIND_HELP_MSG: '',
   CMD_UPDATE_DESC_MSG: '只更新已訂閱的 {訂閱} 但不下載',
   CMD_UPDATE_UPDATED_MSG: '已更新: %title%',
-  CMD_UPDATE_OPT_ALL_MSG: '更新所有 {訂閱}',
-  CMD_UPDATE_HELP_MSG: '',
+  CMD_UPDATE_HELP_MSG: `
+  例子：
+
+  $ dmhy update # 更新所有 {訂閱}
+  $ dmhy update AAA BBB # 只更新 {sid} 為 AAA 和 BBB 的 {訂閱}
+  `,
   CMD_CFG_OPT_RESET_MSG: '重設回預設內部參數',
   CMD_CFG_OPT_LIST_ALL_MSG: '列出所有已存內部參數',
   CMD_CFG_DESC_MSG: '設定內部參數',

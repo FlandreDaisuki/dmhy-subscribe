@@ -1,11 +1,11 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.4.12",
+  "version": "0.5.0",
   "bin": {
-    "dmhy": "./index.js"
+    "dmhy": "./bin/cli.js"
   },
   "description": "Subscribe by keywords and download megnets",
-  "main": "index.js",
+  "main": "./bin/cli.js",
   "scripts": {
     "postinstall": "node npm-scripts/postinstall.js",
     "prepare": "eslint --fix *.js && npm run test",
@@ -36,9 +36,10 @@
     "aria2": "^3.0.0",
     "axios": "^0.17.1",
     "cheerio": "^1.0.0-rc.2",
+    "colors": "^1.2.1",
     "commander": "^2.13.0",
-    "console.table": "^0.10.0",
     "debug": "^3.1.0",
+    "easy-table": "^1.1.1",
     "readline-sync": "^1.4.9",
     "semver": "^5.5.0"
   }

@@ -3,15 +3,26 @@ const EPISODE_TYPE = new Map([['', 0], ['SP', 1], ['OVA', 2]])
 
 class Episode {
   constructor ({ ep, type } = {}) {
-    this.ep = Number.isFinite(Number(ep)) ? Number(ep) : 1
-    this.type = EPISODE_TYPE.has(String(type)) ? String(type) : ''
-    this.type = this.type.toUpperCase()
+    this.ep = Number.isFinite(Number(ep)) ? Number(ep) : -1
+    type = String(type).toUpperCase()
+    this.type = EPISODE_TYPE.has(type) ? type : ''
   }
 
   toString () {
     const ep = this.ep.toString().padStart(2, '0')
     return `${this.type}${ep}`
   }
+
+  has (ep, type = '') {
+    return this.ep === ep && this.type === type
+  }
+
+  isValid () {
+    return this.ep >= 0
+  }
+
+  get head () { return this }
+  get tail () { return this }
 
   static ascendCompare (a, b) {
     // 1..N
@@ -46,6 +57,10 @@ class Episode {
     }
     return epList
   }
+
+  static isValid (episode) {
+    return episode.ep >= 0
+  }
 }
 
 class ComplexEpisode {
@@ -53,13 +68,33 @@ class ComplexEpisode {
     if (!Array.isArray(episodes)) {
       throw new TypeError('The constructor parameter should be an array.')
     }
-    this.episodes = episodes.filter(episode => episode instanceof Episode).sort(Episode.ascendCompare)
+    this.episodes = episodes
+      .filter(episode => episode instanceof Episode)
+      .sort(Episode.descendCompare) // [latest ... earliest]
   }
-  toString () {
-    return this.episodes.map(episode => `${episode}`).join(', ')
+
+  toString (sortFunc = Episode.descendCompare) {
+    return this.episodes
+      .slice()
+      .sort(sortFunc)
+      .map(episode => `${episode}`)
+      .join(', ')
   }
+
+  has (ep, type = '') {
+    return this.episodes.find(x => x.ep === ep && x.type === type)
+  }
+
+  isValid () {
+    return this.episodes.every(Episode.isValid)
+  }
+
   get head () { return this.episodes[0] }
   get tail () { return this.episodes[this.episodes.length - 1] }
+
+  static isValid (episode) {
+    return episode.episodes.every(Episode.isValid)
+  }
 }
 
 function ascendEpisodeCompare (a, b) {

@@ -16,6 +16,7 @@ module.exports = {
   CMD_ADD_OPT_YES_MSG: 'Always add if {subscribable} name existed.',
   CMD_ADD_OPT_NO_MSG: 'Never add if {subscribable} name existed.',
   CMD_ADD_DESC_MSG: 'Add {subscribable} to subscribe.',
+  CMD_ADD_SUCCESS_MSG: 'Add subscription{%name%} successfully.',
   CMD_ADD_EXISTED_QUESTION_MSG: 'The subscription{%name%} is existed, still add? [y/n]:',
   CMD_ADD_HELP_MSG: `
   Details:
@@ -37,6 +38,7 @@ module.exports = {
   CMD_RM_OPT_ALL_MSG: 'Remove all subscribed {subscription}.',
   CMD_RM_DESC_MSG: 'Remove {subscription} by {sid}.',
   CMD_RM_NOTFOUND_MSG: 'Not found subscription with sid: %sid%.',
+  CMD_RM_SUCCESS_MSG: 'Remove subscription{%name%} successfully.',
   CMD_RM_HELP_MSG: `
   Details:
 
@@ -60,7 +62,8 @@ module.exports = {
   CMD_DL_HELP_MSG: `
   Details:
 
-  The {thid} format: {sid}-{ep}
+  The {thid} format: {sid}-{type}{ep}
+  The {type} format: '' | 'SP' | 'OVA'
   The {ep} format: int | float | {int|float}..{int|float} | {ep},{ep} | 'all'
   If only {sid}, means {sid}-all.
 
@@ -102,8 +105,12 @@ module.exports = {
   CMD_FIND_HELP_MSG: '',
   CMD_UPDATE_DESC_MSG: 'Just update {description}s without downloading.',
   CMD_UPDATE_UPDATED_MSG: 'Updated: %title%',
-  CMD_UPDATE_OPT_ALL_MSG: 'Update all subscribed {subscription}.',
-  CMD_UPDATE_HELP_MSG: '',
+  CMD_UPDATE_HELP_MSG: `
+  Examples
+
+  $ dmhy update # update all {description}s
+  $ dmhy update AAA BBB # update {description}s which {sid} is AAA and BBB
+  `,
   CMD_CFG_OPT_RESET_MSG: 'Reset to default internal parameters.',
   CMD_CFG_OPT_LIST_ALL_MSG: 'List all internal parameters.',
   CMD_CFG_DESC_MSG: 'Configure internal parameters.',

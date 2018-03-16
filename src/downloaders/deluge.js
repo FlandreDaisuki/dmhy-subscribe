@@ -1,5 +1,6 @@
 const { spawn } = require('child_process')
 const log = require('debug')('dmhy:downloaders:deluge')
+const console = require('../utils').console
 
 const args = process.argv.slice(2)
 const thread = JSON.parse(args[0])

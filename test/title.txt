@@ -1,45 +1,45 @@
 ❤️簡單集數
 【極影字幕社】 ★一月新番【魔卡少女櫻 透明卡牌篇】【Cardcaptor Sakura Clear Card Hen】【08】【BIG5】【1080P】（字幕社招內詳）
-[8]
+{"ep":8,"type":""}
 【喵萌奶茶屋&千夏字幕組】【輕旅輕營_Yuru Camp】[第08話][1280x720][MP4][繁體]（諢名：搖曳露營）
-[8]
+{"ep":8,"type":""}
 【DHR百合組】[搖曳露營△_Yuru Camp][08][繁體][720P][MP4]
-[8]
+{"ep":8,"type":""}
 【西农YUI汉化组】★十月新番【三月的狮子 3-gatsu no Lion 2】第16话 GB简体 720P MP4
-[16]
+{"ep":16,"type":""}
 【追新番字幕组】【3月的狮子】【Sangatsu no Lion】【第29集】【中日双语字幕】【HDTVrip】【1280X720】【mp4】
-[29]
+{"ep":29,"type":""}
 [澄空学园] 紫罗兰永恒花园 第07话 MP4 720p v2
-[7]
+{"ep":7,"type":""}
 【喵萌茶会字幕组】★4月新番【Saenai Heroine no Sodatekata ♭ / 路人女主的养成方法♭】[02v3][1080P][MP4][简体]
-[2]
+{"ep":2,"type":""}
 [INDRA&NMKST][四月新番] 櫻花任務 / Sakura Quest [10] [720P][HardSub][BIG5][x264 AAC][v3]
-[10]
+{"ep":10,"type":""}
 
 ❤️範圍集數
 【DHR百合組】[搖曳露營△_Yuru Camp][05-06][繁體][720P][MP4]
-[5,6]
+{"episodes":[{"ep":6,"type":""},{"ep":5,"type":""}]}
 
 ❤️集數沒包起來
 [喵萌奶茶屋&千夏字幕组&LoliHouse] 轻旅轻营/摇曳露营/Yuru Camp - 08 [WebRip 1920x1080 HEVC-10bit AAC][简繁外挂字幕]
-[8]
+{"ep":8,"type":""}
 【極影字幕社】★ 粗點心戰爭2 第05集 BIG5 AVC 720p MP4
-[5]
+{"ep":5,"type":""}
 
 ❤️編碼參數
 【DMHY】【黑色五葉草/Black_Clover】[19][1080P][x264_AAC_10bit][繁體]
-[19]
+{"ep":19,"type":""}
 [漫游字幕组] 网络胜利组 Netojuu no Susume 11FIN 简体/繁体外挂 1080P HEVC 10bit MKV
-[11]
+{"ep":11,"type":""}
 
 ❤️OVA,SP,總集篇
 [青森小镇][夏目友人帐 陆/夏目友人帳 陸 Natsume Yuujinchou Roku][OVA2][简繁外挂字幕][WebRip][1080p][HEVC-10bit AAC]
-[2]
+{"ep":2,"type":"OVA"}
 【動漫國字幕組】★01月新番[OVERLORD 第二季][03+SP03][1080P][HEVC_Ma10P][簡繁外掛][MKV]
-[3,3]
+{"episodes":[{"ep":3,"type":""}, {"ep":3,"type":"SP"}]}
 【DHR百合組】[Princess Principal][SP03][繁體][BDRip][720P][MP4]
-[3]
+{"ep":3,"type":"SP"}
 【7月/悠哈璃羽字幕社】[UHA-WINGS][狂赌之渊][Kakegurui][5.5v2][评论音轨][720p][BIG5]
-[5.5]
+{"ep":5.5,"type":""}
 [ZERO字幕组]百万偶像 5.5话 GB简体 720P MKV
-[5.5]
+{"ep":5.5,"type":""}
