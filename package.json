@@ -1,11 +1,11 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "bin": {
     "dmhy": "./bin/cli.js"
   },
   "description": "Subscribe by keywords and download megnets",
-  "main": "./bin/cli.js",
+  "main": "./index.js",
   "scripts": {
     "postinstall": "node npm-scripts/postinstall.js",
     "prepare": "eslint --fix *.js && npm run test",
