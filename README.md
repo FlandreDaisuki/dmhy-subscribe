@@ -64,7 +64,7 @@ $ npm i -g dmhy-subscribe
 ## Usage 使用方法
 
 ```
-  Usage: cli [options] [command]
+  Usage: dmhy [options] [command]
 
 
   Options:
