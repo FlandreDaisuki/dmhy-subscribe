@@ -189,7 +189,7 @@ program
   .action(async function (sids, cmd) {
     await Promise.all(
       db.subscriptions
-        .filter(s => sids.includes(s.sid))
+        .filter(s => sids.length === 0 || sids.includes(s.sid))
         .map(s => {
           return fetchThreads(s)
             .then(newThreads => {
