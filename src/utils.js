@@ -10,7 +10,8 @@ const colorConsole = {
   log: (...args) => { console.log(...args) },
   warn: (...args) => { console.log(colors.yellow('Warning'), ...args) },
   error: (...args) => { console.log(colors.red('Error'), ...args) },
-  table: (...args) => { console.log(Table.print(...args)) }
+  table: (...args) => { console.log(Table.print(...args)) },
+  success: (...args) => { console.log(colors.green('✓'), ...args) }
 }
 
 function hash (str, seed = '') {

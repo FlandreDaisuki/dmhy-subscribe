@@ -97,7 +97,7 @@ module.exports = {
     1        [字幕組][nameAAA][01]
     2,3      [字幕組][nameAAA][02-03]
 
-    $ dmhy dl AAA-02 # download 1 threads which has 2 episodes
+    $ dmhy dl AAA-02  # download 1 threads which has 2 episodes
   `,
   CMD_FIND_OPT_RAW_MSG: 'Print a json array of threads to console.',
   CMD_FIND_DESC_MSG: 'Show the search results of the keyword. (seperated by comma)',
@@ -108,11 +108,10 @@ module.exports = {
   CMD_UPDATE_HELP_MSG: `
   Examples
 
-  $ dmhy update # update all {description}s
-  $ dmhy update AAA BBB # update {description}s which {sid} is AAA and BBB
+  $ dmhy update          # update all {description}s
+  $ dmhy update AAA BBB  # update {description}s which {sid} is AAA and BBB
   `,
   CMD_CFG_OPT_RESET_MSG: 'Reset to default internal parameters.',
-  CMD_CFG_OPT_LIST_ALL_MSG: 'List all internal parameters.',
   CMD_CFG_DESC_MSG: 'Configure internal parameters.',
   CMD_CFG_HELP_MSG: `
   Details:
@@ -132,5 +131,8 @@ module.exports = {
   $ dmhy
   $ dmhy download AAA
   `,
-  UNHANDLED_EP_PARSING_MSG: 'This should never print unless having bugs.\nPlease paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.'
+  UNHANDLED_EP_PARSING_MSG: 'This should never print unless having bugs.\nPlease paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.',
+  CMD_MAIN_SUCCESS_MSG: 'All updated & downloading...',
+  CLIENT_DL_SUCCESS_MSG: 'Start to download %title%',
+  CLIENT_DL_FAILED_MSG: 'Fail to download %title%'
 }

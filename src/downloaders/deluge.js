@@ -1,6 +1,6 @@
 const { spawn } = require('child_process')
 const log = require('debug')('dmhy:downloaders:deluge')
-const console = require('../utils').console
+const { console, l10n } = require('../utils')
 
 const args = process.argv.slice(2)
 const thread = JSON.parse(args[0])
@@ -12,9 +12,9 @@ log(`start deluge-console on pid ${task.pid}`)
 
 task.on('close', code => {
   if (code === 0) {
-    console.log(`Download ${thread.title}`)
+    console.success(l10n('CLIENT_DL_SUCCESS_MSG', { title: thread.title }))
   } else {
-    console.error(`Failed to download ${thread.title}.`)
+    console.error(l10n('CLIENT_DL_FAILED_MSG', { title: thread.title }))
   }
 })
 task.on('error', err => {

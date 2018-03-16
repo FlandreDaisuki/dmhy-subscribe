@@ -59,7 +59,7 @@ program
         }
         if (typeof toAdd === 'boolean' && toAdd) {
           if (db.add(s)) {
-            console.log(l10n('CMD_ADD_SUCCESS_MSG', { name: s.name }))
+            console.success(l10n('CMD_ADD_SUCCESS_MSG', { name: s.name }))
           }
         }
       }
@@ -89,7 +89,7 @@ program
     for (const sid of sids) {
       const subscription = db.query('sid', sid)
       if (subscription && db.remove(subscription)) {
-        console.log(l10n('CMD_RM_SUCCESS_MSG', { name: subscription.name }))
+        console.success(l10n('CMD_RM_SUCCESS_MSG', { name: subscription.name }))
       } else {
         console.error(l10n('CMD_RM_NOTFOUND_MSG', { sid }))
       }
@@ -195,7 +195,7 @@ program
             .then(newThreads => {
               for (const nth of newThreads) {
                 if (!s.threads.map(th => th.title).includes(nth.title)) {
-                  console.log(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
+                  console.success(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
                   s.add(nth)
                 }
               }
@@ -219,31 +219,43 @@ program
   .command('config [key] [value]')
   .alias('cfg')
   .option('-r, --reset', l10n('CMD_CFG_OPT_RESET_MSG'))
-  .option('--list-all', l10n('CMD_CFG_OPT_LIST_ALL_MSG'))
   .description(l10n('CMD_CFG_DESC_MSG'))
   .action(function (key, value, cmd) {
-    if (cmd.listAll) {
+    if (!key && !cmd.reset) {
       db.config.list()
       process.exit()
     }
+
     if (cmd.reset) {
       db.config.reset(key)
+      db.config.list()
       process.exit()
     }
+
     if (key) {
       if (value) {
         // setter
         const ret = db.config.set(key, value)
         if (ret === undefined) {
           console.error(`Invalid key: ${key}`)
+          process.exit(1)
+        } else {
+          console.table([{
+            Parameter: key,
+            Value: value
+          }])
         }
       } else {
         // getter
         const val = db.config.get(key)
         if (val === undefined) {
           console.error(`Invalid key: ${key}`)
+          process.exit(1)
         } else {
-          console.log(val)
+          console.table([{
+            Parameter: key,
+            Value: val
+          }])
         }
       }
     }
@@ -273,6 +285,7 @@ if (program.args.every(arg => !(arg instanceof program.Command))) {
         })
     })
   ).then(() => {
+    console.success(l10n('CMD_MAIN_SUCCESS_MSG'))
     db.sort()
     db.save()
   })

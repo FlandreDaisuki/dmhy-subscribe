@@ -99,7 +99,7 @@ module.exports = {
     1        [字幕組][動畫AAA][01]
     2,3      [字幕組][動畫AAA][02-03]
 
-    $ dmhy dl AAA-02 # 下載該包含兩集的 {貼文}
+    $ dmhy dl AAA-02  # 下載該包含兩集的 {貼文}
   `,
   CMD_FIND_OPT_RAW_MSG: '顯示 JSON 結果',
   CMD_FIND_DESC_MSG: '直接搜尋 dmhy 網頁結果 (關鍵字用半形逗號分開)',
@@ -110,11 +110,10 @@ module.exports = {
   CMD_UPDATE_HELP_MSG: `
   例子：
 
-  $ dmhy update # 更新所有 {訂閱}
-  $ dmhy update AAA BBB # 只更新 {sid} 為 AAA 和 BBB 的 {訂閱}
+  $ dmhy update          # 更新所有 {訂閱}
+  $ dmhy update AAA BBB  # 只更新 {sid} 為 AAA 和 BBB 的 {訂閱}
   `,
   CMD_CFG_OPT_RESET_MSG: '重設回預設內部參數',
-  CMD_CFG_OPT_LIST_ALL_MSG: '列出所有已存內部參數',
   CMD_CFG_DESC_MSG: '設定內部參數',
   CMD_CFG_HELP_MSG: `
   詳細解釋:
@@ -133,5 +132,8 @@ module.exports = {
   $ dmhy
   $ dmhy download AAA
   `,
-  UNHANDLED_EP_PARSING_MSG: '這行只有在出現 bug 時會印出。\n請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報'
+  UNHANDLED_EP_PARSING_MSG: '這行只有在出現 bug 時會印出。\n請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報',
+  CMD_MAIN_SUCCESS_MSG: '已更新全部並下載...',
+  CLIENT_DL_SUCCESS_MSG: '開始下載 %title%',
+  CLIENT_DL_FAILED_MSG: '%title% 下載失敗'
 }

@@ -1,7 +1,7 @@
 const Aria2 = require('aria2')
 const { URL } = require('url')
 const log = require('debug')('dmhy:downloaders:aria2')
-const console = require('../utils').console
+const { console, l10n } = require('../utils')
 
 const args = process.argv.slice(2)
 const thread = JSON.parse(args[0])
@@ -17,7 +17,7 @@ const verify = [
 ]
 verify.forEach(([cond, msg]) => {
   if (cond) {
-    console.log(msg)
+    console.error(msg)
     process.exit(1)
   }
 })
@@ -39,10 +39,10 @@ client
   .open()
   .then(() => client.addUri([thread.link], opts))
   .then(() => {
-    console.log(`Download ${thread.title}`)
+    console.success(l10n('CLIENT_DL_SUCCESS_MSG', { title: thread.title }))
     client.close()
   })
   .catch(() => {
-    console.error(`Failed to download ${thread.title}.`)
+    console.error(l10n('CLIENT_DL_FAILED_MSG', { title: thread.title }))
     client.close()
   })
