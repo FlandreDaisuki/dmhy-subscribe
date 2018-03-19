@@ -10,7 +10,7 @@ module.exports = {
     $ dmhy --client aria2
   `,
   MAIN_OPT_DESTINATION_MSG: '下載路徑 (預設: 預設下載資料夾)',
-  MAIN_OPT_CLIENT_MSG: '強制使用指定下載器。 <client>: "aria2", "deluge"(預設)',
+  MAIN_OPT_CLIENT_MSG: '強制使用指定下載器。 <client>: "system", "aria2", "deluge"(預設)',
   MAIN_OPT_JSONRPC_MSG: 'jsonrpc url for --client=aria2',
   CMD_ADD_OPT_FILE_MSG: '從檔案新增 {訂閱}',
   CMD_ADD_OPT_YES_MSG: '如果 {可訂閱字串} 名字存在，自動加入',

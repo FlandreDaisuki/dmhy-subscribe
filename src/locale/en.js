@@ -10,7 +10,7 @@ module.exports = {
     $ dmhy --client aria2
   `,
   MAIN_OPT_DESTINATION_MSG: 'Download destination. (default: user downloads folder)',
-  MAIN_OPT_CLIENT_MSG: 'Force using downloader. <client>: "aria2", "deluge"(default)',
+  MAIN_OPT_CLIENT_MSG: 'Force using downloader. <client>: "system", "aria2", "deluge"(default)',
   MAIN_OPT_JSONRPC_MSG: 'jsonrpc url for --client=aria2',
   CMD_ADD_OPT_FILE_MSG: 'Add {subscription}s from the file contains {subscribable}s.',
   CMD_ADD_OPT_YES_MSG: 'Always add if {subscribable} name existed.',

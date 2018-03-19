@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const { console, CONST } = require('./utils')
 const { systemDownloadsFolder, defaultConfigPath } = CONST
 
@@ -65,7 +66,8 @@ class Config {
   }
 
   static isSupportedClient (client) {
-    return (new Set(['aria2', 'deluge'])).has(client)
+    const downloaders = fs.readdirSync(`${__dirname}/downloaders`).map(d => path.basename(d, '.js'))
+    return (new Set(downloaders)).has(client)
   }
 }
 
