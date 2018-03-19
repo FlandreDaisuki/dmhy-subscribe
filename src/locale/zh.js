@@ -2,12 +2,13 @@ module.exports = {
   MAIN_HELP_MSG: `
   例子:
 
-    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
-    $ dmhy
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"  # 新增一筆 {訂閱}
 
+    $ dmhy                  # 更新並下載未下載的 {訂閱}
     或
-
-    $ dmhy --client aria2
+    $ dmhy --client aria2   # 更新並使用 aria2 下載未下載的 {訂閱}
+    或
+    $ dmhy --client system  # 更新並使用系統關聯程式下載未下載的 {訂閱}
   `,
   MAIN_OPT_DESTINATION_MSG: '下載路徑 (預設: 預設下載資料夾)',
   MAIN_OPT_CLIENT_MSG: '強制使用指定下載器。 <client>: "system", "aria2", "deluge"(預設)',

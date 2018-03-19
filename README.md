@@ -27,8 +27,9 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
         或 [tj/n](https://github.com/tj/n)
   * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
-下載器下面兩種擇一即可 (推薦使用 `deluge`)
+下載器下面三種擇一即可 (推薦使用 `deluge`)
 
+* system: 若系統有註冊 `magnet://` 關聯程式，則推薦使用此下載器
 * deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
 * aria2c & (webui-aria2 或 AriaNg): [aria2 安裝教學](docs/aria2.md)
 
@@ -71,7 +72,7 @@ $ npm i -g dmhy-subscribe
 
     -V, --version             output the version number
     -d, --destination <path>  下載路徑 (預設: 預設下載資料夾)
-    --client <client>         強制使用指定下載器。 <client>: "aria2", "deluge"(預設)
+    --client <client>         強制使用指定下載器。 <client>: "system", "aria2", "deluge"(預設)
     --jsonrpc <jsonrpc_uri>   jsonrpc url for --client=aria2
     -h, --help                output usage information
 
@@ -88,12 +89,13 @@ $ npm i -g dmhy-subscribe
 
   例子:
 
-    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
-    $ dmhy
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"  # 新增一筆 {訂閱}
 
+    $ dmhy                  # 更新並下載未下載的 {訂閱}
     或
-
-    $ dmhy --client aria2
+    $ dmhy --client aria2   # 更新並使用 aria2 下載未下載的 {訂閱}
+    或
+    $ dmhy --client system  # 更新並使用系統關聯程式下載未下載的 {訂閱}
 ```
 
 ## Scheduling 自動排程

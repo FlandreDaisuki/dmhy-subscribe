@@ -2,12 +2,13 @@ module.exports = {
   MAIN_HELP_MSG: `
   Examples:
 
-    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"
-    $ dmhy
+    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"  # Add a {subscription}
 
+    $ dmhy                  # Update & download {subscription}s which haven't downloaded
     or
-
-    $ dmhy --client aria2
+    $ dmhy --client aria2   # Update & use aria2 to download {subscription}s which haven't downloaded
+    or
+    $ dmhy --client system  # Update & use system associate program to download {subscription}s which haven't downloaded
   `,
   MAIN_OPT_DESTINATION_MSG: 'Download destination. (default: user downloads folder)',
   MAIN_OPT_CLIENT_MSG: 'Force using downloader. <client>: "system", "aria2", "deluge"(default)',
