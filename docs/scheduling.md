@@ -63,5 +63,5 @@ Ubuntu:
 $ npm i -g pm2
 $ pm2 start dmhy --cron="0 * * * *"
 或
-$ pm2 start dmhy --cron="0 * * * *" -- --client=aria2rpc # -- 之後的參數傳到 dmhy
+$ pm2 start dmhy --cron="0 * * * *" -- --client=aria2 # -- 之後的參數傳到 dmhy
 ```
