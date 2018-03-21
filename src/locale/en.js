@@ -13,6 +13,7 @@ module.exports = {
   MAIN_OPT_DESTINATION_MSG: 'Download destination. (default: user downloads folder)',
   MAIN_OPT_CLIENT_MSG: 'Force using downloader. <client>: "system", "aria2", "deluge"(default)',
   MAIN_OPT_JSONRPC_MSG: 'jsonrpc url for --client=aria2',
+  CMD_NOTFOUND_MSG: 'Not found subscription with sid: %sid%.',
   CMD_ADD_OPT_FILE_MSG: 'Add {subscription}s from the file contains {subscribable}s.',
   CMD_ADD_OPT_YES_MSG: 'Always add if {subscribable} name existed.',
   CMD_ADD_OPT_NO_MSG: 'Never add if {subscribable} name existed.',
@@ -38,7 +39,6 @@ module.exports = {
   `,
   CMD_RM_OPT_ALL_MSG: 'Remove all subscribed {subscription}.',
   CMD_RM_DESC_MSG: 'Remove {subscription} by {sid}.',
-  CMD_RM_NOTFOUND_MSG: 'Not found subscription with sid: %sid%.',
   CMD_RM_SUCCESS_MSG: 'Remove subscription{%name%} successfully.',
   CMD_RM_HELP_MSG: `
   Details:

@@ -13,6 +13,7 @@ module.exports = {
   MAIN_OPT_DESTINATION_MSG: '下載路徑 (預設: 預設下載資料夾)',
   MAIN_OPT_CLIENT_MSG: '強制使用指定下載器。 <client>: "system", "aria2", "deluge"(預設)',
   MAIN_OPT_JSONRPC_MSG: 'jsonrpc url for --client=aria2',
+  CMD_NOTFOUND_MSG: '找不到 {訂閱} 為此 {sid}: %sid%',
   CMD_ADD_OPT_FILE_MSG: '從檔案新增 {訂閱}',
   CMD_ADD_OPT_YES_MSG: '如果 {可訂閱字串} 名字存在，自動加入',
   CMD_ADD_OPT_NO_MSG: '如果 {可訂閱字串} 名字存在，自動捨棄',
@@ -38,7 +39,6 @@ module.exports = {
   `,
   CMD_RM_OPT_ALL_MSG: '刪除所有 {訂閱}',
   CMD_RM_DESC_MSG: '根據 {sid} 刪除 {訂閱}',
-  CMD_RM_NOTFOUND_MSG: '找不到 {訂閱} 為此 {sid}: %sid%',
   CMD_RM_SUCCESS_MSG: '成功刪除 訂閱{%name%}',
   CMD_RM_HELP_MSG: `
   詳細解釋:

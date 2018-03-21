@@ -91,7 +91,7 @@ program
       if (subscription && db.remove(subscription)) {
         console.success(l10n('CMD_RM_SUCCESS_MSG', { name: subscription.name }))
       } else {
-        console.error(l10n('CMD_RM_NOTFOUND_MSG', { sid }))
+        console.error(l10n('CMD_NOTFOUND_MSG', { sid }))
       }
     }
 
@@ -149,6 +149,8 @@ program
         const s = db.query('sid', sid)
         if (s) {
           thTasks.push(...s.getThreads(epstr).map(th => db.download(th, cmd.parent)))
+        } else {
+          console.error(l10n('CMD_NOTFOUND_MSG', { sid }))
         }
       }
 
