@@ -61,7 +61,7 @@ Ubuntu:
 
 ```shell
 $ npm i -g pm2
-$ pm2 start dmhy --cron="0 * * * *"
+$ pm2 start `which dmhy` --cron="0 * * * *"
 或
-$ pm2 start dmhy --cron="0 * * * *" -- --client=aria2 # -- 之後的參數傳到 dmhy
+$ pm2 start `which dmhy` --cron="0 * * * *" -- --client=aria2 # -- 之後的參數傳到 dmhy
 ```
