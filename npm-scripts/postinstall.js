@@ -60,4 +60,6 @@ if (semver.lt(oldVersion, version)) {
   const newDb = new Database({ dbPath: defaultDatabasePath, configPath: defaultConfigPath })
   newDb.sort()
   newDb.save()
+
+  fs.writeFileSync(defaultVersionPath, version)
 }
