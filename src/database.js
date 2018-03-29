@@ -65,13 +65,14 @@ class Database {
     console.table(subList)
   }
 
-  download (thread, { client, destination, jsonrpc } = {}) {
+  download (thread, { client, destination, jsonrpc, webhook } = {}) {
     client = client || this.config.get('client')
     jsonrpc = jsonrpc || this.config.get('jsonrpc')
     destination = destination || this.config.get('destination')
+    webhook = webhook || this.config.get('webhook')
 
     const script = path.resolve(`${__dirname}/downloaders/${client}.js`)
-    const args = [thread, { destination, jsonrpc }].map(JSON.stringify)
+    const args = [thread, { destination, jsonrpc, webhook }].map(JSON.stringify)
     args.unshift(script)
 
     return new Promise((resolve, reject) => {
