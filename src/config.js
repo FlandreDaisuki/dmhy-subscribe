@@ -6,7 +6,8 @@ const { systemDownloadsFolder, defaultConfigPath } = CONST
 const DEFAULT_CONFIG = {
   client: 'deluge',
   jsonrpc: '',
-  destination: systemDownloadsFolder
+  destination: systemDownloadsFolder,
+  webhook: 'http://localhost/'
 }
 
 class Config {

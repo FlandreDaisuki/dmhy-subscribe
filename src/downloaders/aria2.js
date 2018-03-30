@@ -38,11 +38,6 @@ if (destination) {
 client
   .open()
   .then(() => client.addUri([thread.link], opts))
-  .then(() => {
-    console.success(l10n('CLIENT_DL_SUCCESS_MSG', { title: thread.title }))
-    client.close()
-  })
-  .catch(() => {
-    console.error(l10n('CLIENT_DL_FAILED_MSG', { title: thread.title }))
-    client.close()
-  })
+  .then(() => console.success(l10n('CLIENT_DL_SUCCESS_MSG', { title: thread.title })))
+  .catch(() => console.error(l10n('CLIENT_DL_FAILED_MSG', { title: thread.title })))
+  .then(() => client.close()) // finally
