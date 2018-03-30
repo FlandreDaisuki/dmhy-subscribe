@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "bin": {
     "dmhy": "./bin/cli.js"
   },
