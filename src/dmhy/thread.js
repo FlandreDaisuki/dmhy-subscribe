@@ -6,33 +6,29 @@ const {
 const { console, l10n } = require('../utils')
 
 class Thread {
-  constructor ({ title, link }) {
+  constructor ({ title, link, userBlacklistTokens }) {
     this.title = title || '???'
     this.link = link || 'magnet:'
-    this.episode = Thread.parseEpisodeFromTitle(this.title)
+    this.episode = Thread.parseEpisodeFromTitle(this.title, userBlacklistTokens)
   }
 
-  static parseEpisodeFromTitle (title) {
-    const blacklistTokenSet = new Set([
-      '1920x1080',
-      '1280x720',
-      '1080p',
-      '720p',
-      'x264',
-      'x265',
-      '10bit',
-      'ma10p',
-      'mp4',
-      'big5',
-      'v2'
-    ])
+  static parseEpisodeFromTitle (title, userBlacklistPatterns = []) {
+    const blacklistPatterns = [
+      /x?(1080|720)p?/,
+      /x26[45]/,
+      /10bit/,
+      /ma10p/,
+      /mp4/,
+      /big5/,
+      /\bv\d/
+    ]
 
     const tokens = title
       .split(/[[\]【】_\s]/g)
       .map(x => x.toLowerCase())
       .filter(x => /\d/.test(x))
-      .filter(x => !blacklistTokenSet.has(x))
-      .filter(x => !/(10bit|ma10p)/.test(x))
+      .filter(x => !blacklistPatterns.some(rule => rule.test(x)))
+      .filter(x => !userBlacklistPatterns.some(rule => rule.test(x)))
       .map(x => x.trim())
 
     // Find episode from last is easier
@@ -44,7 +40,7 @@ class Thread {
       if (/[+]/.test(tok)) {
         const eps = tok
           .split('+')
-          .map(Thread.parseEpisodeFromTitle)
+          .map(t => Thread.parseEpisodeFromTitle(t))
           .reduce((a, b) => a.concat(b), [])
         return new ComplexEpisode(eps)
       }
