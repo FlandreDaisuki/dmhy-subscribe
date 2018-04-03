@@ -1,0 +1,18 @@
+MAIN_USAGE: 'Usage: $0 [command] [options]'
+CMD_ADD_DESC: 'Add a subscription.'
+CMD_ADD_USAGE: |
+  Usage: $0 add [options] [subscribables...]
+    A subscribable can be a file path or string and we use it to search threads on website.
+
+    A subscribable file must have suffix .yml, details ↓↓
+    https://github.com/FlandreDaisuki/dmhy-subscribe/issues/17
+
+    A subscribable string with CSV format that concatenate by `,`.
+    The first section is title.
+CMD_ADD_OPT_I: Use interactive prompt to add subscription.
+CMD_ADD_OPT_Y: Don't ask and do add if the database has a subscription with the same title and keywords.
+CMD_ADD_OPT_N: Don't ask and do ignore if the database has a subscription with the same title and keywords.
+CMD_ADD_OPT_YN_ERR: Don't use --yes and --no at the same time.
+CMD_ADD_OPT_NO_I_NO_SUBS: If you don't use interactive prompt, you should provide at least 1 subscribable as a parameter.
+
+CMD_RM_DESC: 'Remove subscriptions by their SID.'

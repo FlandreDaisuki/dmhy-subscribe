@@ -1,0 +1,17 @@
+MAIN_USAGE: '使用方法: $0 [命令] [選項]'
+CMD_ADD_DESC: '新增一筆訂閱'
+CMD_ADD_USAGE: |
+  使用方法: $0 add [選項] [訂閱用字串|訂閱設定檔...]
+    訂閱用字串和訂閱設定檔會用來搜尋貼文。
+
+    訂閱設定檔：為 .yml 檔，詳見↓↓
+    https://github.com/FlandreDaisuki/dmhy-subscribe/issues/17
+
+    訂閱用字串：為 CSV 格式字串，以逗號串接，首項為標題。
+CMD_ADD_OPT_I: 以互動式界面新增訂閱
+CMD_ADD_OPT_Y: 不要詢問並新增資料庫有相同標題及關鍵字的訂閱
+CMD_ADD_OPT_N: 不要詢問並忽略資料庫有相同標題及關鍵字的訂閱
+CMD_ADD_OPT_YN_ERR: 請不要同時使用 --yes 及 --no
+CMD_ADD_OPT_NO_I_NO_SUBS: 若不使用互動式界面，則至少需要一個引數(訂閱用字串或訂閱設定檔)
+
+CMD_RM_DESC: '根據 SID 刪除訂閱'

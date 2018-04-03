@@ -1,7 +1,8 @@
 {
     "env": {
         "node": true,
-        "mocha": true
+        "mocha": true,
+        "es6": true
     },
     "parserOptions": {
         "ecmaVersion": 8,
@@ -9,10 +10,13 @@
     },
     "extends": [
         "eslint:recommended",
-        "standard"
+        "google"
     ],
     "rules": {
         "no-console": "off",
-        "object-curly-spacing": ["error", "always"]
+        "object-curly-spacing": ["error", "always"],
+        "arrow-spacing": "error",
+        "max-len": "off",
+        "space-infix-ops": "error"
     }
 }
