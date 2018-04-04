@@ -5,15 +5,27 @@ const pkg = require('../package.json');
 const yaml = require('js-yaml');
 const chalk = require('chalk');
 
-const print = {
-  log: console.log.bind(console, chalk.whiteBright('❯')),
-  debug: process.env.DEBUG ? console.debug.bind(console, chalk.magenta('🐛')) : () => {},
-  info: console.info.bind(console, chalk.blue('ℹ')),
-  success: console.log.bind(console, chalk.green('✔')),
-  error: console.error.bind(console, chalk.redBright('✖')),
-  fatal: console.error.bind(console, chalk.redBright('✖')),
-  warn: console.warn.bind(console, chalk.yellow('⚠')),
-};
+const print = (() => {
+  const _print = {
+    log: console.log.bind(console, chalk.whiteBright('❯')),
+    debug: console.debug.bind(console, chalk.magenta('🐛')),
+    info: console.info.bind(console, chalk.blue('ℹ')),
+    success: console.log.bind(console, chalk.green('✔')),
+    error: console.error.bind(console, chalk.redBright('✖')),
+    fatal: console.error.bind(console, chalk.redBright('✖')),
+    warn: console.warn.bind(console, chalk.yellow('⚠')),
+  };
+  if (process.env.NODE_ENV === 'test') {
+    for (const action of Object.keys(_print)) {
+      _print[action] = () => {};
+    }
+  }
+  if (!process.env.DEBUG) {
+    _print.debug = () => {};
+  }
+  return _print;
+})();
+
 
 /**
  * Get hash that [A-Z]{3}

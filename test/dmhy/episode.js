@@ -38,7 +38,7 @@ describe('dmhy/episode', () => {
     assert.deepEqual(epList.slice().sort(TheEpisode.descendCompare), descEpList);
   });
 
-  it('TheEpisode toString', () => {
+  it('TheEpisode#toString', () => {
     assert.deepEqual(`${epsp2}`, 'SP02');
     assert.deepEqual(`${epsp11}`, 'SP11');
     assert.deepEqual(`${epova2}`, 'OVA02');
@@ -63,12 +63,12 @@ describe('dmhy/episode', () => {
     assert.throws(() => new Episode(''), TypeError);
   });
 
-  it('Episode rangify', () => {
+  it('Episode.rangify', () => {
     const normal345 = [ep3, ep4, ep5];
-    assert.deepEqual(new Set(Episode.rangify([3, 5])), new Set(normal345));
+    assert.deepEqual(new Episode(Episode.rangify([3, 5])), new Episode(normal345));
 
     const ova4321 = [epova4, epova3, epova2, epova1];
-    assert.deepEqual(new Set(Episode.rangify([4, 1], 'OVA')), new Set(ova4321));
+    assert.deepEqual(new Episode(Episode.rangify([4, 1], 'OVA')), new Episode(ova4321));
   });
 
   it('Episode toString', () => {

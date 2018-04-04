@@ -3,6 +3,16 @@ const assert = require('assert');
 const { Thread } = require('../..');
 
 describe('dmhy/thread', () => {
+  it('Thread ctor', () => {
+    const threadLike = {
+      title: '【DHR百合組】[搖曳露營△_Yuru Camp][08][繁體][720P][MP4]',
+      link: 'magnet:?xt=urn:btih:ADPQFKBWXUUFLJMRYWVBGVWBE3GSJSSG',
+    };
+
+    assert.doesNotThrow(() => new Thread(threadLike));
+    assert.throws(() => new Thread({}), Error);
+  });
+
   it('Thread serialization', () => {
     const th0 = new Thread({
       title: '【DHR百合組】[搖曳露營△_Yuru Camp][08][繁體][720P][MP4]',
@@ -10,7 +20,8 @@ describe('dmhy/thread', () => {
     });
     assert.deepEqual(new Thread(JSON.parse(JSON.stringify(th0))), th0);
   });
-  describe('Thread parseEpisodeFromTitle', () => {
+
+  describe('Thread.parseEpisodeFromTitle', () => {
     const lines = fs.readFileSync('test/title.txt', 'utf8').split(/\r?\n/).filter((_) => _);
     for (let i = 0; i < lines.length;) {
       if (lines[i].startsWith('❤️')) {

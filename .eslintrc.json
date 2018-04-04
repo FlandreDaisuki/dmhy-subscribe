@@ -17,6 +17,7 @@
         "object-curly-spacing": ["error", "always"],
         "arrow-spacing": "error",
         "max-len": "off",
-        "space-infix-ops": "error"
+        "space-infix-ops": "error",
+        "indent": ["error", 2]
     }
 }

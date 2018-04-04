@@ -1,5 +1,6 @@
 const { Episode } = require('./episode');
 const { print, l10n } = require('../utils');
+const { ThreadError } = require('../errors');
 
 /**
  * A thread contains 1 or more episodes depend on subtitle group.
@@ -16,6 +17,10 @@ class Thread {
     this.title = title;
     this.link = link;
     this.episode = Thread.parseEpisodeFromTitle(this.title);
+
+    if (!this.isValid()) {
+      throw new ThreadError('Fail to construct a Thread');
+    }
   }
 
   /**
@@ -23,7 +28,10 @@ class Thread {
    * @memberof Thread
    */
   isValid() {
-    return this.episode.isValid() && this.title && this.link;
+    return this.episode &&
+      this.episode.isValid() &&
+      this.title !== 'no title' &&
+      this.link.startsWith('magnet:');
   }
 
   /**
@@ -89,9 +97,18 @@ class Thread {
     }
 
     print.warn(l10n('THREAD_EP_PARSE_ERR'));
-    print.log('==========');
     print.log('title:', `"${title}"`);
     print.log('tokens:', tokens);
+  }
+
+  /**
+   * Return the latest TheEpisode
+   *
+   * @readonly
+   * @memberof Thread
+   */
+  get head() {
+    return this.episode.data[0];
   }
 }
 

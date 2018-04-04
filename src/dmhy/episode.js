@@ -116,10 +116,10 @@ class Episode {
    */
   toString(sortFunc = TheEpisode.descendCompare) {
     return this.episodes
-          .slice()
-          .sort(sortFunc)
-          .map((episode) => `${episode}`)
-          .join(', ');
+      .slice()
+      .sort(sortFunc)
+      .map((episode) => `${episode}`)
+      .join(', ');
   }
 
   /**
