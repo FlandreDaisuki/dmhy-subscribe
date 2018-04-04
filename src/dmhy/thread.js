@@ -11,12 +11,19 @@ class Thread {
   /**
    * Creates an instance of Thread.
    * @param {any} threadLike [{ title = 'no title', link = 'magnet:' }={}]
+   * @param {?RegExp} [episodeParser=null]
    * @memberof Thread
    */
-  constructor({ title = 'no title', link = 'magnet:' } = {}) {
+  constructor({ title = 'no title', link = 'magnet:' } = {}, episodeParser = null) {
     this.title = title;
     this.link = link;
-    this.episode = Thread.parseEpisodeFromTitle(this.title);
+
+    if (!episodeParser) {
+      this.episode = Thread.parseEpisodeFromTitle(this.title);
+    } else {
+      const _title = this.title.replace(episodeParser, '$1');
+      this.episode = Thread.parseEpisodeFromTitle(_title);
+    }
 
     if (!this.isValid()) {
       throw new ThreadError('Fail to construct a Thread');

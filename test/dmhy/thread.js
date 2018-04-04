@@ -10,6 +10,7 @@ describe('dmhy/thread', () => {
     };
 
     assert.doesNotThrow(() => new Thread(threadLike));
+    assert.doesNotThrow(() => new Thread(threadLike, /\[(\d+)\]/));
     assert.throws(() => new Thread({}), Error);
   });
 
