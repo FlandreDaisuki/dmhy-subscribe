@@ -1,2 +1,2 @@
-// require('./dmhy/episode')
+require('./dmhy/episode');
 // require('./dmhy/thread')

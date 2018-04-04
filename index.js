@@ -1,1 +1,4 @@
-module.exports = require('./src/utils');
+module.exports = Object.assign({},
+  require('./src/utils'),
+  require('./src/dmhy/episode')
+);
