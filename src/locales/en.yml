@@ -39,3 +39,14 @@ CMD_DL_USAGE: |
     type := '' | 'OVA' | 'SP'
 
     THID is <SID> that implies all episodes are included, same as <SID>-all.
+
+CMD_FIND_DESC: Search threads on website directly
+
+CMD_CFG_DESC: Configure internal parameters
+CMD_CFG_USAGE: |
+  Usage: $0 config [key] [value]
+
+    Configure internal parameters.
+CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
+CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'client'
+CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'client' to 'deluge' and print changed key-value
