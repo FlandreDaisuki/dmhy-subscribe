@@ -1,7 +1,8 @@
 MAIN_USAGE: 'Usage: $0 [command] [options]'
-CMD_ADD_DESC: 'Add a subscription.'
+
+CMD_ADD_DESC: Add a subscription
 CMD_ADD_USAGE: |
-  Usage: $0 add [options] [subscribables...]
+  Usage: $0 add [options] [subscribable...]
     A subscribable can be a file path or string and we use it to search threads on website.
 
     A subscribable file must have suffix .yml, details ↓↓
@@ -9,10 +10,29 @@ CMD_ADD_USAGE: |
 
     A subscribable string with CSV format that concatenate by `,`.
     The first section is title.
+
+    subscribable string := <title>[,keyword]*
+    keyword := keyword which subscription include | ~keyword which subscription exclude~
 CMD_ADD_OPT_I: Use interactive prompt to add subscription.
 CMD_ADD_OPT_Y: Don't ask and do add if the database has a subscription with the same title and keywords.
 CMD_ADD_OPT_N: Don't ask and do ignore if the database has a subscription with the same title and keywords.
 CMD_ADD_OPT_YN_ERR: Don't use --yes and --no at the same time.
 CMD_ADD_OPT_NO_I_NO_SUBS: If you don't use interactive prompt, you should provide at least 1 subscribable as a parameter.
+CMD_ADD_EXAMPLE1_DESC: Use subscribable string
+CMD_ADD_EXAMPLE2_DESC: Use subscribable file
+CMD_ADD_EXAMPLE3_DESC: Use interactive prompt
 
-CMD_RM_DESC: 'Remove subscriptions by their SID.'
+CMD_RM_DESC: Remove subscriptions by their SID
+
+CMD_LS_DESC: Show subscriptions information
+
+CMD_DL_DESC: Download subscriptions by their THID
+CMD_DL_USAGE: |
+  Usage: $0 download <THID...>
+    A THID includes SID and episode(s).
+
+    THID := <SID> | <SID>-[type][episode]
+    episode := <episode>,<episode> | <int|float> | <int|float>..<int|float> | 'all'
+    type := '' | 'OVA' | 'SP'
+
+    THID is <SID> that implies all episodes are included, same as <SID>-all.

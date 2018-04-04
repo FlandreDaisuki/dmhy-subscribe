@@ -1,17 +1,42 @@
+# 名詞轉換
+# SID := 訂閱識別碼
+# THID := 下載識別碼
+# subscribable := 訂閱用字串|訂閱設定檔
+
 MAIN_USAGE: '使用方法: $0 [命令] [選項]'
+
 CMD_ADD_DESC: '新增一筆訂閱'
 CMD_ADD_USAGE: |
   使用方法: $0 add [選項] [訂閱用字串|訂閱設定檔...]
     訂閱用字串和訂閱設定檔會用來搜尋貼文。
 
-    訂閱設定檔：為 .yml 檔，詳見↓↓
+    訂閱設定檔為 .yml 檔，詳見↓↓
     https://github.com/FlandreDaisuki/dmhy-subscribe/issues/17
 
-    訂閱用字串：為 CSV 格式字串，以逗號串接，首項為標題。
+    訂閱用字串為 CSV 格式，以逗號串接，首項為標題。
+
+    訂閱用字串 := <標題>[,關鍵字]*
+    關鍵字 := 訂閱包含的關鍵字 | ~訂閱不要包含的關鍵字~
 CMD_ADD_OPT_I: 以互動式界面新增訂閱
 CMD_ADD_OPT_Y: 不要詢問並新增資料庫有相同標題及關鍵字的訂閱
 CMD_ADD_OPT_N: 不要詢問並忽略資料庫有相同標題及關鍵字的訂閱
 CMD_ADD_OPT_YN_ERR: 請不要同時使用 --yes 及 --no
 CMD_ADD_OPT_NO_I_NO_SUBS: 若不使用互動式界面，則至少需要一個引數(訂閱用字串或訂閱設定檔)
+CMD_ADD_EXAMPLE1_DESC: 使用訂閱用字串
+CMD_ADD_EXAMPLE2_DESC: 使用訂閱設定檔
+CMD_ADD_EXAMPLE3_DESC: 使用互動式界面
 
-CMD_RM_DESC: '根據 SID 刪除訂閱'
+CMD_RM_DESC: 根據訂閱識別碼刪除訂閱
+
+CMD_LS_DESC: 顯示訂閱資訊
+
+CMD_DL_DESC: 根據下載識別碼下載訂閱
+CMD_DL_USAGE: |
+  使用方法: $0 download <下載識別碼...>
+    下載識別碼包含了訂閱識別碼和集數。
+
+    下載識別碼 := <訂閱識別碼> | <訂閱識別碼>-[類型][集數]
+    集數 := <集數>,<集數> | <整數|浮點數> | <整數|浮點數>..<整數|浮點數> | 'all'
+    類型 := '' | 'OVA' | 'SP'
+
+    若下載識別碼為 <訂閱識別碼>，代表該訂閱全部集數，即 <訂閱識別碼>-all。
