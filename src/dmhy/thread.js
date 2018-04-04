@@ -1,80 +1,98 @@
-const {
-  Episode,
-  ComplexEpisode
-} = require('./episode')
+const { Episode } = require('./episode');
+const { print, l10n } = require('../utils');
 
-const { console, l10n } = require('../utils')
-
+/**
+ * A thread contains 1 or more episodes depend on subtitle group.
+ *
+ * @class Thread
+ */
 class Thread {
-  constructor ({ title, link, userBlacklistTokens }) {
-    this.title = title || '???'
-    this.link = link || 'magnet:'
-    this.episode = Thread.parseEpisodeFromTitle(this.title, userBlacklistTokens)
+  /**
+   * Creates an instance of Thread.
+   * @param {any} threadLike [{ title = 'no title', link = 'magnet:' }={}]
+   * @memberof Thread
+   */
+  constructor({ title = 'no title', link = 'magnet:' } = {}) {
+    this.title = title;
+    this.link = link;
+    this.episode = Thread.parseEpisodeFromTitle(this.title);
   }
 
-  static parseEpisodeFromTitle (title, userBlacklistPatterns = []) {
+  /**
+   * @return {boolean} boolean
+   * @memberof Thread
+   */
+  isValid() {
+    return this.episode.isValid() && this.title && this.link;
+  }
+
+  /**
+   * The most important function that can parse episode from title.
+   *
+   * @static
+   * @param {any} title
+   * @param {any} [userBlacklistPatterns=[]]
+   * @return {Episode} Episode
+   * @memberof Thread
+   */
+  static parseEpisodeFromTitle(title, userBlacklistPatterns = []) {
     const blacklistPatterns = [
       /x?(1080|720)p?/,
+      /\d+\s*月新番/,
       /x26[45]/,
       /10bit/,
       /ma10p/,
-      /mp4/,
+      /\bv\d/,
       /big5/,
-      /\bv\d/
-    ]
+      /mp4/,
+    ];
 
     const tokens = title
       .split(/[[\]【】_\s]/g)
-      .map(x => x.toLowerCase())
-      .filter(x => /\d/.test(x))
-      .filter(x => !blacklistPatterns.some(rule => rule.test(x)))
-      .filter(x => !userBlacklistPatterns.some(rule => rule.test(x)))
-      .map(x => x.trim())
+      .map((x) => x.toLowerCase())
+      .filter((x) => /\d/.test(x))
+      .filter((x) => !blacklistPatterns.some((rule) => rule.test(x)))
+      .filter((x) => !userBlacklistPatterns.some((rule) => rule.test(x)))
+      .map((x) => x.trim());
+
+    // input [\d.]+-[\d.]+
+    const parseRangeEpisode = (tok, type) => {
+      const str = tok.replace(/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/, '$1$2');
+      const [from, to] = str.split('-').map((t) => parseFloat(t));
+      if (to === undefined) {
+        return new Episode({ ep: from, type });
+      }
+      return new Episode(Episode.rangify([from, to], type));
+    };
 
     // Find episode from last is easier
     for (const token of tokens.reverse()) {
       const tok = token
         .replace(/\s*(end|完)$/, '') // [24 end], [06完]
-        .replace(/\s*v\d+$/, '') // [20v2]
+        .replace(/\s*v\d+$/, ''); // [20v2]
 
       if (/[+]/.test(tok)) {
         const eps = tok
           .split('+')
-          .map(t => Thread.parseEpisodeFromTitle(t))
-          .reduce((a, b) => a.concat(b), [])
-        return new ComplexEpisode(eps)
+          .map((t) => Thread.parseEpisodeFromTitle(t).data)
+          .reduce((a, b) => a.concat(b), []);
+        return new Episode(eps);
       }
-      let type = ''
-      if (tokens.some(tok => /(ova|sp)/.test(tok))) {
-        type = tok.match(/(ova|sp)/)[0]
+      let type = '';
+      if (tokens.some((tok) => /(ova|sp)/.test(tok))) {
+        type = tok.match(/(ova|sp)/)[0];
       }
 
       if (/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/.test(tok)) {
-        return parseRangeEpisode(tok, type)
+        return parseRangeEpisode(tok, type);
       }
     }
 
-    // input [\d.]+-[\d.]+
-    function parseRangeEpisode (tok, type) {
-      const str = tok.replace(/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/, '$1$2')
-      const [from, to] = str.split('-').map(t => parseFloat(t))
-      if (to === undefined) {
-        return new Episode({ ep: from, type })
-      }
-      return new ComplexEpisode(Episode.rangify([from, to], type))
-    }
-
-    console.warn(l10n('UNHANDLED_EP_PARSING_MSG'))
-    console.log('==========')
-    console.log('title:', `"${title}"`)
-    console.log('tokens:', tokens)
-  }
-
-  static isValid (thread) {
-    return thread.episode.isValid() && thread.title && thread.link
+    print.warn(l10n('THREAD_EP_PARSE_ERR'));
+    print.log('==========');
+    print.log('title:', `"${title}"`);
+    print.log('tokens:', tokens);
   }
 }
 
-module.exports = {
-  Thread
-}
+exports.Thread = Thread;

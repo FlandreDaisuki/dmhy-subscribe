@@ -50,3 +50,7 @@ CMD_CFG_USAGE: |
 CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
 CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'client'
 CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'client' to 'deluge' and print changed key-value
+
+THREAD_EP_PARSE_ERR: |
+  This should never print unless having bugs.
+  Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.

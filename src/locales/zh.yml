@@ -56,3 +56,7 @@ CMD_CFG_EXAMPLE2_DESC: 印出參數 client 的值
 CMD_CFG_EXAMPLE3_DESC: |
   將參數 client 的值改為 deluge，
   並印出變更後鍵值
+
+THREAD_EP_PARSE_ERR: |
+  這行只有在出現 bug 時會印出。
+  請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報
