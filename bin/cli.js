@@ -10,6 +10,12 @@ const argv = yargs
   .command(require('./command/download'))
   .example('$0 update "喔喔喔喔喔"\n第二行\n第三行', '喔喔喔喔外面喔喔喔喔\nasd')
   .example('$0 xxx "喔喔喔喔喔"\n第二行', '喔喔喔喔外面喔喔喔喔\nasd\n第三行')
+  .option('x', {
+    alias: 'no-dl',
+    describe: l10n('MAIN_OPT_X'),
+    type: 'boolean',
+    global: false,
+  })
   .help('h')
   .alias('h', 'help')
   .alias('v', 'version')

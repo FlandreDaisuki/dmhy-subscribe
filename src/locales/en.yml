@@ -1,8 +1,10 @@
 MAIN_USAGE: 'Usage: $0 [command] [options]'
+MAIN_OPT_X: Don't download subscriptions, just update
 
 CMD_ADD_DESC: Add a subscription
 CMD_ADD_USAGE: |
   Usage: $0 add [options] [subscribable...]
+
     A subscribable can be a file path or string and we use it to search threads on website.
 
     A subscribable file must have suffix .yml, details ↓↓
@@ -29,6 +31,7 @@ CMD_LS_DESC: Show subscriptions information
 CMD_DL_DESC: Download subscriptions by their THID
 CMD_DL_USAGE: |
   Usage: $0 download <THID...>
+
     A THID includes SID and episode(s).
 
     THID := <SID> | <SID>-[type][episode]
