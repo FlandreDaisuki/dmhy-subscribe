@@ -9,7 +9,7 @@ const print = (() => {
   const _print = {
     log: console.log.bind(console, chalk.whiteBright('❯')),
     debug: console.debug.bind(console, chalk.magenta('🐛')),
-    info: console.info.bind(console, chalk.blue('ℹ')),
+    info: console.info.bind(console, chalk.blueBright('ℹ')),
     success: console.log.bind(console, chalk.green('✔')),
     error: console.error.bind(console, chalk.redBright('✖')),
     fatal: console.error.bind(console, chalk.redBright('✖')),
@@ -236,6 +236,7 @@ module.exports = {
     defaultDatabasePath: `${os.homedir()}/.dmhy-subscribe/fakedb.json`,
     defaultConfigPath: `${os.homedir()}/.dmhy-subscribe/config.json`,
     defaultVersionPath: `${os.homedir()}/.dmhy-subscribe/.version`,
+    remoteVersionPath: `${os.homedir()}/.dmhy-subscribe/.remoteVersion`,
     packageVersion: pkg.version,
   },
 };

@@ -2,6 +2,7 @@
 # SID := 訂閱識別碼
 # THID := 下載識別碼
 # subscribable := 訂閱用字串|訂閱設定檔
+NEW_VERSION_MSG: 有新版本囉～請用 `npm i -g dmhy-subscribe` 更新
 
 MAIN_USAGE: '使用方法: $0 [命令] [選項]'
 MAIN_OPT_X: 只更新訂閱但不下載
