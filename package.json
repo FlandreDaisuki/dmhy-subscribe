@@ -32,8 +32,8 @@
   "dependencies": {
     "aria2": "^3.0.0",
     "axios": "^0.17.1",
+    "chalk": "^2.3.2",
     "cheerio": "^1.0.0-rc.2",
-    "consola": "^1.2.0",
     "easy-table": "^1.1.1",
     "js-yaml": "^3.11.0",
     "opn": "^5.3.0",

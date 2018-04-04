@@ -3,7 +3,17 @@ const fs = require('fs');
 const { execSync, spawnSync } = require('child_process');
 const pkg = require('../package.json');
 const yaml = require('js-yaml');
-const consola = require('consola');
+const chalk = require('chalk');
+
+const print = {
+  log: console.log.bind(console, chalk.whiteBright('❯')),
+  debug: process.env.DEBUG ? console.debug.bind(console, chalk.magenta('🐛')) : () => {},
+  info: console.info.bind(console, chalk.blue('ℹ')),
+  success: console.log.bind(console, chalk.green('✔')),
+  error: console.error.bind(console, chalk.redBright('✖')),
+  fatal: console.error.bind(console, chalk.redBright('✖')),
+  warn: console.warn.bind(console, chalk.yellow('⚠')),
+};
 
 /**
  * Get hash that [A-Z]{3}
@@ -105,7 +115,7 @@ const l10n = (() => {
         const localeStrings = yaml.safeLoad(fs.readFileSync(cur, 'utf-8'));
         return Object.assign(prev, localeStrings);
       } catch (error) {
-        consola.error(error);
+        print.error(error);
       }
     }
     return prev;
@@ -203,7 +213,7 @@ class XSet extends Set {
 }
 
 module.exports = {
-  consola,
+  print,
   hash,
   l10n,
   XSet,

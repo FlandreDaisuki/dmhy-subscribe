@@ -1,4 +1,4 @@
-const { l10n, consola } = require('../..');
+const { l10n, print } = require('../..');
 exports.command = 'add [subscribable...]';
 
 exports.aliases = [];
@@ -36,7 +36,7 @@ exports.builder = (yargs) => {
     })
     .fail((msg, err) => {
       // yargs.showHelp();
-      consola.error(msg);
+      print.error(msg);
       process.exit(1);
     })
     .example('$0 add "搖曳露營,萌喵,繁體,~1080p~"', l10n('CMD_ADD_EXAMPLE1_DESC'))
@@ -46,6 +46,6 @@ exports.builder = (yargs) => {
 
 exports.handler = (argv) => {
   // TODO
-  consola.log(JSON.stringify(argv, null, 2));
+  print.log(JSON.stringify(argv, null, 2));
   process.exit(0);
 };

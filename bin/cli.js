@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { l10n, consola } = require('..');
+const { l10n, print } = require('..');
 const yargs = require('yargs');
 
 const argv = yargs
@@ -25,4 +25,4 @@ const argv = yargs
   .argv;
 
 console.log(argv);
-consola.success('success');
+print.success('success');
