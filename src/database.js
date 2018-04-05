@@ -1,12 +1,15 @@
 const path = require('path');
 const fs = require('fs-extra');
 const { spawn } = require('child_process');
+const yaml = require('js-yaml');
 const { CONST, print } = require('./utils');
 const { Config } = require('./config');
 const { Subscription } = require('./dmhy/subscription');
 
 const { defaultDatabasePath, packageVersion, defaultSubsDir } = CONST;
 
+// subsDir 資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
+// dbpath 存 SID 與 Threads 的 Map
 
 /**
  *
@@ -19,30 +22,29 @@ class Database {
    */
   constructor({ dbpath = defaultDatabasePath, subsDir = defaultSubsDir, config = new Config() } = {}) {
     this.dbpath = dbpath;
-    this.config = config;
-    if (!(config instanceof Config)) {
-      throw new Error(`Bad config`);
-    }
-    {this.version = packageVersion;}
-    this.subscriptions = [];
-
     if (!fs.existsSync(this.dbpath)) {
-      const empty = {
-        version: packageVersion,
-        subscriptions: {},
-      };
+      const empty = { };
       fs.writeFileSync(this.dbpath, JSON.stringify(empty));
     }
 
+    this.subsDir = subsDir;
     if (!fs.existsSync(subsDir)) {
       fs.mkdirSync(subsDir);
     }
 
-    const db = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
+    this.config = config;
+    if (!(config instanceof Config)) {
+      throw new Error(`Bad config`);
+    }
+
+    this.version = packageVersion;
+    this.subscriptions = [];
+
+    const threadsMap = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
     const subs = fs.readdirSync(subsDir);
-    this.subscriptions = subs.filter((feed) => new Subscription(`${subsDir}/${feed}`));
-    this.subscriptions.forEach((subscription) => {
-      subscription.threads = db.subscriptions[subscription.sid] || [];
+    this.subscriptions = subs.map((sub) => new Subscription(`${subsDir}/${sub}`));
+    this.subscriptions.forEach((s) => {
+      s.loadThreads(threadsMap[s.sid]);
     });
   }
 
@@ -60,27 +62,42 @@ class Database {
     return true;
   }
 
-  // remove(subscription) {
-  //   if (!(subscription instanceof Subscription)) {
-  //     throw new TypeError('Parameter should be a Subscription.');
-  //   }
-  //   const index = this.subscriptions.findIndex((elem) => {
-  //     return elem.sid === subscription.sid;
-  //   });
-  //   if (index >= 0) {
-  //     this.subscriptions.splice(index, 1);
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  /**
+   * @param {string} sid
+   * @return {boolean} success
+   * @memberof Database
+   */
+  remove(sid) {
+    const index = this.subscriptions.findIndex((elem) => {
+      return elem.sid === sid;
+    });
+    if (index >= 0) {
+      this.subscriptions.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
 
-  // save() {
-  //   const sav = {
-  //     version: this.version,
-  //     subscriptions: this.subscriptions,
-  //   };
-  //   fs.writeFileSync(this.dbpath, JSON.stringify(sav));
-  // }
+  /**
+   * @memberof Database
+   */
+  save() {
+    const threadsMap = this.subscriptions.reduce((prev, cur) => {
+      prev[cur.sid] = cur.threads;
+      return prev;
+    }, {});
+    fs.writeFileSync(this.dbpath, JSON.stringify(threadsMap));
+
+    this.subscriptions.forEach((s) => {
+      let { sid, title, keywords, episodeParser, userBlacklistPatterns } = s;
+      if (episodeParser) {
+        episodeParser = episodeParser.toString();
+      }
+      userBlacklistPatterns = userBlacklistPatterns.map((ubp) => ubp.toString());
+      const yamlData = yaml.safeDump({ sid, title, keywords, episodeParser, userBlacklistPatterns });
+      fs.writeFileSync(`${this.subsDir}/${sid}.yml`, yamlData);
+    });
+  }
 
   // list() {
   //   const subList = this.subscriptions.map((s) => {
