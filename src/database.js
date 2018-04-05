@@ -26,13 +26,14 @@ class Database {
   constructor({ dbpath = defaultDatabasePath, isubsDir = defaultISubsDir, config = new Config() } = {}) {
     this.dbpath = dbpath;
     if (!fs.existsSync(this.dbpath)) {
+      fs.ensureFileSync(this.dbpath);
       const empty = { };
       fs.writeFileSync(this.dbpath, JSON.stringify(empty));
     }
 
     this.isubsDir = isubsDir;
     if (!fs.existsSync(isubsDir)) {
-      fs.mkdirSync(isubsDir);
+      fs.mkdirpSync(isubsDir);
     }
 
     this.config = config;
