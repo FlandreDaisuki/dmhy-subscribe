@@ -3,4 +3,5 @@ module.exports = Object.assign({},
   require('./src/dmhy/episode'),
   require('./src/dmhy/thread'),
   require('./src/dmhy/subscription'),
+  require('./src/database'),
 );

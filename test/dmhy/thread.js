@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const assert = require('assert');
 const { Thread } = require('../..');
 
@@ -23,7 +23,7 @@ describe('dmhy/thread', () => {
   });
 
   describe('Thread.parseEpisodeFromTitle', () => {
-    const lines = fs.readFileSync('test/title.txt', 'utf8').split(/\r?\n/).filter((_) => _);
+    const lines = fs.readFileSync(`${__dirname}/title.txt`, 'utf-8').split(/\r?\n/).filter((_) => _);
     for (let i = 0; i < lines.length;) {
       if (lines[i].startsWith('❤️')) {
         i += 1;

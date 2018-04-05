@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const ymal = require('js-yaml');
 const { Thread } = require('./thread');
@@ -146,7 +146,7 @@ class Subscription {
    */
   generateSid(existedSids) {
     const existed = new Set(existedSids);
-    if (existed.some((sid) => !/[A-Z]{3}/.test(sid))) {
+    if ([...existed].some((sid) => !/[A-Z]{3}/.test(sid))) {
       throw new SubscriptionError('The parameter should be an iterable of SID');
     }
     this.sid = hash(this.name, this.keywords.join(','));

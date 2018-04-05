@@ -7,13 +7,13 @@ describe('dmhy/subscription', () => {
     assert.throws(() => new Subscription('a.png'), Error);
     assert.throws(() => new Subscription(',,,'), Error);
 
-    const camp = new Subscription(`${__dirname}/camp.yml`);
+    const camp = new Subscription(`${__dirname}/../subscribables/camp.yml`);
     assert.equal(camp.title, '搖曳露營');
     assert.deepEqual(camp.keywords, ['喵萌', '繁體', '~合集~'].sort());
     assert.deepEqual(camp.episodeParser, /第\s*(\d+(?:-\d+)?)\s*[話话]/);
     assert.deepEqual(camp.userBlacklistPatterns, [/\d+月\d+日/, /\d+\s*月新番/]);
 
-    const good = new Subscription(`${__dirname}/good.yml`);
+    const good = new Subscription(`${__dirname}/../subscribables/good.yml`);
     assert.equal(good.title, '牙鬥獸娘');
     assert.deepEqual(good.keywords, []);
     assert.equal(good.episodeParser, null);

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { l10n, print, CONST } = require('..');
-const fs = require('fs');
+const fs = require('fs-extra');
 const axios = require('axios');
 const semver = require('semver');
 const yargs = require('yargs');

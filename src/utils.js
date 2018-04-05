@@ -1,5 +1,5 @@
 const os = require('os');
-const fs = require('fs');
+const fs = require('fs-extra');
 const { execSync, spawnSync } = require('child_process');
 const pkg = require('../package.json');
 const yaml = require('js-yaml');
@@ -233,7 +233,8 @@ module.exports = {
     systemDownloadsFolder,
     systemLocale,
     defaultProjectDataDir: `${os.homedir()}/.dmhy-subscribe`,
-    defaultDatabasePath: `${os.homedir()}/.dmhy-subscribe/fakedb.json`,
+    defaultDatabasePath: `${os.homedir()}/.dmhy-subscribe/db.json`,
+    defaultFeedsDir: `${os.homedir()}/.dmhy-subscribe/feeds`,
     defaultConfigPath: `${os.homedir()}/.dmhy-subscribe/config.json`,
     defaultVersionPath: `${os.homedir()}/.dmhy-subscribe/.version`,
     remoteVersionPath: `${os.homedir()}/.dmhy-subscribe/.remoteVersion`,
