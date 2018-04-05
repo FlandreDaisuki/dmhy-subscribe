@@ -8,24 +8,24 @@ const { Database, Subscription } = require('../..');
 class DummyConfig {}
 
 const testDatabasePath = `${__dirname}/.dmhy-subscribe/db.json`;
-const testSubsDir = `${__dirname}/.dmhy-subscribe/subs`;
+const testISubsDir = `${__dirname}/.dmhy-subscribe/isubs`;
 
-const testOpts = { dbpath: testDatabasePath, subsDir: testSubsDir };
+const testOpts = { dbpath: testDatabasePath, isubsDir: testISubsDir };
 
 const clearPaths = () => {
   fs.removeSync(testDatabasePath);
-  fs.removeSync(testSubsDir);
+  fs.removeSync(testISubsDir);
 };
 
 describe('database', () => {
   it('Database ctor', () => {
     assert.doesNotThrow(() => new Database(testOpts));
-    assert.throws(() => new Database({ dbpath: testDatabasePath, subsDir: testSubsDir, config: new DummyConfig() }), Error);
+    assert.throws(() => new Database({ dbpath: testDatabasePath, isubsDir: testISubsDir, config: new DummyConfig() }), Error);
 
     clearPaths();
     new Database(testOpts);
     assert.ok(fs.existsSync(testDatabasePath));
-    assert.ok(fs.existsSync(testSubsDir));
+    assert.ok(fs.existsSync(testISubsDir));
     clearPaths();
   });
 

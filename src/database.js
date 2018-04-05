@@ -6,9 +6,9 @@ const { CONST, print } = require('./utils');
 const { Config } = require('./config');
 const { Subscription } = require('./dmhy/subscription');
 
-const { defaultDatabasePath, packageVersion, defaultSubsDir } = CONST;
+const { defaultDatabasePath, packageVersion, defaultISubsDir } = CONST;
 
-// subsDir 資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
+// isub 資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
 // dbpath 存 SID 與 Threads 的 Map
 
 /**
@@ -17,19 +17,19 @@ const { defaultDatabasePath, packageVersion, defaultSubsDir } = CONST;
 class Database {
   /**
    * Creates an instance of Database.
-   * @param {any} options [{ dbpath = defaultDatabasePath, subsDir = defaultSubsDir, config = new Config() }={}]
+   * @param {any} options [{ dbpath = defaultDatabasePath, isubsDir = defaultISubsDir, config = new Config() }={}]
    * @memberof Database
    */
-  constructor({ dbpath = defaultDatabasePath, subsDir = defaultSubsDir, config = new Config() } = {}) {
+  constructor({ dbpath = defaultDatabasePath, isubsDir = defaultISubsDir, config = new Config() } = {}) {
     this.dbpath = dbpath;
     if (!fs.existsSync(this.dbpath)) {
       const empty = { };
       fs.writeFileSync(this.dbpath, JSON.stringify(empty));
     }
 
-    this.subsDir = subsDir;
-    if (!fs.existsSync(subsDir)) {
-      fs.mkdirSync(subsDir);
+    this.isubsDir = isubsDir;
+    if (!fs.existsSync(isubsDir)) {
+      fs.mkdirSync(isubsDir);
     }
 
     this.config = config;
@@ -41,8 +41,8 @@ class Database {
     this.subscriptions = [];
 
     const threadsMap = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
-    const subs = fs.readdirSync(subsDir);
-    this.subscriptions = subs.map((sub) => new Subscription(`${subsDir}/${sub}`));
+    const isubs = fs.readdirSync(isubsDir);
+    this.subscriptions = isubs.map((isub) => new Subscription(`${isubsDir}/${isub}`));
     this.subscriptions.forEach((s) => {
       s.loadThreads(threadsMap[s.sid]);
     });
@@ -95,7 +95,7 @@ class Database {
       }
       userBlacklistPatterns = userBlacklistPatterns.map((ubp) => ubp.toString());
       const yamlData = yaml.safeDump({ sid, title, keywords, episodeParser, userBlacklistPatterns });
-      fs.writeFileSync(`${this.subsDir}/${sid}.yml`, yamlData);
+      fs.writeFileSync(`${this.isubsDir}/${sid}.yml`, yamlData);
     });
   }
 
