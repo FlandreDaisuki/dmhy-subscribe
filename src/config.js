@@ -1,77 +1,134 @@
-const fs = require('fs')
-const path = require('path')
-const { console, CONST } = require('./utils')
-const { systemDownloadsFolder, defaultConfigPath } = CONST
+const path = require('path');
+const fs = require('fs-extra');
+const { CONST } = require('./utils');
+const { systemDownloadsFolder, defaultConfigPath } = CONST;
 
-const DEFAULT_CONFIG = {
-  client: 'deluge',
-  jsonrpc: '',
-  destination: systemDownloadsFolder,
-  webhook: 'http://localhost/'
-}
+const DEFAULTS = {
+  'downloader': 'system',
+  'aria2-jsonrpc': 'http://localhost:6800/jsonrpc/',
+  'destination': systemDownloadsFolder,
+  'webhook-url': 'http://localhost/',
+};
 
+const VALIDATORS = {
+  'downloader': (downloader) => {
+    const result = { ok: true, msg: '' };
+    const downloaders = fs.readdirSync(`${__dirname}/downloaders`).map((d) => path.basename(d, '.js'));
+    if (!(new Set(downloaders)).has(downloader)) {
+      result.ok = false;
+      result.msg = 'not support downloader';
+    }
+    return result;
+  },
+  'destination': (destination) => {
+    const result = { ok: true, msg: '' };
+    if (!(fs.existsSync(destination))) {
+      result.ok = false;
+      result.msg = 'destination not exists';
+    }
+    return result;
+  },
+};
+
+/**
+ * @class Config
+ * @member {string} configpath
+ * @member {Object} parameters
+ */
 class Config {
-  constructor (configPath = defaultConfigPath) {
-    this.configPath = configPath
-    this.parameters = Object.assign({}, DEFAULT_CONFIG)
+/**
+ * Creates an instance of Config.
+ * @param {any} options [{ configpath = defaultConfigPath }={}]
+ * @memberof Config
+ */
+  constructor({ configpath = defaultConfigPath } = {}) {
+    this.configpath = configpath;
 
-    if (!fs.existsSync(this.configPath)) {
-      this.reset()
+    if (!fs.existsSync(this.configpath)) {
+      fs.ensureFileSync(this.configpath);
+      this.reset();
+      this.save();
     }
-    Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configPath, 'utf8')))
 
-    // parameter checks
-    if (!fs.existsSync(this.parameters.destination)) {
-      console.warn(`config.destination{${this.parameters.destination}} not found.`)
-    }
-    if (!Config.isSupportedClient(this.parameters.client)) {
-      console.warn(`config.client{${this.parameters.client}} not supported.`)
-    }
-    this.save()
+    this.reset();
+
+    Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configpath, 'utf-8')));
   }
 
-  save () {
-    fs.writeFileSync(this.configPath, JSON.stringify(this.parameters))
+  /**
+   * @memberof Config
+   */
+  save() {
+    fs.writeFileSync(this.configpath, JSON.stringify(this.parameters));
   }
 
-  get (key) {
+  /**
+   * @param {string} key
+   * @return {{key:string, value:string}} key-value
+   * @memberof Config
+   */
+  get(key) {
     if (Config.isValidKey(key)) {
-      return this.parameters[key]
+      return { key, value: this.parameters[key] };
     }
+    return null;
   }
 
-  set (key, value) {
+  /**
+   * Set a parameter and sync(save) immediately
+   * @param {string} key
+   * @param {string} value
+   * @return {{key:string, value:string}} key-value
+   * @memberof Config
+   */
+  set(key, value) {
     if (Config.isValidKey(key)) {
-      this.parameters[key] = value
-      this.save()
-      return { key, value }
+      this.parameters[key] = value;
+      this.save();
+      return { key, value };
     }
+    return null;
   }
 
-  list () {
-    const params = Object.entries(this.parameters).map(([key, value]) => ({ Parameter: key, Value: value }))
-    console.table(params)
-  }
-
-  reset (key = null) {
+  /**
+   * Reset a key or all keys to DEFAULTS
+   *
+   * @param {?string} [key=null]
+   * @memberof Config
+   */
+  reset(key = null) {
     if (Config.isValidKey(key)) {
-      this.parameters[key] = DEFAULT_CONFIG[key]
+      this.parameters[key] = DEFAULTS[key];
     } else {
-      Object.assign(this.parameters, DEFAULT_CONFIG)
+      this.parameters = Object.assign({}, DEFAULTS);
     }
-    this.save()
   }
 
-  static isValidKey (key) {
-    return key && Object.keys(DEFAULT_CONFIG).includes(key)
+  /**
+   * @return {boolean} valid
+   * @memberof Config
+   */
+  isValid() {
+    return Object.keys(this.parameters).every((key) => {
+      if (VALIDATORS[key]) {
+        return VALIDATORS[key](key).ok;
+      }
+      return true;
+    });
   }
 
-  static isSupportedClient (client) {
-    const downloaders = fs.readdirSync(`${__dirname}/downloaders`).map(d => path.basename(d, '.js'))
-    return (new Set(downloaders)).has(client)
+  /**
+   * @static
+   * @param {string} key
+   * @return {boolean} valid
+   * @memberof Config
+   */
+  static isValidKey(key) {
+    return key && Object.keys(DEFAULTS).includes(key);
   }
 }
 
-module.exports = {
-  Config
-}
+Config.DEFAULTS = DEFAULTS;
+Config.VALIDATORS = VALIDATORS;
+
+exports.Config = Config;
