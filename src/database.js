@@ -1,18 +1,21 @@
-const path = require('path');
 const fs = require('fs-extra');
-const { spawn } = require('child_process');
 const yaml = require('js-yaml');
-const { CONST, print } = require('./utils');
+const { CONST } = require('./utils');
 const { Config } = require('./config');
 const { Subscription } = require('./dmhy/subscription');
 
-const { defaultDatabasePath, packageVersion, defaultISubsDir } = CONST;
+const { defaultDatabasePath, defaultISubsDir } = CONST;
 
-// isub 資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
+// isub   資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
 // dbpath 存 SID 與 Threads 的 Map
+// sub    subscription 的縮寫
 
 /**
- *
+ * @class Database
+ * @member {string} dbpath
+ * @member {string} isubsDir
+ * @member {Config} config
+ * @member {Subscription[]} subscriptions
  */
 class Database {
   /**
@@ -37,28 +40,25 @@ class Database {
       throw new Error(`Bad config`);
     }
 
-    this.version = packageVersion;
-    this.subscriptions = [];
-
     const threadsMap = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
-    const isubs = fs.readdirSync(isubsDir);
-    this.subscriptions = isubs.map((isub) => new Subscription(`${isubsDir}/${isub}`));
-    this.subscriptions.forEach((s) => {
-      s.loadThreads(threadsMap[s.sid]);
+    const isubs = fs.readdirSync(this.isubsDir);
+    this.subscriptions = isubs.map((isub) => new Subscription(`${this.isubsDir}/${isub}`));
+    this.subscriptions.forEach((sub) => {
+      sub.loadThreads(threadsMap[sub.sid]);
     });
   }
 
   /**
-   * @param {any} subscription
+   * @param {Subscription} sub
    * @return {boolean} success
    * @memberof Database
    */
-  add(subscription) {
-    if (!(subscription instanceof Subscription)) {
+  add(sub) {
+    if (!(sub instanceof Subscription)) {
       throw new TypeError('Parameter should be a Subscription.');
     }
-    subscription.generateSid(this.subscriptions.map((s) => s.sid));
-    this.subscriptions.push(subscription);
+    sub.generateSid(this.subscriptions.map((s) => s.sid));
+    this.subscriptions.push(sub);
     return true;
   }
 
@@ -68,8 +68,8 @@ class Database {
    * @memberof Database
    */
   remove(sid) {
-    const index = this.subscriptions.findIndex((elem) => {
-      return elem.sid === sid;
+    const index = this.subscriptions.findIndex((sub) => {
+      return sub.sid === sid;
     });
     if (index >= 0) {
       this.subscriptions.splice(index, 1);
@@ -82,14 +82,14 @@ class Database {
    * @memberof Database
    */
   save() {
-    const threadsMap = this.subscriptions.reduce((prev, cur) => {
-      prev[cur.sid] = cur.threads;
+    const threadsMap = this.subscriptions.reduce((prev, sub) => {
+      prev[sub.sid] = sub.threads;
       return prev;
     }, {});
     fs.writeFileSync(this.dbpath, JSON.stringify(threadsMap));
 
-    this.subscriptions.forEach((s) => {
-      let { sid, title, keywords, episodeParser, userBlacklistPatterns } = s;
+    this.subscriptions.forEach((sub) => {
+      let { sid, title, keywords, episodeParser, userBlacklistPatterns } = sub;
       if (episodeParser) {
         episodeParser = episodeParser.toString();
       }
@@ -99,54 +99,22 @@ class Database {
     });
   }
 
-  // list() {
-  //   const subList = this.subscriptions.map((s) => {
-  //     const latest = s.latest > 0 ? s.latest.toString().padStart(2, '0') : '--';
-  //     return {
-  //       sid: s.sid,
-  //       latest,
-  //       name: s.name,
-  //     };
-  //   });
-  //   print.table(subList);
-  // }
+  /**
+   * @param {string} sid
+   * @return {?Subscription} Subscription
+   * @memberof Database
+   */
+  find(sid) {
+    return this.subscriptions.find((sub) => sub.sid === sid) || null;
+  }
 
-  // download(thread, { client, destination, jsonrpc, webhook } = {}) {
-  //   client = client || this.config.get('client');
-  //   jsonrpc = jsonrpc || this.config.get('jsonrpc');
-  //   destination = destination || this.config.get('destination');
-  //   webhook = webhook || this.config.get('webhook');
-
-  //   const script = path.resolve(`${__dirname}/downloaders/${client}.js`);
-  //   const args = [thread, { destination, jsonrpc, webhook }].map(JSON.stringify);
-  //   args.unshift(script);
-
-  //   return new Promise((resolve, reject) => {
-  //     const task = spawn('node', args, {
-  //       stdio: 'inherit',
-  //     });
-  //     task.on('close', (code) => {
-  //       if (code === 0) resolve(code);
-  //       else reject(code);
-  //     });
-  //     task.on('error', (err) => reject(err));
-  //   });
-  // }
-
-  // has(key, value) {
-  //   const results = this.subscriptions.filter((s) => s[key] === value);
-  //   return !!results.length;
-  // }
-
-  // query(key, value) {
-  //   const results = this.subscriptions.filter((s) => s[key] === value);
-  //   return results[0] || null;
-  // }
-
-  // sort() {
-  //   this.subscriptions.forEach((s) => s.sort());
-  //   this.subscriptions.sort((a, b) => b.latest - a.latest);
-  // }
+  /**
+   * @memberof Database
+   */
+  sort() {
+    this.subscriptions.forEach((sub) => sub.sort());
+    this.subscriptions.sort((a, b) => b.latest - a.latest);
+  }
 }
 
 exports.Database = Database;
