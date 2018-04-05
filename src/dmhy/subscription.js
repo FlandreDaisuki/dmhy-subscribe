@@ -40,11 +40,21 @@ class Subscription {
       const { ext } = path.parse(subscribable);
       if (SUPPORT_FORMAT.has(ext)) {
         const loaded = this.loadMetaFromFile(path.resolve(subscribable));
-        const { title, keywords, sid, latest } = loaded;
+        let { title, keywords, sid, latest } = loaded;
+
+        if (!title) {
+          throw new SubscriptionError('Subscribable file must have title');
+        }
+
+        keywords = keywords || [];
+        sid = sid || null;
+        latest = latest || -Infinity;
+
         if (loaded.episodeParser) {
           this.episodeParser = strToRegexp(loaded.episodeParser);
         }
-        if (loaded.userBlacklistPatterns.length) {
+
+        if (loaded.userBlacklistPatterns && loaded.userBlacklistPatterns.length) {
           this.userBlacklistPatterns = loaded.userBlacklistPatterns
             .map((ubp) => strToRegexp(ubp))
             .filter((_) => _);
@@ -55,13 +65,14 @@ class Subscription {
         if (!this.title) {
           throw new SubscriptionError('Subscribable string must have title');
         }
-        this.keywords.sort();
+
         this.sid = null;
         this.latest = -Infinity; // last episode of threads
       } else {
         throw new SubscriptionError(`Unknown subscribable: "${subscribable}"`);
       }
     }
+    this.keywords.sort();
   }
 
   /**
