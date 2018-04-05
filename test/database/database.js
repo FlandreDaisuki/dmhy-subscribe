@@ -8,28 +8,28 @@ const { Database, Subscription } = require('../..');
 class DummyConfig {}
 
 const testDatabasePath = `${__dirname}/.dmhy-subscribe/db.json`;
-const testFeedsDir = `${__dirname}/.dmhy-subscribe/feeds`;
+const testSubsDir = `${__dirname}/.dmhy-subscribe/subs`;
 
 const clearPaths = () => {
   fs.removeSync(testDatabasePath);
-  fs.removeSync(testFeedsDir);
+  fs.removeSync(testSubsDir);
 };
 
 describe('database', () => {
   it('Database ctor', () => {
-    assert.doesNotThrow(() => new Database({ dbpath: testDatabasePath, feedsDir: testFeedsDir }));
-    assert.throws(() => new Database({ dbpath: testDatabasePath, feedsDir: testFeedsDir, config: new DummyConfig() }), Error);
+    assert.doesNotThrow(() => new Database({ dbpath: testDatabasePath, subsDir: testSubsDir }));
+    assert.throws(() => new Database({ dbpath: testDatabasePath, subsDir: testSubsDir, config: new DummyConfig() }), Error);
 
     clearPaths();
-    new Database({ dbpath: testDatabasePath, feedsDir: testFeedsDir });
+    new Database({ dbpath: testDatabasePath, subsDir: testSubsDir });
     assert.ok(fs.existsSync(testDatabasePath));
-    assert.ok(fs.existsSync(testFeedsDir));
+    assert.ok(fs.existsSync(testSubsDir));
     clearPaths();
   });
 
   it('Database#add', () => {
     clearPaths();
-    const db = new Database({ dbpath: testDatabasePath, feedsDir: testFeedsDir });
+    const db = new Database({ dbpath: testDatabasePath, subsDir: testSubsDir });
     const subscribables = fs.readdirSync(`${__dirname}/../subscribables`);
     subscribables.forEach((subscribable) => {
       assert.doesNotThrow(() => db.add(new Subscription(`${__dirname}/../subscribables/${subscribable}`)));

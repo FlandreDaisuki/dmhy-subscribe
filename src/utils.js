@@ -234,7 +234,7 @@ module.exports = {
     systemLocale,
     defaultProjectDataDir: `${os.homedir()}/.dmhy-subscribe`,
     defaultDatabasePath: `${os.homedir()}/.dmhy-subscribe/db.json`,
-    defaultFeedsDir: `${os.homedir()}/.dmhy-subscribe/feeds`,
+    defaultSubsDir: `${os.homedir()}/.dmhy-subscribe/subs`,
     defaultConfigPath: `${os.homedir()}/.dmhy-subscribe/config.json`,
     defaultVersionPath: `${os.homedir()}/.dmhy-subscribe/.version`,
     remoteVersionPath: `${os.homedir()}/.dmhy-subscribe/.remoteVersion`,

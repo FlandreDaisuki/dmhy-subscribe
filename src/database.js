@@ -5,7 +5,7 @@ const { CONST, print } = require('./utils');
 const { Config } = require('./config');
 const { Subscription } = require('./dmhy/subscription');
 
-const { defaultDatabasePath, packageVersion, defaultFeedsDir } = CONST;
+const { defaultDatabasePath, packageVersion, defaultSubsDir } = CONST;
 
 
 /**
@@ -14,10 +14,10 @@ const { defaultDatabasePath, packageVersion, defaultFeedsDir } = CONST;
 class Database {
   /**
    * Creates an instance of Database.
-   * @param {any} options [{ dbpath = defaultDatabasePath, feedsDir = defaultFeedsDir, config = new Config() }={}]
+   * @param {any} options [{ dbpath = defaultDatabasePath, subsDir = defaultSubsDir, config = new Config() }={}]
    * @memberof Database
    */
-  constructor({ dbpath = defaultDatabasePath, feedsDir = defaultFeedsDir, config = new Config() } = {}) {
+  constructor({ dbpath = defaultDatabasePath, subsDir = defaultSubsDir, config = new Config() } = {}) {
     this.dbpath = dbpath;
     this.config = config;
     if (!(config instanceof Config)) {
@@ -34,13 +34,13 @@ class Database {
       fs.writeFileSync(this.dbpath, JSON.stringify(empty));
     }
 
-    if (!fs.existsSync(feedsDir)) {
-      fs.mkdirSync(feedsDir);
+    if (!fs.existsSync(subsDir)) {
+      fs.mkdirSync(subsDir);
     }
 
     const db = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
-    const feeds = fs.readdirSync(feedsDir);
-    this.subscriptions = feeds.filter((feed) => new Subscription(`${feedsDir}/${feed}`));
+    const subs = fs.readdirSync(subsDir);
+    this.subscriptions = subs.filter((feed) => new Subscription(`${subsDir}/${feed}`));
     this.subscriptions.forEach((subscription) => {
       subscription.threads = db.subscriptions[subscription.sid] || [];
     });
