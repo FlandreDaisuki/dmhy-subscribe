@@ -74,6 +74,7 @@ CMD_DL_USAGE: |
     type := '' | 'OVA' | 'SP'
 
     THID is <SID> that implies all episodes are included, same as <SID>-all.
+CMD_DL_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
 
 CMD_FIND_DESC: Search threads on website directly
 CMD_FIND_USAGE: |

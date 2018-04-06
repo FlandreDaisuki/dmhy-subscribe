@@ -196,9 +196,9 @@ class Subscription {
 
     const episodeLikes = Subscription.parseEpisodeStringToEpisodeLike(epstr);
 
-    return episodeLikes.filter((epidodeLike) => {
+    return episodeLikes.map((epidodeLike) => {
       return this.threads.find((thread) => thread.episode.has(epidodeLike));
-    });
+    }).filter((_) => _);
   }
 
   /**
