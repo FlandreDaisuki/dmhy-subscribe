@@ -5,4 +5,5 @@ module.exports = Object.assign({},
   require('./src/dmhy/subscription'),
   require('./src/database'),
   require('./src/config'),
+  require('./src/crawler'),
 );

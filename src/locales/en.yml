@@ -75,6 +75,11 @@ CMD_DL_USAGE: |
     THID is <SID> that implies all episodes are included, same as <SID>-all.
 
 CMD_FIND_DESC: Search threads on website directly
+CMD_FIND_USAGE: |
+  Usage: $0 search <subscribable-string>
+
+    Search threads on website by subscribable string without opening browser.
+CMD_FIND_TOTAL: 'Total: %total% result(s)'
 
 CMD_CFG_DESC: Configure internal parameters
 CMD_CFG_USAGE: |

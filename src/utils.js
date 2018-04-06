@@ -224,11 +224,41 @@ class XSet extends Set {
   }
 }
 
+/**
+ * @param {string} s
+ * @return {?RegExp} result
+ */
+function strToRegexp(s) {
+  if (/^\/.*\/\w*$/.test(s)) {
+    const [, pattern, flag] = s.match(/^\/(.*)\/(\w*)$/);
+    return new RegExp(pattern, flag);
+  }
+  return null;
+}
+
+/**
+ * Split keywords and unkeywords
+ *
+ * @param {string} keywords
+ * @return {{unkeywords:string[], keywords:string[]}}
+ */
+function splitKeywords(keywords) {
+  const unkeywords = keywords
+    .filter((keyword) => /^~.*~$/.test(keyword))
+    .map((unkeyword) => unkeyword.replace(/^~(.*)~$/, '$1'));
+  return {
+    unkeywords,
+    keywords: keywords.filter((keyword) => !/^~.*~$/.test(keyword)),
+  };
+}
+
 module.exports = {
   print,
   hash,
   l10n,
   XSet,
+  strToRegexp,
+  splitKeywords,
   CONST: {
     systemDownloadsFolder,
     systemLocale,

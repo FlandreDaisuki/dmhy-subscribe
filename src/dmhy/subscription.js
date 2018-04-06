@@ -2,39 +2,10 @@ const fs = require('fs-extra');
 const path = require('path');
 const ymal = require('js-yaml');
 const { Thread } = require('./thread');
-const { print, hash, XSet } = require('../utils');
+const { print, hash, XSet, strToRegexp, splitKeywords } = require('../utils');
 const { SubscriptionError } = require('../errors');
 
 const SUPPORT_FORMAT = new Set(['.yml', '.yaml']);
-
-/**
- * @param {string} s
- * @return {?RegExp} result
- */
-function strToRegexp(s) {
-  if (/^\/.*\/\w*$/.test(s)) {
-    const [, pattern, flag] = s.match(/^\/(.*)\/(\w*)$/);
-    return new RegExp(pattern, flag);
-  }
-  return null;
-}
-
-/**
- * Split keywords and unkeywords
- *
- * @param {string} keywords
- * @return {{unkeywords:string[], keywords:string[]}}
- */
-function splitKeywords(keywords) {
-  const unkeywords = keywords
-    .filter((keyword) => /^~.*~$/.test(keyword))
-    .map((unkeyword) => unkeyword.replace(/^~(.*)~$/, '$1'));
-  return {
-    unkeywords,
-    keywords: keywords.filter((keyword) => !/^~.*~$/.test(keyword)),
-  };
-}
-
 
 /**
  * Describe a Subscription
