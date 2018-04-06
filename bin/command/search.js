@@ -1,4 +1,5 @@
 const { l10n, print, splitKeywords, fetchThreadsByKeywords } = require('../..');
+
 exports.command = 'search <subscribable-string>';
 
 exports.aliases = ['find'];
@@ -15,7 +16,6 @@ exports.builder = (yargs) => {
 };
 
 exports.handler = async (argv) => {
-  // TODO
   const { keywords, unkeywords } = splitKeywords(argv.ss.split(','));
   const threads = await fetchThreadsByKeywords(keywords, unkeywords);
   threads.forEach((th) => {

@@ -1,4 +1,5 @@
 const { l10n, print } = require('../..');
+
 exports.command = 'config [key] [value]';
 
 exports.aliases = ['cfg'];

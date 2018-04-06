@@ -1,4 +1,5 @@
 const { l10n, print, Database } = require('../..');
+
 exports.command = 'remove [SID...]';
 
 exports.aliases = ['rm'];

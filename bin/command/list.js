@@ -1,6 +1,6 @@
-const { l10n, Database } = require('../..');
 const yaml = require('js-yaml');
 const Table = require('easy-table');
+const { l10n, Database } = require('../..');
 
 exports.command = 'list [SID...]';
 
