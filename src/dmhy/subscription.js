@@ -117,6 +117,16 @@ class Subscription {
       this.latest = this.latest || -Infinity;
       this.episodeParser = this.episodeParser || null;
       this.userBlacklistPatterns = this.userBlacklistPatterns || [];
+
+      if (this.episodeParser) {
+        this.episodeParser = strToRegexp(this.episodeParser);
+      }
+
+      if (this.userBlacklistPatterns && this.userBlacklistPatterns.length) {
+        this.userBlacklistPatterns = this.userBlacklistPatterns
+          .map((ubp) => strToRegexp(ubp))
+          .filter((_) => _);
+      }
     }
 
     this.keywords.sort();
