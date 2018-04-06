@@ -1,56 +1,84 @@
-const axios = require('axios')
-const cheerio = require('cheerio')
-const { Subscription } = require('./dmhy/subscription')
-const { Thread } = require('./dmhy/thread')
+const axios = require('axios');
+const cheerio = require('cheerio');
+const { Subscription } = require('./dmhy/subscription');
+const { Thread } = require('./dmhy/thread');
 
-async function fetchSearchHTML (kws) {
+/**
+ * @param {string[]} kws
+ * @return {HTML} axios data
+ */
+async function fetchSearchHTML(kws) {
   const response = await axios.get(
     `https://share.dmhy.org/topics/list?keyword=${kws.map(encodeURIComponent).join('+')}`
-  )
+  );
   if (response.status !== 200) {
-    throw new Error(response)
+    throw new Error(response);
   }
-  return response.data
+  return response.data;
 }
 
-async function fetchThreads (subscription) {
-  if (!(subscription instanceof Subscription)) {
-    throw new TypeError('Parameter should be a Subscription.')
+/**
+ * @param {any} sub
+ * @return {Thread[]} threads
+ */
+async function fetchThreads(sub) {
+  if (!(sub instanceof Subscription)) {
+    throw new TypeError('Parameter should be a Subscription.');
   }
-  const kws = [subscription.name, ...subscription.keywords]
-  return (await fetchThreadsByKeyword(kws)).filter(Thread.isValid)
+  const kws = [sub.name, ...sub.keywords];
+  return (await fetchThreadsByKeywords(kws, sub.unkeywords));
 }
 
-async function fetchThreadsByKeyword (kws) {
+/**
+ * @param {string[]} kws
+ * @param {string[]} ukws
+ * @return {Thread[]} threads
+ */
+async function fetchThreadsByKeywords(kws, ukws = []) {
   return parseThreadsFromHTML(await fetchSearchHTML(kws))
+    .filter((th) => !ukws.some((ukw) => th.title.includes(ukw)));
 }
 
-function parseThreadsFromHTML (html) {
-  const $ = cheerio.load(html)
-  const titles = getTitlesFromCheerio($)
-  const magnets = getMagnetsFromCheerio($)
+/**
+ *
+ *
+ * @param {HTML} html
+ * @return {Thread[]} threads
+ */
+function parseThreadsFromHTML(html) {
+  const $ = cheerio.load(html);
+  const titles = getTitlesFromCheerio($);
+  const magnets = getMagnetsFromCheerio($);
 
   if (titles.length !== magnets.length) {
-    throw new Error('titles.length !== magnets.length')
+    throw new Error('titles.length !== magnets.length');
   }
 
-  return titles.map((title, i) => new Thread({ title, link: magnets[i] }))
+  return titles
+    .map((title, i) => new Thread({ title, link: magnets[i] }))
+    .filter((th) => th.isValid());
 }
 
-function getTitlesFromCheerio ($) {
+/**
+ * @param {cheerio} $
+ * @return {string[]} titles
+ */
+function getTitlesFromCheerio($) {
   return $('#topic_list tr:nth-child(n+1) .title > a')
     .text()
     .split(/[\n\t]+/)
-    .filter(_ => _)
+    .filter((_) => _);
 }
 
-function getMagnetsFromCheerio ($) {
+/**
+ * @param {cheerio} $
+ * @return {string[]} links
+ */
+function getMagnetsFromCheerio($) {
   return $('#topic_list tr:nth-child(n+1) a.download-arrow')
     .toArray()
-    .map(x => x.attribs.href)
+    .map((x) => x.attribs.href);
 }
 
-module.exports = {
-  fetchThreads,
-  fetchThreadsByKeyword
-}
+exports.fetchThreads = fetchThreads;
+exports.fetchThreadsByKeywords = fetchThreadsByKeywords;
