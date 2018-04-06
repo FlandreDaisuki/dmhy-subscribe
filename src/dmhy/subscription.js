@@ -20,9 +20,34 @@ function strToRegexp(s) {
 }
 
 /**
+ * Split keywords and unkeywords
+ *
+ * @param {string} keywords
+ * @return {{unkeywords:string[], keywords:string[]}}
+ */
+function splitKeywords(keywords) {
+  const unkeywords = keywords
+    .filter((keyword) => /^~.*~$/.test(keyword))
+    .map((unkeyword) => unkeyword.replace(/^~(.*)~$/, '$1'));
+  return {
+    unkeywords,
+    keywords: keywords.filter((keyword) => !/^~.*~$/.test(keyword)),
+  };
+}
+
+
+/**
  * Describe a Subscription
  *
  * @class Subscription
+ * @member {string} sid
+ * @member {string} title
+ * @member {string[]} keywords
+ * @member {string[]} unkeywords
+ * @member {Number} latest
+ * @member {Thread[]} threads
+ * @member {RegExp} episodeParser
+ * @member {RegExp[]} userBlacklistPatterns
  */
 class Subscription {
   /**
@@ -31,21 +56,28 @@ class Subscription {
    * @memberof Subscription
    */
   constructor(subscribable) {
-    this.threads = [];
-    this.episodeParser = null;
-    this.userBlacklistPatterns = [];
+    Object.assign(this, {
+      sid: null,
+      keywords: [],
+      unkeywords: [],
+      latest: -Infinity,
+      threads: [],
+      episodeParser: null,
+      userBlacklistPatterns: [],
+    });
 
     if (typeof subscribable === 'string') {
       const { ext } = path.parse(subscribable);
       if (SUPPORT_FORMAT.has(ext)) {
         const loaded = this.loadMetaFromFile(path.resolve(subscribable));
-        let { title, keywords, sid, latest } = loaded;
+        let { title, keywords, unkeywords, sid, latest } = loaded;
 
         if (!title) {
           throw new SubscriptionError('Subscribable file must have title');
         }
 
         keywords = keywords || [];
+        unkeywords = unkeywords || [];
         sid = sid || null;
         latest = latest || -Infinity;
 
@@ -58,20 +90,37 @@ class Subscription {
             .map((ubp) => strToRegexp(ubp))
             .filter((_) => _);
         }
-        Object.assign(this, { title, keywords, sid, latest });
+        Object.assign(this, { title, keywords, unkeywords, sid, latest });
       } else if (!ext || subscribable.includes(',')) {
         [this.title, ...this.keywords] = subscribable.split(',');
         if (!this.title) {
           throw new SubscriptionError('Subscribable string must have title');
         }
+        const spilts = splitKeywords(this.keywords);
+        this.keywords = spilts.keywords;
+        this.unkeywords = spilts.unkeywords;
 
         this.sid = null;
         this.latest = -Infinity; // last episode of threads
       } else {
         throw new SubscriptionError(`Unknown subscribable: "${subscribable}"`);
       }
+    } else if (typeof subscribable === 'object' && subscribable.title) {
+      // subscriptionLike constructor
+      Object.assign(this, subscribable);
+
+      // recheck all
+      this.sid = this.sid || null;
+      this.keywords = this.keywords || [];
+      this.threads = this.threads || [];
+      this.unkeywords = this.unkeywords || [];
+      this.latest = this.latest || -Infinity;
+      this.episodeParser = this.episodeParser || null;
+      this.userBlacklistPatterns = this.userBlacklistPatterns || [];
     }
+
     this.keywords.sort();
+    this.unkeywords.sort();
   }
 
   /**

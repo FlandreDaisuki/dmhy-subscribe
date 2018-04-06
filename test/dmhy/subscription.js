@@ -9,13 +9,15 @@ describe('dmhy/subscription', () => {
 
     const camp = new Subscription(`${__dirname}/../subscribables/camp.yml`);
     assert.equal(camp.title, '搖曳露營');
-    assert.deepEqual(camp.keywords, ['喵萌', '繁體', '~合集~'].sort());
+    assert.deepEqual(camp.keywords, ['喵萌', '繁體'].sort());
+    assert.deepEqual(camp.unkeywords, ['合集'].sort());
     assert.deepEqual(camp.episodeParser, /第\s*(\d+(?:-\d+)?)\s*[話话]/);
     assert.deepEqual(camp.userBlacklistPatterns, [/\d+月\d+日/, /\d+\s*月新番/]);
 
     const good = new Subscription(`${__dirname}/../subscribables/good.yml`);
     assert.equal(good.title, '牙鬥獸娘');
     assert.deepEqual(good.keywords, []);
+    assert.deepEqual(good.unkeywords, []);
     assert.equal(good.episodeParser, null);
     assert.deepEqual(good.userBlacklistPatterns, []);
 
@@ -28,6 +30,17 @@ describe('dmhy/subscription', () => {
     const camp2 = new Subscription('搖曳露營');
     assert.equal(camp2.title, '搖曳露營');
     assert.deepEqual(camp2.keywords, []);
+    assert.deepEqual(camp2.unkeywords, []);
+
+    const subLike = {
+      title: '紫羅蘭永恆花園',
+      keywords: ['動漫國'],
+      unkeywords: ['合集'],
+    };
+    const violet = new Subscription(subLike);
+    assert.equal(violet.title, '紫羅蘭永恆花園');
+    assert.deepEqual(violet.keywords, ['動漫國']);
+    assert.deepEqual(violet.unkeywords, ['合集']);
   });
 
   it('Subscription#loadThreads', () => {

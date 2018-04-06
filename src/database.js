@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const yaml = require('js-yaml');
-const { CONST } = require('./utils');
+const { CONST, XSet } = require('./utils');
 const { Config } = require('./config');
 const { Subscription } = require('./dmhy/subscription');
 
@@ -90,23 +90,30 @@ class Database {
     fs.writeFileSync(this.dbpath, JSON.stringify(threadsMap));
 
     this.subscriptions.forEach((sub) => {
-      let { sid, title, keywords, episodeParser, userBlacklistPatterns } = sub;
+      let { sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns } = sub;
       if (episodeParser) {
         episodeParser = episodeParser.toString();
       }
       userBlacklistPatterns = userBlacklistPatterns.map((ubp) => ubp.toString());
-      const yamlData = yaml.safeDump({ sid, title, keywords, episodeParser, userBlacklistPatterns });
+      const yamlData = yaml.safeDump({ sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns });
       fs.writeFileSync(`${this.isubsDir}/${sid}.yml`, yamlData);
     });
   }
 
   /**
-   * @param {string} sid
+   * @param {Subscription} sub
    * @return {?Subscription} Subscription
    * @memberof Database
    */
-  find(sid) {
-    return this.subscriptions.find((sub) => sub.sid === sid) || null;
+  find(sub) {
+    if (sub.sid) {
+      return this.subscriptions.find((thissub) => thissub.sid === sub.sid) || null;
+    }
+    return this.subscriptions.find((thissub) => {
+      return thissub.title === sub.title &&
+        (new XSet(thissub.keywords)).isSuperset(sub.keywords) &&
+        (new XSet(thissub.unkeywords)).isSuperset(sub.unkeywords);
+    }) || null;
   }
 
   /**

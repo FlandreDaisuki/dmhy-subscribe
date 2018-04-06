@@ -2,9 +2,13 @@
 # 必須有值
 title: 牙鬥獸娘
 
-# 符合關鍵字的 Thread 才會被加入 search，以`~`夾起來的 Thread 會直接不處理
+# 符合關鍵字的 Thread 才會被加入 search
 # 字串陣列
 keywords:
+
+# 符合黑名單關鍵字的 Thread 在 search 後會直接被捨棄
+# 字串陣列
+unkeywords:
 
 # 使用 JS RegExp 寫法，`\`不用寫成`\\`，以第一個 group 來 parse
 episodeParser:
