@@ -33,6 +33,14 @@ CMD_ADD_EXAMPLE2_DESC: Use subscribable file
 CMD_ADD_EXAMPLE3_DESC: Use interactive prompt
 
 CMD_RM_DESC: Remove subscriptions by their SID
+CMD_RM_USAGE: |
+  Usage: $0 remove [options] [SID...]
+
+    Remove subscriptions by their SID.
+CMD_RM_OPT_A: Remove all subscriptions
+CMD_RM_OPT_NO_A_NO_SID: If no option --all, you should provide at least 1 SID as a parameter.
+CMD_RM_REMOVE_SUCCESS: Remove subscription "%title%" successfully
+CMD_RM_EXAMPLE1_DESC: Remove the subscription which SID is "AAA"
 
 CMD_LS_DESC: Show subscriptions information
 
