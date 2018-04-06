@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const ymal = require('js-yaml');
 const { Thread } = require('./thread');
-// const { Episode } = require('./episode');
 const { print, hash, XSet } = require('../utils');
 const { SubscriptionError } = require('../errors');
 
@@ -154,20 +153,6 @@ class Subscription {
       this.sid = hash(this.name, this.sid);
     }
   }
-
-  // list() {
-  //   const subscribable = [this.name, ...this.keywords].join(',');
-  //   console.log(subscribable);
-  //   console.log('='.repeat(subscribable.length));
-  //   console.log();
-  //   const threads = this.threads.map((th) => {
-  //     return {
-  //       Episodes: th.episode.toString(Episode.ascendCompare),
-  //       Title: th.title,
-  //     };
-  //   });
-  //   console.table(threads.slice().reverse()); // ascend
-  // }
 
   /**
    * @param {string} epstr
