@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const { CONST } = require('./utils');
+const { CONST, l10n } = require('./utils');
 const { systemDownloadsFolder, defaultConfigPath } = CONST;
 
 const DEFAULTS = {
@@ -9,14 +9,13 @@ const DEFAULTS = {
   'destination': systemDownloadsFolder,
   'webhook-url': 'http://localhost/',
 };
-
 const VALIDATORS = {
   'downloader': (downloader) => {
     const result = { ok: true, msg: '' };
     const downloaders = fs.readdirSync(`${__dirname}/downloaders`).map((d) => path.basename(d, '.js'));
     if (!(new Set(downloaders)).has(downloader)) {
       result.ok = false;
-      result.msg = 'not support downloader';
+      result.msg = l10n('CMD_CFG_VALIDATORS_DOWNLOADER_ERR');
     }
     return result;
   },
@@ -24,7 +23,7 @@ const VALIDATORS = {
     const result = { ok: true, msg: '' };
     if (!(fs.existsSync(destination))) {
       result.ok = false;
-      result.msg = 'destination not exists';
+      result.msg = l10n('CMD_CFG_VALIDATORS_DESTINATION_ERR');
     }
     return result;
   },

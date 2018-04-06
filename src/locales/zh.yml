@@ -93,11 +93,19 @@ CMD_CFG_USAGE: |
   使用方法: $0 config [參數鍵] [參數值]
 
     設定內部參數。
+CMD_CFG_OPT_RESET: 設為預設值
+CMD_CFG_UNKNOWN_KEY: 未知的鍵：%key%
+CMD_CFG_SET_SUCCESS: 設定成功
+CMD_CFG_SET_FAILED: 設定失敗
+CMD_CFG_CELL_KEY: 鍵
+CMD_CFG_CELL_VALUE: 值
 CMD_CFG_EXAMPLE1_DESC: 印出全部參數鍵值
-CMD_CFG_EXAMPLE2_DESC: 印出參數 client 的值
+CMD_CFG_EXAMPLE2_DESC: 印出參數 downloader 的值
 CMD_CFG_EXAMPLE3_DESC: |
-  將參數 client 的值改為 deluge，
+  將參數 downloader 的值改為 deluge，
   並印出變更後鍵值
+CMD_CFG_VALIDATORS_DESTINATION_ERR: 指定位置不存在
+CMD_CFG_VALIDATORS_DOWNLOADER_ERR: 不支援的下載器
 
 DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
 DOWNLOADER_DL_SUCCESS: 開始下載 %title%

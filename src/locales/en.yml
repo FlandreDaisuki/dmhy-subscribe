@@ -88,9 +88,15 @@ CMD_CFG_USAGE: |
   Usage: $0 config [key] [value]
 
     Configure internal parameters.
+CMD_CFG_OPT_RESET: Reset to default value
+CMD_CFG_UNKNOWN_KEY: 'Unknown key: %key%'
+CMD_CFG_SET_SUCCESS: Configure successfully
+CMD_CFG_SET_FAILED: Configure failed
 CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
-CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'client'
-CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'client' to 'deluge' and print changed key-value
+CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'downloader'
+CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'downloader' to 'deluge' and print changed key-value
+CMD_CFG_VALIDATORS_DESTINATION_ERR: The destination not exists
+CMD_CFG_VALIDATORS_DOWNLOADER_ERR: The downloader is not supported
 
 DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
 DOWNLOADER_DL_SUCCESS: Start to download %title%
