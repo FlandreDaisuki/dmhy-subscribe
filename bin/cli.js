@@ -20,6 +20,7 @@ const yargs = require('yargs');
         print.info(l10n('NEW_VERSION_MSG'));
         console.log();
       }
+      fs.writeJSONSync(CONST.remoteVersionPath, { count: count, version: remoteVersion });
     } else {
       fs.writeJSONSync(CONST.remoteVersionPath, { count: count + 1, version: lastRemoteVersion });
     }
