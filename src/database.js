@@ -65,7 +65,7 @@ class Database {
 
   /**
    * @param {string} sid
-   * @return {boolean} success
+   * @return {?Subscription} Subscription removed
    * @memberof Database
    */
   remove(sid) {
@@ -73,10 +73,9 @@ class Database {
       return sub.sid === sid;
     });
     if (index >= 0) {
-      this.subscriptions.splice(index, 1);
-      return true;
+      return this.subscriptions.splice(index, 1)[0];
     }
-    return false;
+    return null;
   }
 
   /**
