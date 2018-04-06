@@ -89,6 +89,9 @@ class Database {
     }, {});
     fs.writeFileSync(this.dbpath, JSON.stringify(threadsMap));
 
+    fs.removeSync(this.isubsDir);
+    fs.mkdirsSync(this.isubsDir);
+
     this.subscriptions.forEach((sub) => {
       let { sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns } = sub;
       if (episodeParser) {
