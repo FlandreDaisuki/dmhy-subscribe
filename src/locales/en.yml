@@ -43,6 +43,24 @@ CMD_RM_REMOVE_SUCCESS: Remove subscription "%title%" successfully
 CMD_RM_EXAMPLE1_DESC: Remove the subscription which SID is "AAA"
 
 CMD_LS_DESC: Show subscriptions information
+CMD_LS_USAGE: |
+  Usage: $0 list [options] [SID...]
+
+    Show subscriptions information.
+    Show all subscriptions information if no specific SID.
+CMD_LS_OPT_SS: Show subscribable string
+CMD_LS_OPT_SY: Show subscribable file in yaml format
+CMD_LS_OPT_SYSS_ERR: Don't use -ss and -sy at the same time.
+CMD_LS_EXAMPLE1_DESC: Show the subscription information which SID is "AAA"
+CMD_LS_EXAMPLE2_DESC: Show the subscribable string of all subscriptions
+CMD_LS_CELL_SID: SID
+CMD_LS_CELL_TITLE: Title
+CMD_LS_CELL_KEYWORDS: Keywords
+CMD_LS_CELL_UNKEYWORDS: Unkeywords
+CMD_LS_CELL_EPISODEPARSER: Episode Parser
+CMD_LS_CELL_LATEST: Latest
+CMD_LS_CELL_THREAD_EPISODE: Episode(s)
+CMD_LS_CELL_THREAD_TITLE: Thread Title
 
 CMD_DL_DESC: Download subscriptions by their THID
 CMD_DL_USAGE: |

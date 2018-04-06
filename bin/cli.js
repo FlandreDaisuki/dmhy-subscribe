@@ -53,8 +53,6 @@ function main() {
     .alias('v', 'version')
     .argv;
 
-  print.debug(JSON.stringify(argv, null, 2));
-
   // No command, update and download all
   if (!argv._.length) {
     print.success('success');

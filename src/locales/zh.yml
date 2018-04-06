@@ -30,7 +30,7 @@ CMD_ADD_INTERACTIVE_TITLE: 請輸入標題 (必須)
 CMD_ADD_INTERACTIVE_TITLE_ERR: 標題不可空白
 CMD_ADD_INTERACTIVE_KEYWORDS: 請輸入關鍵字 (逗號隔開)
 CMD_ADD_INTERACTIVE_UNKEYWORDS: 請輸入黑名單關鍵字 (逗號隔開)
-CMD_ADD_INTERACTIVE_EPISODEPARSER: 自定義集數解析 (JS RegExp, 取 group 1)
+CMD_ADD_INTERACTIVE_EPISODEPARSER: 自定義集數解析式 (JS RegExp, 取 group 1)
 CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」及相同關鍵字的訂閱，繼續新增？
 CMD_ADD_EXAMPLE1_DESC: 使用訂閱用字串
 CMD_ADD_EXAMPLE2_DESC: 使用訂閱設定檔
@@ -48,6 +48,24 @@ CMD_RM_REMOVE_SUCCESS: 成功刪除訂閱「%title%」
 CMD_RM_EXAMPLE1_DESC: 刪除訂閱識別碼為 AAA 的訂閱
 
 CMD_LS_DESC: 顯示訂閱資訊
+CMD_LS_USAGE: |
+  使用方法: $0 list [選項] [訂閱識別碼...]
+
+    顯示訂閱資訊。若無指定訂閱識別碼，則顯示全部訂閱。
+CMD_LS_OPT_SS: 顯示訂閱用字串
+CMD_LS_OPT_SY: 顯示訂閱設定檔 (yaml格式)
+CMD_LS_OPT_SYSS_ERR: 請不要同時使用 -ss 及 -sy
+CMD_LS_EXAMPLE1_DESC: 顯示訂閱識別碼為 AAA 的訂閱資訊
+CMD_LS_EXAMPLE2_DESC: 顯示所有訂閱的訂閱用字串
+CMD_LS_CELL_SID: 訂閱識別碼
+CMD_LS_CELL_TITLE: 標題
+CMD_LS_CELL_KEYWORDS: 關鍵字
+CMD_LS_CELL_UNKEYWORDS: 黑名單關鍵字
+CMD_LS_CELL_EPISODEPARSER: 自定義集數解析式
+CMD_LS_CELL_LATEST: 最新集數
+CMD_LS_CELL_THREAD_EPISODE: 集數
+CMD_LS_CELL_THREAD_TITLE: 貼文標題
+
 
 CMD_DL_DESC: 根據下載識別碼下載訂閱
 CMD_DL_USAGE: |

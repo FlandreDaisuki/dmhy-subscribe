@@ -41,5 +41,8 @@
     "prompts": "^0.1.8",
     "semver": "^5.5.0",
     "yargs": "^11.0.0"
+  },
+  "yargs": {
+    "short-option-groups": false
   }
 }
