@@ -1,6 +1,6 @@
 const yaml = require('js-yaml');
 const Table = require('easy-table');
-const { l10n, Database } = require('../..');
+const { l10n, Database, TheEpisode } = require('../..');
 
 exports.command = 'list [SID...]';
 
@@ -72,8 +72,9 @@ exports.handler = (argv) => {
 
       const tht = new Table();
       sub.threads.forEach((th) => {
-        tht.cell(l10n('CMD_LS_CELL_THREAD_EPISODE'), th.episode.toString());
+        tht.cell(l10n('CMD_LS_CELL_THREAD_EPISODE'), th.episode.toString(TheEpisode.ascendCompare));
         tht.cell(l10n('CMD_LS_CELL_THREAD_TITLE'), th.title);
+        tht.newRow();
       });
       console.log(tht.toString().trim());
       console.log();

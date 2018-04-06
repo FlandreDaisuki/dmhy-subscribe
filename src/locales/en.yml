@@ -28,6 +28,7 @@ CMD_ADD_INTERACTIVE_KEYWORDS: Input keywords (separated by ",")
 CMD_ADD_INTERACTIVE_UNKEYWORDS: Input unkeywords (separated by ",")
 CMD_ADD_INTERACTIVE_EPISODEPARSER: Custom episode parser (JS RegExp, pick group 1)
 CMD_ADD_PROMPTS_CONFIRM: There is a subscription with the same title "%title%" and keywords, add it anyway?
+CMD_ADD_SUCCESS: Add subscription "%title%" successfully
 CMD_ADD_EXAMPLE1_DESC: Use subscribable string
 CMD_ADD_EXAMPLE2_DESC: Use subscribable file
 CMD_ADD_EXAMPLE3_DESC: Use interactive prompt
@@ -89,6 +90,10 @@ CMD_CFG_USAGE: |
 CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
 CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'client'
 CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'client' to 'deluge' and print changed key-value
+
+DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
+DOWNLOADER_DL_SUCCESS: Start to download %title%
+DOWNLOADER_DL_FAILED: Fail to download %title%
 
 THREAD_EP_PARSE_ERR: |
   This should never print unless having bugs.

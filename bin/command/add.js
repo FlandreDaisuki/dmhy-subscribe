@@ -54,6 +54,7 @@ exports.handler = async (argv) => {
     if (existed) {
       if (argv.yes) {
         db.add(sub);
+        print.success(l10n('CMD_ADD_SUCCESS', { title: sub.title }));
       } else if (!argv.yes && !argv.no) {
         // interactive ask
         const answer = await prompts({
@@ -66,10 +67,12 @@ exports.handler = async (argv) => {
         });
         if (answer.add) {
           db.add(sub);
+          print.success(l10n('CMD_ADD_SUCCESS', { title: sub.title }));
         }
       }
     } else {
       db.add(sub);
+      print.success(l10n('CMD_ADD_SUCCESS', { title: sub.title }));
     }
   };
 

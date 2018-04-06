@@ -32,6 +32,7 @@ CMD_ADD_INTERACTIVE_KEYWORDS: 請輸入關鍵字 (逗號隔開)
 CMD_ADD_INTERACTIVE_UNKEYWORDS: 請輸入黑名單關鍵字 (逗號隔開)
 CMD_ADD_INTERACTIVE_EPISODEPARSER: 自定義集數解析式 (JS RegExp, 取 group 1)
 CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」及相同關鍵字的訂閱，繼續新增？
+CMD_ADD_SUCCESS: 成功新增訂閱「%title%」
 CMD_ADD_EXAMPLE1_DESC: 使用訂閱用字串
 CMD_ADD_EXAMPLE2_DESC: 使用訂閱設定檔
 CMD_ADD_EXAMPLE3_DESC: 使用互動式界面
@@ -96,6 +97,10 @@ CMD_CFG_EXAMPLE2_DESC: 印出參數 client 的值
 CMD_CFG_EXAMPLE3_DESC: |
   將參數 client 的值改為 deluge，
   並印出變更後鍵值
+
+DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
+DOWNLOADER_DL_SUCCESS: 開始下載 %title%
+DOWNLOADER_DL_FAILED: '%title% 下載失敗'
 
 THREAD_EP_PARSE_ERR: |
   這行只有在出現 bug 時會印出。

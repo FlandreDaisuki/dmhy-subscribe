@@ -25,7 +25,7 @@ async function fetchThreads(sub) {
   if (!(sub instanceof Subscription)) {
     throw new TypeError('Parameter should be a Subscription.');
   }
-  const kws = [sub.name, ...sub.keywords];
+  const kws = [sub.title, ...sub.keywords];
   return (await fetchThreadsByKeywords(kws, sub.unkeywords));
 }
 
