@@ -1,7 +1,7 @@
 const prompts = require('prompts');
 const { l10n, print, Database, Subscription } = require('../..');
 
-exports.command = 'add [subscribables...]';
+exports.command = 'add [subscribable...]';
 
 exports.aliases = [];
 
@@ -31,7 +31,7 @@ exports.builder = (yargs) => {
       if (argv.yes && argv.no) {
         throw new Error(l10n('CMD_ADD_OPT_YN_ERR'));
       }
-      if (!argv.subscribables && !argv.interactive) {
+      if (!argv.subscribable && !argv.interactive) {
         throw new Error(l10n('CMD_ADD_OPT_NO_I_NO_SUBS'));
       }
       return true;
@@ -112,7 +112,7 @@ exports.handler = async (argv) => {
     const sub = new Subscription(iSubscriptionLike);
     await safeAdd(sub);
   } else {
-    for (const subscribable of argv.subscribables) {
+    for (const subscribable of argv.subscribable) {
       const sub = new Subscription(subscribable);
       await safeAdd(sub);
     }
