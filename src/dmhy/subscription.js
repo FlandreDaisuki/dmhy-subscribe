@@ -76,28 +76,6 @@ class Subscription {
       } else {
         throw new SubscriptionError(`Unknown subscribable: "${subscribable}"`);
       }
-    } else if (typeof subscribable === 'object' && subscribable.title) {
-      // subscriptionLike constructor
-      Object.assign(this, subscribable);
-
-      // recheck all
-      this.sid = this.sid || null;
-      this.keywords = this.keywords || [];
-      this.threads = this.threads || [];
-      this.unkeywords = this.unkeywords || [];
-      this.latest = this.latest || -Infinity;
-      this.episodeParser = this.episodeParser || null;
-      this.userBlacklistPatterns = this.userBlacklistPatterns || [];
-
-      if (this.episodeParser) {
-        this.episodeParser = strToRegexp(this.episodeParser);
-      }
-
-      if (this.userBlacklistPatterns && this.userBlacklistPatterns.length) {
-        this.userBlacklistPatterns = this.userBlacklistPatterns
-          .map((ubp) => strToRegexp(ubp))
-          .filter((_) => _);
-      }
     }
 
     this.keywords.sort();
@@ -147,7 +125,7 @@ class Subscription {
    */
   loadThreads(threadLikes = []) {
     threadLikes.forEach((threadLike) => {
-      const thread = new Thread(threadLike);
+      const thread = new Thread(threadLike, this.episodeParser);
       if (thread.isValid()) {
         this.threads.push(thread);
       }
@@ -160,7 +138,7 @@ class Subscription {
    * @memberof Subscription
    */
   add(threadLike) {
-    const thread = new Thread(threadLike);
+    const thread = new Thread(threadLike, this.episodeParser);
     if (thread.isValid()) {
       this.threads.push(thread);
       this.sort();
@@ -236,6 +214,43 @@ class Subscription {
       }
     }
     return [...collection];
+  }
+
+  /**
+   * Like Array.from
+   *
+   * @static
+   * @param {any} [subscriptionLike={}]
+   * @return {Subscription} subscription
+   * @memberof Subscription
+   */
+  static from(subscriptionLike = {}) {
+    const sl = subscriptionLike;
+    if (!sl.title) {
+      throw new Error('Subscription need title');
+    }
+    const sub = new Subscription(sl.title);
+
+    // recheck all
+    sub.sid = sl.sid || null;
+    sub.keywords = sl.keywords || [];
+    sub.threads = sl.threads || [];
+    sub.unkeywords = sl.unkeywords || [];
+    sub.latest = sl.latest || -Infinity;
+    sub.episodeParser = sl.episodeParser || null;
+    sub.userBlacklistPatterns = sl.userBlacklistPatterns || [];
+
+    if (this.episodeParser && typeof this.episodeParser === 'string') {
+      this.episodeParser = strToRegexp(this.episodeParser);
+    }
+
+    if (this.userBlacklistPatterns && this.userBlacklistPatterns.length) {
+      this.userBlacklistPatterns = this.userBlacklistPatterns
+        .map((ubp) => (typeof ubp === 'string') ? strToRegexp(ubp) : ubp)
+        .filter((_) => _);
+    }
+
+    return sub;
   }
 }
 

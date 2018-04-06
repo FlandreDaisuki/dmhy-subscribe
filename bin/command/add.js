@@ -111,8 +111,10 @@ exports.handler = async (argv) => {
       message: l10n('CMD_ADD_INTERACTIVE_EPISODEPARSER'),
       initial: '',
     }]);
+    answer.keywords = answer.keywords.filter((_) => _);
+    answer.unkeywords = answer.unkeywords.filter((_) => _);
     Object.assign(iSubscriptionLike, answer);
-    const sub = new Subscription(iSubscriptionLike);
+    const sub = Subscription.from(iSubscriptionLike);
     await safeAdd(sub);
   } else {
     for (const subscribable of argv.subscribable) {

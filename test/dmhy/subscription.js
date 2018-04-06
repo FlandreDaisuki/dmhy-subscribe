@@ -37,7 +37,7 @@ describe('dmhy/subscription', () => {
       keywords: ['動漫國'],
       unkeywords: ['合集'],
     };
-    const violet = new Subscription(subLike);
+    const violet = Subscription.from(subLike);
     assert.equal(violet.title, '紫羅蘭永恆花園');
     assert.deepEqual(violet.keywords, ['動漫國']);
     assert.deepEqual(violet.unkeywords, ['合集']);
