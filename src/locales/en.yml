@@ -75,6 +75,9 @@ CMD_DL_USAGE: |
 
     THID is <SID> that implies all episodes are included, same as <SID>-all.
 CMD_DL_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
+CMD_DL_EXAMPLE1_DESC: Download all threads in the subscription which SID is AAA. Same as `%$0% dl AAA-all`
+CMD_DL_EXAMPLE2_DESC: Download the threads that include episode 1, 4, 9 in the subscription which SID is AAA
+CMD_DL_EXAMPLE3_DESC: Download the threads that include OVA episode 1 ~ 3 in the subscription which SID is AAA
 
 CMD_FIND_DESC: Search threads on website directly
 CMD_FIND_USAGE: |

@@ -80,6 +80,9 @@ CMD_DL_USAGE: |
 
     若下載識別碼為 <訂閱識別碼>，代表該訂閱全部集數，即 <訂閱識別碼>-all。
 CMD_DL_SID_NOT_FOUND: 找不到訂閱識別碼：%sid%
+CMD_DL_EXAMPLE1_DESC: 下載訂閱識別碼為 AAA 的所有集數，即 `%$0% dl AAA-all`
+CMD_DL_EXAMPLE2_DESC: 下載訂閱識別碼為 AAA 的訂閱中，包含 1, 4, 9 集的貼文
+CMD_DL_EXAMPLE3_DESC: 下載訂閱識別碼為 AAA 的訂閱中，包含 OVA1 ~ 3 集的貼文
 
 CMD_FIND_DESC: 直接搜尋貼文
 CMD_FIND_USAGE: |
