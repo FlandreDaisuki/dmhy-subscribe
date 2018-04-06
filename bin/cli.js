@@ -58,12 +58,13 @@ function main() {
   // No command, update and download all
   if (!argv._.length) {
     const db = new Database();
-    db.subscriptions.forEach(async (sub) => {
+    const allTask = db.subscriptions.map(async (sub) => {
       const remoteThreads = await fetchThreads(sub);
-      remoteThreads.forEach((rth) => {
+      return remoteThreads.map((rth) => {
         const found = sub.threads.find((th) => th.title === rth.title);
         if (!found) {
           sub.add(rth);
+          db.save();
           if (!argv.x) {
             const downloader = db.config.get('downloader').value;
             const script = path.resolve(`${__dirname}/../src/downloaders/${downloader}.js`);
@@ -82,9 +83,14 @@ function main() {
           }
         }
       });
-      db.save();
     });
-    print.success('success');
+    Promise.all(allTask).then(() => {
+      if (argv.x) {
+        print.success(l10n('MAIN_ALL_X_DONE'));
+      } else {
+        print.success(l10n('MAIN_ALL_DONE'));
+      }
+    });
   }
 }
 

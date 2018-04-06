@@ -6,6 +6,8 @@ NEW_VERSION_MSG: 有新版本囉～請用 `npm i -g dmhy-subscribe` 更新
 
 MAIN_USAGE: '使用方法: $0 [命令] [選項]'
 MAIN_OPT_X: 只更新訂閱但不下載
+MAIN_ALL_DONE: 全部更新完成並下載
+MAIN_ALL_X_DONE: 全部更新完成
 
 CMD_ADD_DESC: '新增一筆訂閱'
 CMD_ADD_USAGE: |
@@ -58,6 +60,7 @@ CMD_LS_OPT_SY: 顯示訂閱設定檔 (yaml格式)
 CMD_LS_OPT_SYSS_ERR: 請不要同時使用 -ss 及 -sy
 CMD_LS_EXAMPLE1_DESC: 顯示訂閱識別碼為 AAA 的訂閱資訊
 CMD_LS_EXAMPLE2_DESC: 顯示所有訂閱的訂閱用字串
+CMD_LS_SID_NOT_FOUND: 找不到訂閱識別碼：%sid%
 CMD_LS_CELL_SID: 訂閱識別碼
 CMD_LS_CELL_TITLE: 標題
 CMD_LS_CELL_KEYWORDS: 關鍵字

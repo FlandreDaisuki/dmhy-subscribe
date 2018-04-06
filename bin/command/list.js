@@ -1,6 +1,6 @@
 const yaml = require('js-yaml');
 const Table = require('easy-table');
-const { l10n, Database, TheEpisode } = require('../..');
+const { l10n, Database, TheEpisode, print } = require('../..');
 
 exports.command = 'list [SID...]';
 
@@ -60,6 +60,10 @@ exports.handler = (argv) => {
     // some
     argv.SID.forEach((sid) => {
       const sub = db.find({ sid }); // bad use XD
+      if (!sub) {
+        print.error(l10n('CMD_LS_SID_NOT_FOUND', { sid }));
+        process.exit(1);
+      }
       const { title, keywords, unkeywords, episodeParser } = sub;
       const t = {};
       t[l10n('CMD_LS_CELL_SID')] = sid;
