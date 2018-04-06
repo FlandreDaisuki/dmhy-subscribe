@@ -1,5 +1,7 @@
-const { l10n, print } = require('../..');
-exports.command = 'add [subscribable...]';
+const prompts = require('prompts');
+const { l10n, print, Database, Subscription } = require('../..');
+
+exports.command = 'add [subscribables...]';
 
 exports.aliases = [];
 
@@ -44,8 +46,78 @@ exports.builder = (yargs) => {
     .example('$0 add -i', l10n('CMD_ADD_EXAMPLE3_DESC'));
 };
 
-exports.handler = (argv) => {
-  // TODO
-  print.log(JSON.stringify(argv, null, 2));
+exports.handler = async (argv) => {
+  const db = new Database();
+
+  const safeAdd = async (sub) => {
+    const existed = db.find(sub);
+    if (existed) {
+      if (argv.yes) {
+        db.add(sub);
+      } else if (!argv.yes && !argv.no) {
+        // interactive ask
+        const answer = await prompts({
+          type: 'toggle',
+          name: 'add',
+          message: l10n('CMD_ADD_PROMPTS_CONFIRM', { title: sub.title }),
+          initial: false,
+          active: 'Yes',
+          inactive: 'No',
+        });
+        if (answer.add) {
+          db.add(sub);
+        }
+      }
+    } else {
+      db.add(sub);
+    }
+  };
+
+  if (argv.interactive) {
+    print.info(l10n('CMD_ADD_INTERACTIVE_INFO'));
+    const iSubscriptionLike = {};
+    do {
+      // Ensure valid title
+      const answer = await prompts({
+        type: 'text',
+        name: 'title',
+        message: l10n('CMD_ADD_INTERACTIVE_TITLE'),
+
+      });
+      if (!answer.title) {
+        print.error(l10n('CMD_ADD_INTERACTIVE_TITLE_ERR'));
+      } else {
+        iSubscriptionLike.title = answer.title;
+        break;
+      }
+    } while (true);
+
+    const answer = await prompts([{
+      type: 'list',
+      name: 'keywords',
+      message: l10n('CMD_ADD_INTERACTIVE_KEYWORDS'),
+      separator: ',',
+    }, {
+      type: 'list',
+      name: 'unkeywords',
+      message: l10n('CMD_ADD_INTERACTIVE_UNKEYWORDS'),
+      separator: ',',
+    }, {
+      type: 'text',
+      name: 'episodeParser',
+      message: l10n('CMD_ADD_INTERACTIVE_EPISODEPARSER'),
+      initial: '',
+    }]);
+    Object.assign(iSubscriptionLike, answer);
+    const sub = new Subscription(iSubscriptionLike);
+    await safeAdd(sub);
+  } else {
+    for (const subscribable of argv.subscribables) {
+      const sub = new Subscription(subscribable);
+      await safeAdd(sub);
+    }
+  }
+
+  db.save();
   process.exit(0);
 };

@@ -11,16 +11,23 @@ CMD_ADD_USAGE: |
     A subscribable file must have suffix .yml, details ↓↓
     https://github.com/FlandreDaisuki/dmhy-subscribe/issues/17
 
-    A subscribable string with CSV format that concatenate by `,`.
+    A subscribable string with CSV format that concatenate by ",".
     The first section is title.
 
     subscribable string := <title>[,keyword]*
-    keyword := keyword which subscription include | ~keyword which subscription exclude~
+    keyword := keyword which subscription include | ~keyword which subscription exclude(unkeyword)~
 CMD_ADD_OPT_I: Use interactive prompt to add subscription.
 CMD_ADD_OPT_Y: Don't ask and do add if the database has a subscription with the same title and keywords.
 CMD_ADD_OPT_N: Don't ask and do ignore if the database has a subscription with the same title and keywords.
 CMD_ADD_OPT_YN_ERR: Don't use --yes and --no at the same time.
 CMD_ADD_OPT_NO_I_NO_SUBS: If you don't use interactive prompt, you should provide at least 1 subscribable as a parameter.
+CMD_ADD_INTERACTIVE_INFO: Start interactive prompt, use ctrl+c to force stop.
+CMD_ADD_INTERACTIVE_TITLE: Input title name (required)
+CMD_ADD_INTERACTIVE_TITLE_ERR: No empty title name
+CMD_ADD_INTERACTIVE_KEYWORDS: Input keywords (separated by ",")
+CMD_ADD_INTERACTIVE_UNKEYWORDS: Input unkeywords (separated by ",")
+CMD_ADD_INTERACTIVE_EPISODEPARSER: Custom episode parser (JS RegExp, pick group 1)
+CMD_ADD_PROMPTS_CONFIRM: There is a subscription with the same title "%title%" and keywords, add it anyway?
 CMD_ADD_EXAMPLE1_DESC: Use subscribable string
 CMD_ADD_EXAMPLE2_DESC: Use subscribable file
 CMD_ADD_EXAMPLE3_DESC: Use interactive prompt

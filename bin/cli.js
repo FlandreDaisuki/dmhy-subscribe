@@ -6,18 +6,26 @@ const axios = require('axios');
 const semver = require('semver');
 const yargs = require('yargs');
 
+// fetch remote version every 15 times
 (async () => {
-  const { data } = await axios.get('https://registry.npmjs.org/dmhy-subscribe');
-  const remoteVersion = data['dist-tags'].latest;
+  const REFETCH_TIMES = 15;
   if (fs.existsSync(CONST.remoteVersionPath)) {
-    const lastRemoteVersion = fs.readFileSync(CONST.remoteVersionPath, 'utf-8');
-    if (semver.gt(remoteVersion, CONST.packageVersion) && semver.gt(remoteVersion, lastRemoteVersion)) {
-      console.log();
-      print.info(l10n('NEW_VERSION_MSG'));
-      console.log();
+    let { count, version: lastRemoteVersion } = fs.readJSONSync(CONST.remoteVersionPath, 'utf-8');
+    if (count > REFETCH_TIMES) {
+      const { data } = await axios.get('https://registry.npmjs.org/dmhy-subscribe');
+      const remoteVersion = data['dist-tags'].latest;
+      count = 0;
+      if (semver.gt(remoteVersion, CONST.packageVersion) && semver.gt(remoteVersion, lastRemoteVersion)) {
+        console.log();
+        print.info(l10n('NEW_VERSION_MSG'));
+        console.log();
+      }
+    } else {
+      fs.writeJSONSync(CONST.remoteVersionPath, { count: count + 1, version: lastRemoteVersion });
     }
+  } else {
+    fs.writeJSONSync(CONST.remoteVersionPath, { count: 0, version: CONST.packageVersion });
   }
-  fs.writeFileSync(CONST.remoteVersionPath, remoteVersion);
   main();
 })();
 
@@ -39,15 +47,17 @@ function main() {
       type: 'boolean',
       global: false,
     })
-    // .example('$0 update "喔喔喔喔喔"\n第二行\n第三行', '喔喔喔喔外面喔喔喔喔\nasd')
-    // .example('$0 xxx "喔喔喔喔喔"\n第二行', '喔喔喔喔外面喔喔喔喔\nasd\n第三行')
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
     .argv;
 
-  console.log(argv);
-  print.success('success');
+  print.debug(JSON.stringify(argv, null, 2));
+
+  // No command, update and download all
+  if (!argv._.length) {
+    print.success('success');
+  }
 }
 
 
