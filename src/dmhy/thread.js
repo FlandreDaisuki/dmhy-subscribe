@@ -21,7 +21,7 @@ class Thread {
     if (!episodeParser) {
       this.episode = Thread.parseEpisodeFromTitle(this.title);
     } else {
-      const _title = this.title.replace(episodeParser, '$1');
+      const _title = this.title.match(episodeParser)[1];
       this.episode = Thread.parseEpisodeFromTitle(_title);
     }
 
