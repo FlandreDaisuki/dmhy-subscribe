@@ -81,6 +81,9 @@ function main() {
           print.success(l10n('MAIN_ALL_DONE'));
         }
       });
+  } else {
+    // Unknown command
+    yargs.showHelp();
   }
 }
 
