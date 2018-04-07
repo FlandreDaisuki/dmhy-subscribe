@@ -53,6 +53,7 @@ CMD_RM_OPT_A: 刪除所有訂閱
 CMD_RM_OPT_NO_A_NO_SID: 若無 --all 選項，則至少需要一個引數(訂閱識別碼)
 CMD_RM_REMOVE_SUCCESS: 成功刪除訂閱「%title%」
 CMD_RM_EXAMPLE1_DESC: 刪除訂閱識別碼為 AAA 的訂閱
+CMD_RM_SID_NOT_FOUND: 找不到訂閱識別碼：%sid%
 
 CMD_LS_DESC: 顯示訂閱資訊
 CMD_LS_USAGE: |

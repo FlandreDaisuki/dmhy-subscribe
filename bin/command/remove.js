@@ -34,6 +34,8 @@ exports.handler = (argv) => {
       const removed = db.remove(sid);
       if (removed) {
         print.success(l10n('CMD_RM_REMOVE_SUCCESS', { title: removed.title }));
+      } else {
+        print.error(l10n('CMD_RM_SID_NOT_FOUND', { sid }));
       }
     });
   } else {
@@ -41,6 +43,8 @@ exports.handler = (argv) => {
       const removed = db.remove(sid);
       if (removed) {
         print.success(l10n('CMD_RM_REMOVE_SUCCESS', { title: removed.title }));
+      } else {
+        print.error(l10n('CMD_RM_SID_NOT_FOUND', { sid }));
       }
     });
   }

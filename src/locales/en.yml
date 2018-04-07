@@ -49,6 +49,7 @@ CMD_RM_OPT_A: Remove all subscriptions
 CMD_RM_OPT_NO_A_NO_SID: If no option --all, you should provide at least 1 SID as a parameter.
 CMD_RM_REMOVE_SUCCESS: Remove subscription "%title%" successfully
 CMD_RM_EXAMPLE1_DESC: Remove the subscription which SID is "AAA"
+CMD_RM_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
 
 CMD_LS_DESC: Show subscriptions information
 CMD_LS_USAGE: |
