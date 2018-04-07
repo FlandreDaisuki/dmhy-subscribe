@@ -109,6 +109,8 @@ DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
 DOWNLOADER_DL_SUCCESS: Start to download %title%
 DOWNLOADER_DL_FAILED: Fail to download %title%
 
+THREAD_EPISODEPARSER_FALLBACK: The episodeParser in SID "%sid%" parses failed. Fallback to default parser.
+
 THREAD_EP_PARSE_ERR: |
   This should never print unless having bugs.
   Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.

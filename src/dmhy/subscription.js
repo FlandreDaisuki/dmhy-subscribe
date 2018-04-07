@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const ymal = require('js-yaml');
 const { Thread } = require('./thread');
-const { print, hash, XSet, strToRegexp, splitKeywords } = require('../utils');
+const { l10n, print, hash, XSet, strToRegexp, splitKeywords } = require('../utils');
 const { SubscriptionError } = require('../errors');
 
 const SUPPORT_FORMAT = new Set(['.yml', '.yaml']);
@@ -125,7 +125,14 @@ class Subscription {
    */
   loadThreads(threadLikes = []) {
     threadLikes.forEach((threadLike) => {
-      const thread = new Thread(threadLike, this.episodeParser);
+      let thread;
+      try {
+        thread = new Thread(threadLike, this.episodeParser);
+      } catch (error) {
+        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid }));
+        print.warn(threadLike.title);
+        thread = new Thread(threadLike);
+      }
       if (thread.isValid()) {
         this.threads.push(thread);
       }

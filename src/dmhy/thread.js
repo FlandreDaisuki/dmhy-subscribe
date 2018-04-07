@@ -21,8 +21,12 @@ class Thread {
     if (!episodeParser) {
       this.episode = Thread.parseEpisodeFromTitle(this.title);
     } else {
-      const _title = this.title.match(episodeParser)[1];
-      this.episode = Thread.parseEpisodeFromTitle(_title);
+      try {
+        const _title = this.title.match(episodeParser)[1];
+        this.episode = Thread.parseEpisodeFromTitle(_title);
+      } catch (error) {
+        throw new ThreadError(error.message);
+      }
     }
 
     if (!this.isValid()) {

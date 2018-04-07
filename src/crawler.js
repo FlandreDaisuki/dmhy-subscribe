@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { Subscription } = require('./dmhy/subscription');
 const { Thread } = require('./dmhy/thread');
+const { print, l10n } = require('./utils');
 
 /**
  * @param {string[]} kws
@@ -27,7 +28,15 @@ async function fetchThreads(sub) {
   }
   const kws = [sub.title, ...sub.keywords];
   return (await fetchThreadsByKeywords(kws, sub.unkeywords))
-    .map((th) => new Thread(th, sub.episodeParser));
+    .map((th) => {
+      try {
+        return new Thread(th, sub.episodeParser);
+      } catch (error) {
+        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: sub.sid }));
+        print.warn(th.title);
+        return new Thread(th);
+      }
+    });
 }
 
 /**
