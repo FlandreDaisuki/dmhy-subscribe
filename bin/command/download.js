@@ -19,13 +19,14 @@ exports.builder = (yargs) => {
 exports.handler = (argv) => {
   const db = new Database();
 
-  argv.THID.forEach((thid) => {
+  const allTasks = argv.THID.map((thid) => {
     const [sid, epstr] = thid.split('-');
     const found = db.find({ sid });
+
     if (found) {
       const threads = found.getThreads(epstr);
       print.debug('threads', threads);
-      threads.forEach((th) => {
+      return threads.map((th) => {
         const downloader = db.config.get('downloader').value;
         const script = path.resolve(`${__dirname}/../../src/downloaders/${downloader}.js`);
         const args = [th, db.config.parameters].map(JSON.stringify);
@@ -45,5 +46,12 @@ exports.handler = (argv) => {
       print.error(l10n('CMD_DL_SID_NOT_FOUND', { sid }));
     }
   });
-  process.exit(0);
+
+  Promise.all(allTasks)
+    .then(() => {
+      process.exit(0);
+    }).catch((error) => {
+      print.error(error);
+      process.exit(1);
+    });
 };

@@ -58,7 +58,8 @@ function main() {
   // No command, update and download all
   if (!argv._.length) {
     const db = new Database();
-    const allTask = db.subscriptions.map(async (sub) => {
+
+    const allTasks = db.subscriptions.map(async (sub) => {
       const remoteThreads = await fetchThreads(sub);
       return remoteThreads.map((rth) => {
         const found = sub.threads.find((th) => th.title === rth.title);
@@ -84,13 +85,15 @@ function main() {
         }
       });
     });
-    Promise.all(allTask).then(() => {
-      if (argv.x) {
-        print.success(l10n('MAIN_ALL_X_DONE'));
-      } else {
-        print.success(l10n('MAIN_ALL_DONE'));
-      }
-    });
+
+    Promise.all(allTasks)
+      .then(() => {
+        if (argv.x) {
+          print.success(l10n('MAIN_ALL_X_DONE'));
+        } else {
+          print.success(l10n('MAIN_ALL_DONE'));
+        }
+      });
   }
 }
 
