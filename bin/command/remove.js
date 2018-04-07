@@ -28,26 +28,16 @@ exports.builder = (yargs) => {
 exports.handler = (argv) => {
   const db = new Database();
 
-  if (argv.all) {
-    const sids = db.subscriptions.map((sub) => sub.sid);
-    sids.forEach((sid) => {
-      const removed = db.remove(sid);
-      if (removed) {
-        print.success(l10n('CMD_RM_REMOVE_SUCCESS', { title: removed.title }));
-      } else {
-        print.error(l10n('CMD_RM_SID_NOT_FOUND', { sid }));
-      }
-    });
-  } else {
-    argv.SID.forEach((sid) => {
-      const removed = db.remove(sid);
-      if (removed) {
-        print.success(l10n('CMD_RM_REMOVE_SUCCESS', { title: removed.title }));
-      } else {
-        print.error(l10n('CMD_RM_SID_NOT_FOUND', { sid }));
-      }
-    });
-  }
+  const sids = (argv.all) ? db.subscriptions.map((sub) => sub.sid) : argv.SID;
+  sids.forEach((sid) => {
+    const removed = db.remove(sid);
+    if (removed) {
+      print.success(l10n('CMD_RM_REMOVE_SUCCESS', { title: removed.title }));
+    } else {
+      print.error(l10n('CMD_RM_SID_NOT_FOUND', { sid }));
+    }
+  });
+
   db.save();
   process.exit(0);
 };
