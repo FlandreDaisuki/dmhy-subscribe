@@ -1,6 +1,4 @@
-const path = require('path');
-const { spawn } = require('child_process');
-const { l10n, print, Database } = require('../..');
+const { l10n, print, Database, downloadThreadWithDownloader } = require('../..');
 
 exports.command = 'download <THID...>';
 
@@ -28,19 +26,7 @@ exports.handler = (argv) => {
       print.debug('threads', threads);
       return threads.map((th) => {
         const downloader = db.config.get('downloader').value;
-        const script = path.resolve(`${__dirname}/../../src/downloaders/${downloader}.js`);
-        const args = [th, db.config.parameters].map(JSON.stringify);
-
-        return new Promise((resolve, reject) => {
-          const task = spawn('node', [script, ...args], {
-            stdio: 'inherit',
-          });
-          task.on('close', (code) => {
-            if (code === 0) resolve(code);
-            else reject(code);
-          });
-          task.on('error', (error) => reject(error));
-        });
+        return downloadThreadWithDownloader(downloader, th, db.config.parameters);
       });
     } else {
       print.error(l10n('CMD_DL_SID_NOT_FOUND', { sid }));
@@ -50,7 +36,8 @@ exports.handler = (argv) => {
   Promise.all(allTasks)
     .then(() => {
       process.exit(0);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       print.error(error);
       process.exit(1);
     });
