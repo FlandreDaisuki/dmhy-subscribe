@@ -1,2 +1,5 @@
-require('./dmhy/episode')
-require('./dmhy/thread')
+process.env.NODE_ENV = 'test';
+
+require('./dmhy');
+require('./database');
+require('./config');

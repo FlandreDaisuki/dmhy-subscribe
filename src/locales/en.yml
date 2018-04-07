@@ -1,0 +1,118 @@
+NEW_VERSION_MSG: New version released! use `npm i -g dmhy-subscribe` to upgrade!
+
+MAIN_USAGE: 'Usage: $0 [command] [options]'
+MAIN_OPT_X: Don't download subscriptions, just update
+MAIN_ALL_DONE: All updated and downloading
+MAIN_ALL_X_DONE: All updated
+
+CMD_ADD_DESC: Add a subscription
+CMD_ADD_USAGE: |
+  Usage: $0 add [options] [subscribable...]
+
+    A subscribable can be a file path or string and we use it to search threads on website.
+
+    A subscribable file must have suffix .yml, details ↓↓
+    https://github.com/FlandreDaisuki/dmhy-subscribe/issues/17
+
+    A subscribable string with CSV format that concatenate by ",".
+    The first section is title.
+
+    subscribable string := <title>[,keyword]*
+    keyword := keyword which subscription include | ~keyword which subscription exclude(unkeyword)~
+CMD_ADD_OPT_I: Use interactive prompt to add subscription.
+CMD_ADD_OPT_Y: Don't ask and do add if the database has a subscription with the same title and keywords.
+CMD_ADD_OPT_N: Don't ask and do ignore if the database has a subscription with the same title and keywords.
+CMD_ADD_OPT_YN_ERR: Don't use --yes and --no at the same time.
+CMD_ADD_OPT_NO_I_NO_SUBS: If you don't use interactive prompt, you should provide at least 1 subscribable as a parameter.
+CMD_ADD_INTERACTIVE_INFO: Start interactive prompt, use ctrl+c to force stop.
+CMD_ADD_INTERACTIVE_TITLE: Input title name (required)
+CMD_ADD_INTERACTIVE_TITLE_ERR: No empty title name
+CMD_ADD_INTERACTIVE_KEYWORDS: Input keywords (separated by ",")
+CMD_ADD_INTERACTIVE_UNKEYWORDS: Input unkeywords (separated by ",")
+CMD_ADD_INTERACTIVE_EPISODEPARSER: Custom episode parser (JS RegExp, pick group 1)
+CMD_ADD_PROMPTS_CONFIRM: There is a subscription with the same title "%title%" and keywords, add it anyway?
+CMD_ADD_SUCCESS: Add subscription "%title%" successfully
+CMD_ADD_EXAMPLE1_DESC: Use subscribable string
+CMD_ADD_EXAMPLE2_DESC: Use subscribable file
+CMD_ADD_EXAMPLE3_DESC: Use interactive prompt
+
+CMD_RM_DESC: Remove subscriptions by their SID
+CMD_RM_USAGE: |
+  Usage: $0 remove [options] [SID...]
+
+    Remove subscriptions by their SID.
+CMD_RM_OPT_A: Remove all subscriptions
+CMD_RM_OPT_NO_A_NO_SID: If no option --all, you should provide at least 1 SID as a parameter.
+CMD_RM_REMOVE_SUCCESS: Remove subscription "%title%" successfully
+CMD_RM_EXAMPLE1_DESC: Remove the subscription which SID is "AAA"
+
+CMD_LS_DESC: Show subscriptions information
+CMD_LS_USAGE: |
+  Usage: $0 list [options] [SID...]
+
+    Show subscriptions information.
+    Show all subscriptions information if no specific SID.
+CMD_LS_OPT_SS: Show subscribable string
+CMD_LS_OPT_SY: Show subscribable file in yaml format
+CMD_LS_OPT_SYSS_ERR: Don't use -ss and -sy at the same time.
+CMD_LS_EXAMPLE1_DESC: Show the subscription information which SID is "AAA"
+CMD_LS_EXAMPLE2_DESC: Show the subscribable string of all subscriptions
+CMD_LS_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
+CMD_LS_CELL_SID: SID
+CMD_LS_CELL_TITLE: Title
+CMD_LS_CELL_KEYWORDS: Keywords
+CMD_LS_CELL_UNKEYWORDS: Unkeywords
+CMD_LS_CELL_EPISODEPARSER: Episode Parser
+CMD_LS_CELL_LATEST: Latest
+CMD_LS_CELL_THREAD_EPISODE: Episode(s)
+CMD_LS_CELL_THREAD_TITLE: Thread Title
+
+CMD_DL_DESC: Download subscriptions by their THID
+CMD_DL_USAGE: |
+  Usage: $0 download <THID...>
+
+    A THID includes SID and episode(s).
+
+    THID := <SID> | <SID>-[type][episode]
+    episode := <episode>,<episode> | <int|float> | <int|float>..<int|float> | 'all'
+    type := '' | 'OVA' | 'SP'
+
+    THID is <SID> that implies all episodes are included, same as <SID>-all.
+CMD_DL_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
+CMD_DL_EXAMPLE1_DESC: Download all threads in the subscription which SID is AAA. Same as `%$0% dl AAA-all`
+CMD_DL_EXAMPLE2_DESC: Download the threads that include episode 1, 4, 9 in the subscription which SID is AAA
+CMD_DL_EXAMPLE3_DESC: Download the threads that include OVA episode 1 ~ 3 in the subscription which SID is AAA
+
+CMD_FIND_DESC: Search threads on website directly
+CMD_FIND_USAGE: |
+  Usage: $0 search <subscribable-string>
+
+    Search threads on website by subscribable string without opening browser.
+CMD_FIND_TOTAL: 'Total: %total% result(s)'
+
+CMD_CFG_DESC: Configure internal parameters
+CMD_CFG_USAGE: |
+  Usage: $0 config [key] [value]
+
+    Configure internal parameters.
+CMD_CFG_OPT_RESET: Reset to default value
+CMD_CFG_UNKNOWN_KEY: 'Unknown key: %key%'
+CMD_CFG_SET_SUCCESS: Configure successfully
+CMD_CFG_SET_FAILED: Configure failed
+CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
+CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'downloader'
+CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'downloader' to 'deluge' and print changed key-value
+CMD_CFG_VALIDATORS_DESTINATION_ERR: The destination not exists
+CMD_CFG_VALIDATORS_DOWNLOADER_ERR: The downloader is not supported
+
+DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
+DOWNLOADER_DL_SUCCESS: Start to download %title%
+DOWNLOADER_DL_FAILED: Fail to download %title%
+
+THREAD_EPISODEPARSER_FALLBACK: |
+  The episodeParser in SID "%sid%" parses failed. Fallback to default parser.
+    %title%
+
+THREAD_EP_PARSE_ERR: |
+  This should never print unless having bugs.
+  Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.

@@ -1,14 +1,13 @@
-const axios = require('axios')
-const log = require('debug')('dmhy:downloaders:webhook')
-const { console, l10n } = require('../utils')
+const axios = require('axios');
+const { print, l10n } = require('../..');
 
-const args = process.argv.slice(2)
-const thread = JSON.parse(args[0])
-const { webhook } = JSON.parse(args[1])
+const thread = JSON.parse(process.argv[2]);
+const config = JSON.parse(process.argv[3]);
 
-log(args)
+print.debug('dmhy:downloaders:webhook:thread', thread);
+print.debug('dmhy:downloaders:webhook:config', config);
 
 axios
-  .post(webhook, thread)
-  .then(() => console.success(l10n('CLIENT_DL_SUCCESS_MSG', { title: thread.title })))
-  .catch(() => console.error(l10n('CLIENT_DL_FAILED_MSG', { title: thread.title })))
+  .post(config['webhook-url'], thread)
+  .then(() => print.success(l10n('DOWNLOADER_DL_SUCCESS', { title: thread.title })))
+  .catch(() => print.error(l10n('DOWNLOADER_DL_FAILED', { title: thread.title })));

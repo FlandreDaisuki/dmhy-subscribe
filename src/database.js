@@ -1,108 +1,130 @@
-const fs = require('fs')
-const path = require('path')
-const { spawn } = require('child_process')
-const { CONST, console } = require('./utils')
-const { defaultDatabasePath, defaultConfigPath, packageVersion } = CONST
-const { Subscription } = require('./dmhy/subscription')
-const { Config } = require('./config')
+const fs = require('fs-extra');
+const yaml = require('js-yaml');
+const { CONST, XSet } = require('./utils');
+const { Config } = require('./config');
+const { Subscription } = require('./dmhy/subscription');
 
+const { defaultDatabasePath, defaultISubsDir } = CONST;
+
+// isub   資料庫自存的 Supscriptions 紀錄，作為初始化用，與訂閱用的不同
+// dbpath 存 SID 與 Threads 的 Map
+// sub    subscription 的縮寫
+
+/**
+ * @class Database
+ * @member {string} dbpath
+ * @member {string} isubsDir
+ * @member {Config} config
+ * @member {Subscription[]} subscriptions
+ */
 class Database {
-  constructor ({ dbPath, configPath } = { dbPath: defaultDatabasePath, configPath: defaultConfigPath }) {
-    this.fakedbPath = dbPath
-    this.config = new Config(configPath)
-    if (!fs.existsSync(dbPath)) {
-      const empty = {
-        version: packageVersion,
-        subscriptions: []
-      }
-      fs.writeFileSync(dbPath, JSON.stringify(empty))
+  /**
+   * Creates an instance of Database.
+   * @param {any} options [{ dbpath = defaultDatabasePath, isubsDir = defaultISubsDir, config = new Config() }={}]
+   * @memberof Database
+   */
+  constructor({ dbpath = defaultDatabasePath, isubsDir = defaultISubsDir, config = new Config() } = {}) {
+    this.dbpath = dbpath;
+    if (!fs.existsSync(this.dbpath)) {
+      fs.ensureFileSync(this.dbpath);
+      const empty = { };
+      fs.writeFileSync(this.dbpath, JSON.stringify(empty));
     }
-    const fakedb = JSON.parse(fs.readFileSync(this.fakedbPath, 'utf8'))
-    this.subscriptions = fakedb.subscriptions.map(s => new Subscription(s))
-    this.version = packageVersion
+
+    this.isubsDir = isubsDir;
+    if (!fs.existsSync(isubsDir)) {
+      fs.mkdirpSync(isubsDir);
+    }
+
+    this.config = config;
+    if (!(config instanceof Config)) {
+      throw new Error(`Bad config`);
+    }
+
+    const threadsMap = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
+    const isubs = fs.readdirSync(this.isubsDir);
+    this.subscriptions = isubs.map((isub) => new Subscription(`${this.isubsDir}/${isub}`));
+    this.subscriptions.forEach((sub) => {
+      sub.loadThreads(threadsMap[sub.sid]);
+    });
   }
 
-  add (subscription) {
-    if (!(subscription instanceof Subscription)) {
-      throw new TypeError('Parameter should be a Subscription.')
+  /**
+   * @param {Subscription} sub
+   * @return {boolean} success
+   * @memberof Database
+   */
+  add(sub) {
+    if (!(sub instanceof Subscription)) {
+      throw new TypeError('Parameter should be a Subscription.');
     }
-    subscription.generateSid(this.subscriptions.map(s => s.sid))
-    this.subscriptions.push(subscription)
-    return true
+    sub.generateSid(this.subscriptions.map((s) => s.sid));
+    this.subscriptions.push(sub);
+    return true;
   }
 
-  remove (subscription) {
-    if (!(subscription instanceof Subscription)) {
-      throw new TypeError('Parameter should be a Subscription.')
-    }
-    const index = this.subscriptions.findIndex(elem => {
-      return elem.sid === subscription.sid
-    })
+  /**
+   * @param {string} sid
+   * @return {?Subscription} Subscription removed
+   * @memberof Database
+   */
+  remove(sid) {
+    const index = this.subscriptions.findIndex((sub) => {
+      return sub.sid === sid;
+    });
     if (index >= 0) {
-      this.subscriptions.splice(index, 1)
-      return true
+      return this.subscriptions.splice(index, 1)[0];
     }
-    return false
+    return null;
   }
 
-  save () {
-    const sav = {
-      version: this.version,
-      subscriptions: this.subscriptions
-    }
-    fs.writeFileSync(this.fakedbPath, JSON.stringify(sav))
-  }
+  /**
+   * @memberof Database
+   */
+  save() {
+    const threadsMap = this.subscriptions.reduce((prev, sub) => {
+      prev[sub.sid] = sub.threads;
+      return prev;
+    }, {});
+    fs.writeFileSync(this.dbpath, JSON.stringify(threadsMap));
 
-  list () {
-    const subList = this.subscriptions.map(s => {
-      const latest = s.latest > 0 ? s.latest.toString().padStart(2, '0') : '--'
-      return {
-        sid: s.sid,
-        latest,
-        name: s.name
+    fs.removeSync(this.isubsDir);
+    fs.mkdirsSync(this.isubsDir);
+
+    this.subscriptions.forEach((sub) => {
+      let { sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns } = sub;
+      if (episodeParser) {
+        episodeParser = episodeParser.toString();
       }
-    })
-    console.table(subList)
+      userBlacklistPatterns = userBlacklistPatterns.map((ubp) => ubp.toString());
+      const yamlData = yaml.safeDump({ sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns });
+      fs.writeFileSync(`${this.isubsDir}/${sid}.yml`, yamlData);
+    });
   }
 
-  download (thread, { client, destination, jsonrpc, webhook } = {}) {
-    client = client || this.config.get('client')
-    jsonrpc = jsonrpc || this.config.get('jsonrpc')
-    destination = destination || this.config.get('destination')
-    webhook = webhook || this.config.get('webhook')
-
-    const script = path.resolve(`${__dirname}/downloaders/${client}.js`)
-    const args = [thread, { destination, jsonrpc, webhook }].map(JSON.stringify)
-    args.unshift(script)
-
-    return new Promise((resolve, reject) => {
-      const task = spawn('node', args, {
-        stdio: 'inherit'
-      })
-      task.on('close', code => {
-        if (code === 0) resolve(code)
-        else reject(code)
-      })
-      task.on('error', err => reject(err))
-    })
+  /**
+   * @param {Subscription} sub
+   * @return {?Subscription} Subscription
+   * @memberof Database
+   */
+  find(sub) {
+    if (sub.sid) {
+      return this.subscriptions.find((thissub) => thissub.sid === sub.sid) || null;
+    }
+    return this.subscriptions.find((thissub) => {
+      return thissub.title === sub.title &&
+        (new XSet(thissub.keywords)).isSuperset(sub.keywords) &&
+        (new XSet(thissub.unkeywords)).isSuperset(sub.unkeywords);
+    }) || null;
   }
 
-  has (key, value) {
-    const results = this.subscriptions.filter(s => s[key] === value)
-    return !!results.length
-  }
-
-  query (key, value) {
-    const results = this.subscriptions.filter(s => s[key] === value)
-    return results[0] || null
-  }
-
-  sort () {
-    this.subscriptions.forEach(s => s.sort())
-    this.subscriptions.sort((a, b) => b.latest - a.latest)
+  /**
+   * @memberof Database
+   */
+  sort() {
+    this.subscriptions.forEach((sub) => sub.sort());
+    this.subscriptions.sort((a, b) => b.latest - a.latest);
   }
 }
 
-module.exports = {
-  Database
-}
+exports.Database = Database;

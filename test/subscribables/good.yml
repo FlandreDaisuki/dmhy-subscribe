@@ -1,0 +1,19 @@
+# 顯示用標題，同時會被加入 search
+# 必須有值
+title: 牙鬥獸娘
+
+# 符合關鍵字的 Thread 才會被加入 search
+# 字串陣列
+keywords:
+
+# 符合黑名單關鍵字的 Thread 在 search 後會直接被捨棄
+# 字串陣列
+unkeywords:
+
+# 使用 JS RegExp 寫法，`\`不用寫成`\\`，以第一個 group 來 parse
+episodeParser:
+
+# 使用 JS RegExp 寫法
+# 若 episodeParser 被定義，忽略此項
+# 但這邊是過濾切開後的 tokens，一般使用者不會看到 tokens 被如何切開...
+userBlacklistPatterns:

@@ -1,294 +1,100 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const program = require('commander')
-const { question } = require('readline-sync')
+const path = require('path');
+const fs = require('fs-extra');
+const axios = require('axios');
+const yargs = require('yargs');
+const semver = require('semver');
+const { spawn } = require('child_process');
+const { l10n, print, CONST, Database, fetchThreads } = require('..');
 
-const { l10n, console } = require('../src/utils')
-const { Database } = require('../src/database')
-const { Config } = require('../src/config')
-const { Subscription } = require('../src/dmhy/subscription')
-const { fetchThreads, fetchThreadsByKeyword } = require('../src/crawler')
-
-const db = new Database()
-
-program
-  .version(db.version)
-  .option('-d, --destination <path>', l10n('MAIN_OPT_DESTINATION_MSG'))
-  .option('--client <client>', l10n('MAIN_OPT_CLIENT_MSG'))
-  .option('--jsonrpc <jsonrpc_uri>', l10n('MAIN_OPT_JSONRPC_MSG'))
-  .on('--help', function () {
-    console.log(l10n('MAIN_HELP_MSG'))
-  })
-
-program
-  .command('add [subscribable...]')
-  .option('-f, --file <path>', l10n('CMD_ADD_OPT_FILE_MSG'))
-  .option('-y, --yes', l10n('CMD_ADD_OPT_YES_MSG'))
-  .option('-n, --no', l10n('CMD_ADD_OPT_NO_MSG'))
-  .description(l10n('CMD_ADD_DESC_MSG'))
-  .action(function (subscribables, cmd) {
-    if (!subscribables.length && !cmd.file) {
-      this.help()
-    }
-
-    if (cmd.file) {
-      const file = fs.readFileSync(cmd.file, 'utf8')
-      subscribables = file.split(/\r?\n/).filter(_ => _)
-    }
-
-    for (const subscribable of subscribables) {
-      if (subscribable) {
-        const s = new Subscription(subscribable)
-        let toAdd = true
-        if (db.has('name', s.name)) {
-          if (cmd.no && !cmd.yes) {
-            toAdd = false
-          } else if (!cmd.no && cmd.yes) {
-            toAdd = true
-          } else {
-            const ans = question(l10n('CMD_ADD_EXISTED_QUESTION_MSG', { name: s.name }))
-            if (/^n/i.test(ans)) {
-              toAdd = false
-            } else if (/^y/i.test(ans)) {
-              toAdd = true
-            } else {
-              toAdd = null
-            }
-          }
-        }
-        if (typeof toAdd === 'boolean' && toAdd) {
-          if (db.add(s)) {
-            console.success(l10n('CMD_ADD_SUCCESS_MSG', { name: s.name }))
-          }
-        }
+// fetch remote version every 15 times
+(async () => {
+  const REFETCH_TIMES = 15;
+  if (fs.existsSync(CONST.remoteVersionPath)) {
+    let { count, version: lastRemoteVersion } = fs.readJSONSync(CONST.remoteVersionPath, 'utf-8');
+    if (count > REFETCH_TIMES) {
+      const { data } = await axios.get('https://registry.npmjs.org/dmhy-subscribe');
+      const remoteVersion = data['dist-tags'].latest;
+      count = 0;
+      if (semver.gt(remoteVersion, CONST.packageVersion) && semver.gt(remoteVersion, lastRemoteVersion)) {
+        console.log();
+        print.info(l10n('NEW_VERSION_MSG'));
+        console.log();
       }
-    }
-
-    db.save()
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_ADD_HELP_MSG'))
-  })
-
-program
-  .command('remove [sid...]')
-  .alias('rm')
-  .option('-a, --all', l10n('CMD_RM_OPT_ALL_MSG'))
-  .description(l10n('CMD_RM_DESC_MSG'))
-  .action(function (sids, cmd) {
-    if (!sids.length && !cmd.all) {
-      this.help()
-    }
-
-    if (cmd.all) {
-      sids = db.subscriptions.map(s => s.sid)
-    }
-
-    for (const sid of sids) {
-      const subscription = db.query('sid', sid)
-      if (subscription && db.remove(subscription)) {
-        console.success(l10n('CMD_RM_SUCCESS_MSG', { name: subscription.name }))
-      } else {
-        console.error(l10n('CMD_NOTFOUND_MSG', { sid }))
-      }
-    }
-
-    db.save()
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_RM_HELP_MSG'))
-  })
-
-program
-  .command('list [sid...]')
-  .alias('ls')
-  .option('-s, --subscribable', l10n('CMD_LS_OPT_SUBSCRIBABLE_MSG'))
-  .description(l10n('CMD_LS_DESC_MSG'))
-  .action(function (sids, cmd) {
-    if (cmd.subscribable) {
-      for (const s of db.subscriptions) {
-        console.log([s.name, ...s.keywords].join(','))
-      }
-    } else if (sids.length) {
-      for (const sid of sids) {
-        const s = db.query('sid', sid)
-        if (s) {
-          cmd.subscribable ? console.log([s.name, ...s.keywords].join(',')) : s.list()
-        }
-      }
+      fs.writeJSONSync(CONST.remoteVersionPath, { count: count, version: remoteVersion });
     } else {
-      db.list()
+      fs.writeJSONSync(CONST.remoteVersionPath, { count: count + 1, version: lastRemoteVersion });
     }
+  } else {
+    fs.writeJSONSync(CONST.remoteVersionPath, { count: 0, version: CONST.packageVersion });
+  }
+  main();
+})();
 
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_LS_HELP_MSG'))
-  })
-
-program
-  .command('download [thid...]')
-  .alias('dl')
-  .description(l10n('CMD_DL_DESC_MSG'))
-  .action(async function (thids, cmd) {
-    if (!thids.length) {
-      this.help()
-    } else {
-      if (cmd.parent.client && !Config.isSupportedClient(cmd.parent.client)) {
-        console.error(l10n('CMD_DL_UNKNOWN_CLIENT_MSG', { client: cmd.parent.client }))
-        process.exit(1)
-      }
-
-      const thTasks = []
-
-      for (const thid of thids) {
-        const [sid, epstr] = thid.split('-')
-        const s = db.query('sid', sid)
-        if (s) {
-          thTasks.push(...s.getThreads(epstr).map(th => db.download(th, cmd.parent)))
-        } else {
-          console.error(l10n('CMD_NOTFOUND_MSG', { sid }))
-        }
-      }
-
-      await Promise.all(thTasks).catch(err => {
-        console.error(err)
-        process.exit(1)
-      })
-
-      process.exit()
-    }
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_DL_HELP_MSG'))
-  })
-
-program
-  .command('search <keywords>')
-  .alias('find')
-  .option('--raw', l10n('CMD_FIND_OPT_RAW_MSG'))
-  .description(l10n('CMD_FIND_DESC_MSG'))
-  .action(async function (kw, cmd) {
-    const threads = await fetchThreadsByKeyword(kw.split(','))
-    if (!cmd.raw) {
-      threads.forEach(th => console.log(th.title))
-      console.log(l10n('CMD_FIND_SUMMARY_MSG', { total: threads.length }))
-    } else {
-      console.log(JSON.stringify(threads))
-    }
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_FIND_HELP_MSG'))
-  })
-
-program
-  .command('update [sid...]')
-  .description(l10n('CMD_UPDATE_DESC_MSG'))
-  .action(async function (sids, cmd) {
-    await Promise.all(
-      db.subscriptions
-        .filter(s => sids.length === 0 || sids.includes(s.sid))
-        .map(s => {
-          return fetchThreads(s)
-            .then(newThreads => {
-              for (const nth of newThreads) {
-                if (!s.threads.map(th => th.title).includes(nth.title)) {
-                  console.success(l10n('CMD_UPDATE_UPDATED_MSG', { title: nth.title }))
-                  s.add(nth)
-                }
-              }
-            })
-            .catch(error => {
-              console.error(error)
-              process.exit(1)
-            })
-        })
-    )
-
-    db.sort()
-    db.save()
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_UPDATE_HELP_MSG'))
-  })
-
-program
-  .command('config [key] [value]')
-  .alias('cfg')
-  .option('-r, --reset', l10n('CMD_CFG_OPT_RESET_MSG'))
-  .description(l10n('CMD_CFG_DESC_MSG'))
-  .action(function (key, value, cmd) {
-    if (!key && !cmd.reset) {
-      db.config.list()
-      process.exit()
-    }
-
-    if (cmd.reset) {
-      db.config.reset(key)
-      db.config.list()
-      process.exit()
-    }
-
-    if (key) {
-      if (value) {
-        // setter
-        const ret = db.config.set(key, value)
-        if (ret === undefined) {
-          console.error(`Invalid key: ${key}`)
-          process.exit(1)
-        } else {
-          console.table([{
-            Parameter: key,
-            Value: value
-          }])
-        }
-      } else {
-        // getter
-        const val = db.config.get(key)
-        if (val === undefined) {
-          console.error(`Invalid key: ${key}`)
-          process.exit(1)
-        } else {
-          console.table([{
-            Parameter: key,
-            Value: val
-          }])
-        }
-      }
-    }
-    process.exit()
-  })
-  .on('--help', function () {
-    console.log(l10n('CMD_CFG_HELP_MSG'))
-  })
-
-program.parse(process.argv)
-
-// $ dmhy
-if (program.args.every(arg => !(arg instanceof program.Command))) {
-  Promise.all(
-    db.subscriptions.map(s => {
-      return fetchThreads(s)
-        .then(newThreads => {
-          for (const nth of newThreads) {
-            if (!s.threads.map(th => th.title).includes(nth.title)) {
-              db.download(nth, program).catch(console.error)
-              s.add(nth)
-            }
-          }
-        })
-        .catch(error => {
-          console.error(error)
-        })
+/**
+ * Entry point
+ */
+function main() {
+  const argv = yargs
+    .usage(l10n('MAIN_USAGE'))
+    .command(require('./command/add'))
+    .command(require('./command/remove'))
+    .command(require('./command/list'))
+    .command(require('./command/download'))
+    .command(require('./command/search'))
+    .command(require('./command/config'))
+    .option('x', {
+      alias: 'no-dl',
+      describe: l10n('MAIN_OPT_X'),
+      type: 'boolean',
+      global: false,
     })
-  ).then(() => {
-    console.success(l10n('CMD_MAIN_SUCCESS_MSG'))
-    db.sort()
-    db.save()
-  })
+    .help('h')
+    .alias('h', 'help')
+    .alias('v', 'version')
+    .argv;
+
+  // No command, update and download all
+  if (!argv._.length) {
+    const db = new Database();
+
+    const allTasks = db.subscriptions.map(async (sub) => {
+      const remoteThreads = await fetchThreads(sub);
+      return remoteThreads.map((rth) => {
+        const found = sub.threads.find((th) => th.title === rth.title);
+        if (!found) {
+          sub.add(rth);
+          db.save();
+          if (!argv.x) {
+            const downloader = db.config.get('downloader').value;
+            const script = path.resolve(`${__dirname}/../src/downloaders/${downloader}.js`);
+            const args = [rth, db.config.parameters].map(JSON.stringify);
+
+            return new Promise((resolve, reject) => {
+              const task = spawn('node', [script, ...args], {
+                stdio: 'inherit',
+              });
+              task.on('close', (code) => {
+                if (code === 0) resolve(code);
+                else reject(code);
+              });
+              task.on('error', (error) => reject(error));
+            });
+          }
+        }
+      });
+    });
+
+    Promise.all(allTasks)
+      .then(() => {
+        if (argv.x) {
+          print.success(l10n('MAIN_ALL_X_DONE'));
+        } else {
+          print.success(l10n('MAIN_ALL_DONE'));
+        }
+      });
+  }
 }
+
+
