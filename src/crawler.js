@@ -32,8 +32,7 @@ async function fetchThreads(sub) {
       try {
         return new Thread(th, sub.episodeParser);
       } catch (error) {
-        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: sub.sid }));
-        print.warn(th.title);
+        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: sub.sid, title: th.title }));
         return new Thread(th);
       }
     });

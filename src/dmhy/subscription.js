@@ -129,8 +129,7 @@ class Subscription {
       try {
         thread = new Thread(threadLike, this.episodeParser);
       } catch (error) {
-        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid }));
-        print.warn(threadLike.title);
+        print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid, title: threadLike.title }));
         thread = new Thread(threadLike);
       }
       if (thread.isValid()) {
@@ -149,8 +148,7 @@ class Subscription {
     try {
       thread = new Thread(threadLike, this.episodeParser);
     } catch (error) {
-      print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid }));
-      print.warn(threadLike.title);
+      print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid, title: threadLike.title }));
       thread = new Thread(threadLike);
     }
     if (thread.isValid()) {

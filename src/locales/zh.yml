@@ -117,7 +117,9 @@ DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
 DOWNLOADER_DL_SUCCESS: 開始下載 %title%
 DOWNLOADER_DL_FAILED: '%title% 下載失敗'
 
-THREAD_EPISODEPARSER_FALLBACK: 訂閱識別碼 %sid% 的訂閱自定義集數解析式解析錯誤，使用預設解析
+THREAD_EPISODEPARSER_FALLBACK: |
+  訂閱識別碼 %sid% 的自定義集數解析式解析錯誤，使用預設解析
+    %title%
 
 THREAD_EP_PARSE_ERR: |
   這行只有在出現 bug 時會印出。
