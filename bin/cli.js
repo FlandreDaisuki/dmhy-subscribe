@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-const path = require('path');
 const fs = require('fs-extra');
 const axios = require('axios');
 const yargs = require('yargs');
 const semver = require('semver');
-const { spawn } = require('child_process');
+const { downloadThreadWithDownloader } = require('..');
 const { l10n, print, CONST, Database, fetchThreads } = require('..');
 
 // fetch remote version every 15 times
@@ -61,29 +60,17 @@ function main() {
 
     const allTasks = db.subscriptions.map(async (sub) => {
       const remoteThreads = await fetchThreads(sub);
-      return remoteThreads.map((rth) => {
+      return Promise.all(remoteThreads.map((rth) => {
         const found = sub.threads.find((th) => th.title === rth.title);
         if (!found) {
           sub.add(rth);
           db.save();
           if (!argv.x) {
             const downloader = db.config.get('downloader').value;
-            const script = path.resolve(`${__dirname}/../src/downloaders/${downloader}.js`);
-            const args = [rth, db.config.parameters].map(JSON.stringify);
-
-            return new Promise((resolve, reject) => {
-              const task = spawn('node', [script, ...args], {
-                stdio: 'inherit',
-              });
-              task.on('close', (code) => {
-                if (code === 0) resolve(code);
-                else reject(code);
-              });
-              task.on('error', (error) => reject(error));
-            });
+            return downloadThreadWithDownloader(downloader, rth, db.config.parameters);
           }
         }
-      });
+      }));
     });
 
     Promise.all(allTasks)

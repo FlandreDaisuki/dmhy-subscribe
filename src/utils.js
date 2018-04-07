@@ -252,6 +252,18 @@ function splitKeywords(keywords) {
   };
 }
 
+/**
+ * Download thread with downloader
+ * @param {string} downloader
+ * @param {Thread} thread
+ * @param {Config} config
+ * @return {Promise}
+ */
+function downloadThreadWithDownloader(downloader, thread, config) {
+  const dl = require(`${__dirname}/downloaders/${downloader}`);
+  return dl(thread, config);
+}
+
 module.exports = {
   print,
   hash,
@@ -259,6 +271,7 @@ module.exports = {
   XSet,
   strToRegexp,
   splitKeywords,
+  downloadThreadWithDownloader,
   CONST: {
     systemDownloadsFolder,
     systemLocale,
