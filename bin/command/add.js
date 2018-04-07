@@ -37,7 +37,8 @@ exports.builder = (yargs) => {
       return true;
     })
     .fail((msg, err) => {
-      // yargs.showHelp();
+      yargs.showHelp();
+      console.log();
       print.error(msg);
       process.exit(1);
     })
