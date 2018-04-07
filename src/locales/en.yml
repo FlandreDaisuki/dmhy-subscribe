@@ -105,7 +105,7 @@ CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'downloader' to 'deluge' and print
 CMD_CFG_VALIDATORS_DESTINATION_ERR: The destination not exists
 CMD_CFG_VALIDATORS_DOWNLOADER_ERR: The downloader is not supported
 
-DOWNLOADER_START_FAILED: 下載器 %downloader% 啟動失敗
+DOWNLOADER_START_FAILED: Downloader %downloader% start failed
 DOWNLOADER_DL_SUCCESS: Start to download %title%
 DOWNLOADER_DL_FAILED: Fail to download %title%
 
