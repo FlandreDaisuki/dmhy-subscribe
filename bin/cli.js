@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const path = require('path');
 const fs = require('fs-extra');
 const axios = require('axios');
 const yargs = require('yargs');
@@ -35,6 +36,9 @@ const { l10n, print, CONST, Database, fetchThreads } = require('..');
  * Entry point
  */
 function main() {
+  const supportCommands = fs.readdirSync(`${__dirname}/command`)
+    .map((cmdpath) => path.basename(cmdpath, '.js'));
+
   const argv = yargs
     .usage(l10n('MAIN_USAGE'))
     .command(require('./command/add'))
@@ -82,7 +86,7 @@ function main() {
           print.success(l10n('MAIN_ALL_DONE'));
         }
       });
-  } else {
+  } else if (argv._.length > 1 || !supportCommands.includes(argv._[0])) {
     // Unknown command
     yargs.showHelp();
   }
