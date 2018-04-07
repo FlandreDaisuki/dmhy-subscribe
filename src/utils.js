@@ -135,7 +135,8 @@ const l10n = (() => {
 
   return (key, placeholder = {}) => {
     return Object.entries(placeholder).reduce((prev, cur) => {
-      return prev.replace(`%${cur[0]}%`, cur[1]);
+      const pattern = cur[0].replace(/[$]/g, '[$]');
+      return prev.replace(new RegExp(`%${pattern}%`, 'g'), cur[1]);
     }, dict[key]);
   };
 })();

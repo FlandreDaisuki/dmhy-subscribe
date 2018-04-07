@@ -4,10 +4,19 @@
 # subscribable := 訂閱用字串|訂閱設定檔
 NEW_VERSION_MSG: 有新版本囉～請用 `npm i -g dmhy-subscribe` 更新
 
-MAIN_USAGE: '使用方法: $0 [命令] [選項]'
+MAIN_USAGE: |
+  使用方法: $0 [命令] [選項]
+
+    若不指定命令，則到網站檢查更新，並*只*下載尚未紀錄的貼文
 MAIN_OPT_X: 只更新訂閱但不下載
 MAIN_ALL_DONE: 全部更新完成並下載
 MAIN_ALL_X_DONE: 全部更新完成
+MAIN_EXAMPLE1_DESC: 最簡單的例子，新增訂閱並全部更新下載
+MAIN_EXAMPLE2_DESC: |
+  承上，更改下載器下載
+  假設剛剛的訂閱識別碼為 ALR
+  訂閱識別碼可用 `%$0% list` 查詢
+  注意！已有紀錄的請使用`%$0% download`
 
 CMD_ADD_DESC: '新增一筆訂閱'
 CMD_ADD_USAGE: |
