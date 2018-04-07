@@ -10,7 +10,7 @@ const { print, l10n } = require('./utils');
  */
 async function fetchSearchHTML(kws) {
   const response = await axios.get(
-    `https://share.dmhy.org/topics/list?keyword=${kws.map(encodeURIComponent).join('+')}`
+    `https://share.dmhy.org/topics/list?sort_id=2&keyword=${kws.map(encodeURIComponent).join('+')}`
   );
   if (response.status !== 200) {
     throw new Error(response);
