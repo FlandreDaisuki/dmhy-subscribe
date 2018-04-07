@@ -145,7 +145,14 @@ class Subscription {
    * @memberof Subscription
    */
   add(threadLike) {
-    const thread = new Thread(threadLike, this.episodeParser);
+    let thread;
+    try {
+      thread = new Thread(threadLike, this.episodeParser);
+    } catch (error) {
+      print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: this.sid }));
+      print.warn(threadLike.title);
+      thread = new Thread(threadLike);
+    }
     if (thread.isValid()) {
       this.threads.push(thread);
       this.sort();
