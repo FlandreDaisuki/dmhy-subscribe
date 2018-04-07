@@ -101,6 +101,7 @@ class Config {
     } else {
       this.parameters = Object.assign({}, DEFAULTS);
     }
+    this.save();
   }
 
   /**
