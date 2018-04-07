@@ -87,7 +87,7 @@ exports.handler = async (argv) => {
         message: l10n('CMD_ADD_INTERACTIVE_TITLE'),
 
       });
-      if (!answer.title) {
+      if (!answer.title.trim()) {
         print.error(l10n('CMD_ADD_INTERACTIVE_TITLE_ERR'));
       } else {
         iSubscriptionLike.title = answer.title;
