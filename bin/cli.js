@@ -36,17 +36,25 @@ const { l10n, print, CONST, Database, fetchThreads } = require('..');
  * Entry point
  */
 function main() {
-  const supportCommands = fs.readdirSync(`${__dirname}/command`)
-    .map((cmdpath) => path.basename(cmdpath, '.js'));
+  const command = fs.readdirSync(`${__dirname}/command`)
+    .map((cmdpath) => path.basename(cmdpath, '.js'))
+    .reduce((prev, cur) => {
+      prev[cur] = require(`./command/${cur}`);
+      return prev;
+    }, {});
+
+  const supportCommands = Object.entries(command).reduce((collect, [key, mod]) => {
+    return collect.concat(key).concat(mod.aliases);
+  }, []);
 
   const argv = yargs
     .usage(l10n('MAIN_USAGE'))
-    .command(require('./command/add'))
-    .command(require('./command/remove'))
-    .command(require('./command/list'))
-    .command(require('./command/download'))
-    .command(require('./command/search'))
-    .command(require('./command/config'))
+    .command(command.add)
+    .command(command.list)
+    .command(command.remove)
+    .command(command.search)
+    .command(command.config)
+    .command(command.download)
     .option('x', {
       alias: 'no-dl',
       describe: l10n('MAIN_OPT_X'),
