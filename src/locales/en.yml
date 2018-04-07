@@ -8,11 +8,6 @@ MAIN_OPT_X: Don't download subscriptions, just update
 MAIN_ALL_DONE: All updated and downloading
 MAIN_ALL_X_DONE: All updated
 MAIN_EXAMPLE1_DESC: Most simple example, add a subscription, update and download them.
-MAIN_EXAMPLE2_DESC: |
-  Following the previous example, change the downloader.
-  We assume the SID is "ALR" from above example.
-  You can use `%$0% list` to get the SID of a subscription.
-  Caution! You can ONLY use `%$0% download` to download that threads have been in the database.
 
 CMD_ADD_DESC: Add a subscription
 CMD_ADD_USAGE: |

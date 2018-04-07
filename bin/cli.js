@@ -50,7 +50,6 @@ function main() {
       global: false,
     })
     .example('$0 add "搖曳露營,喵萌,繁體"\n$0', l10n('MAIN_EXAMPLE1_DESC'))
-    .example('$0 cfg downloader deluge\n$0 dl ALR', l10n('MAIN_EXAMPLE2_DESC', yargs))
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')
