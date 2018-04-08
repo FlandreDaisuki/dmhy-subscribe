@@ -29,6 +29,12 @@ exports.builder = (yargs) => {
       }
       return true;
     })
+    .fail((msg, err) => {
+      yargs.showHelp();
+      console.log();
+      print.error(msg);
+      process.exit(1);
+    })
     .example('$0 ls AAA', l10n('CMD_LS_EXAMPLE1_DESC'))
     .example('$0 ls -ss', l10n('CMD_LS_EXAMPLE2_DESC'));
 };

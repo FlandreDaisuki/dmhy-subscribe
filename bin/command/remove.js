@@ -22,6 +22,12 @@ exports.builder = (yargs) => {
       }
       return true;
     })
+    .fail((msg, err) => {
+      yargs.showHelp();
+      console.log();
+      print.error(msg);
+      process.exit(1);
+    })
     .example('$0 rm AAA', l10n('CMD_RM_EXAMPLE1_DESC'));
 };
 
