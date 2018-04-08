@@ -45,3 +45,7 @@
 [{"ep":5.5,"type":""}]
 [ZERO字幕组]百万偶像 5.5话 GB简体 720P MKV
 [{"ep":5.5,"type":""}]
+【OVA】
+[{"ep":1,"type":"OVA"}]
+[SP]
+[{"ep":1,"type":"SP"}]

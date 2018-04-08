@@ -107,6 +107,17 @@ class Thread {
       }
     }
 
+    const globalTokens = title
+      .split(/[[\]【】_\s]/g)
+      .map((x) => x.toLowerCase())
+      .filter((_) => _);
+
+    if (globalTokens.includes('ova')) {
+      return new Episode({ ep: 1, type: 'OVA' });
+    } else if (globalTokens.includes('sp')) {
+      return new Episode({ ep: 1, type: 'SP' });
+    }
+
     print.warn(l10n('THREAD_EP_PARSE_ERR'));
     print.log('title:', `"${title}"`);
     print.log('tokens:', tokens);
