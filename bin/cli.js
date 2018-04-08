@@ -77,7 +77,6 @@ function main() {
         const found = sub.threads.find((th) => th.title === rth.title);
         if (!found) {
           sub.add(rth);
-          db.save();
           if (!argv.x) {
             const downloader = db.config.get('downloader').value;
             return downloadThreadWithDownloader(downloader, rth, db.config.parameters);
@@ -93,6 +92,7 @@ function main() {
         } else {
           print.success(l10n('MAIN_ALL_DONE'));
         }
+        db.save();
       });
   } else if (argv._.length > 1 || !supportCommands.includes(argv._[0])) {
     // Unknown command
