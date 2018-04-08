@@ -265,6 +265,14 @@ function downloadThreadWithDownloader(downloader, thread, config) {
   return dl(thread, config);
 }
 
+const defaultProjectDataDir = (() => {
+  if (process.env.NODE_ENV === 'development') {
+    return `${os.homedir()}/.dmhy-subscribe-dev`;
+  } else {
+    return `${os.homedir()}/.dmhy-subscribe`;
+  }
+})();
+
 module.exports = {
   print,
   hash,
@@ -276,12 +284,12 @@ module.exports = {
   CONST: {
     systemDownloadsFolder,
     systemLocale,
-    defaultProjectDataDir: `${os.homedir()}/.dmhy-subscribe`,
-    defaultDatabasePath: `${os.homedir()}/.dmhy-subscribe/db.json`,
-    defaultISubsDir: `${os.homedir()}/.dmhy-subscribe/isubs`,
-    defaultConfigPath: `${os.homedir()}/.dmhy-subscribe/config.json`,
-    defaultVersionPath: `${os.homedir()}/.dmhy-subscribe/.version`,
-    remoteVersionPath: `${os.homedir()}/.dmhy-subscribe/.remoteVersion`,
+    defaultProjectDataDir,
+    defaultDatabasePath: `${defaultProjectDataDir}/db.json`,
+    defaultISubsDir: `${defaultProjectDataDir}/isubs`,
+    defaultConfigPath: `${defaultProjectDataDir}/config.json`,
+    defaultVersionPath: `${defaultProjectDataDir}/.version`,
+    remoteVersionPath: `${defaultProjectDataDir}/.remoteVersion`,
     packageVersion: pkg.version,
   },
 };
