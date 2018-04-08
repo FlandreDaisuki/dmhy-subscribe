@@ -93,6 +93,7 @@ class Thread {
       if (/[+]/.test(tok)) {
         const eps = tok
           .split('+')
+          .filter((_) => _)
           .map((t) => Thread.parseEpisodeFromTitle(t).data)
           .reduce((a, b) => a.concat(b), []);
         return new Episode(eps);
