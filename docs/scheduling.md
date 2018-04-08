@@ -2,13 +2,17 @@
 
 寫一個搭配自動排程檢查並下載我要的字幕組是這個工具的初衷，下面介紹幾種搭配排程的方法。
 
+* [Linux cron/crontab](#linux-croncrontab)
+* [Windows 10 排程](#windows-10-%E6%8E%92%E7%A8%8B)
+* [pm2](#pm2)
+
 ## Linux cron/crontab
 
 確定 `dmhy-subscribe` 確實安裝完成：
 
 ```shell
 $ dmhy --version
-0.4.0 # 有版本跳出來
+0.6.0 # 有版本跳出來
 ```
 
 加入到 crontab
@@ -40,17 +44,17 @@ PS C:\> Get-Command dmhy
    ```
    PS C:\> dmhy add "搖曳露營,喵萌,繁體"
    PS C:\> dmhy ls
-   sid  latest  name
-   ---  ------  ---------------------
-   ALR  --      搖曳露營
+   訂閱識別碼    最新集數   標題
+   ---------   --------  ---------
+   ALR         --        搖曳露營
    ```
 2. 到 `工作排程器程式庫` 找到這個工作 → 右鍵[執行]
 3. 在輸入一次 `dmhy ls`，有最新集數就成功了
    ```
    PS C:\> dmhy ls
-   sid  latest  name
-   ---  ------  ---------------------
-   ALR  08      搖曳露營
+   訂閱識別碼    最新集數   標題
+   ---------   --------  ---------
+   ALR         12        搖曳露營
    ```
 
 ## pm2
@@ -63,5 +67,5 @@ Ubuntu:
 $ npm i -g pm2
 $ pm2 start `which dmhy` --cron="0 * * * *"
 或
-$ pm2 start `which dmhy` --cron="0 * * * *" -- --client=aria2 # -- 之後的參數傳到 dmhy
+$ pm2 start `which dmhy` --cron="0 * * * *" -- --no-dl # -- 之後的參數傳到 dmhy
 ```

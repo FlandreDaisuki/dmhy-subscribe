@@ -7,10 +7,10 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 * [開啟 daemon](#%E9%96%8B%E5%95%9F-daemon)
 * [使用範例](#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B)
 * [使用 UI 介面](#%E4%BD%BF%E7%94%A8-ui-%E4%BB%8B%E9%9D%A2)
-  * [瀏覽器插件](#%E7%80%8F%E8%A6%BD%E5%99%A8%E6%8F%92%E4%BB%B6)
-  * [使用 webui-aria2 (手動)](#%E4%BD%BF%E7%94%A8-webui-aria2-%E6%89%8B%E5%8B%95)
-  * [使用 AriaNg (手動)](#%E4%BD%BF%E7%94%A8-ariang-%E6%89%8B%E5%8B%95)
-    * [AriaNg 調整語言](#ariang-%E8%AA%BF%E6%95%B4%E8%AA%9E%E8%A8%80)
+  + [瀏覽器插件](#%E7%80%8F%E8%A6%BD%E5%99%A8%E6%8F%92%E4%BB%B6)
+  + [使用 webui-aria2 (手動)](#%E4%BD%BF%E7%94%A8-webui-aria2-%E6%89%8B%E5%8B%95)
+  + [使用 AriaNg (手動)](#%E4%BD%BF%E7%94%A8-ariang-%E6%89%8B%E5%8B%95)
+    - [AriaNg 調整語言](#ariang-%E8%AA%BF%E6%95%B4%E8%AA%9E%E8%A8%80)
 
 ## 安裝方法
 
@@ -69,14 +69,18 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 
 ## 使用範例
 
-目前如果要用 `aria2` 來下載的話需要指定 `--client=aria2` 和 `--jsonrpc=http://token:helloworld@localhost:6800/jsonrpc` (helloworld 要改成前面設定的密碼)
-
-_**未來可能**可以把預設 `client` 設成 `aria2`，且不用重複打 `jsonrpc`_
+目前如果要用 `aria2` 來下載的話需要指定下載器及 jsonrpc
+```shell
+$ dmhy cfg downloader aria2
+$ dmhy cfg aria2-jsonrpc "http://token:helloworld@localhost:6800/jsonrpc"
+# helloworld 要改成前面設定的密碼
+```
 
 ```shell
 $ dmhy add "搖曳露營,DHR,720,繁體,Yuru"
-$ dmhy --client=aria2 --jsonrpc=http://token:helloworld@localhost:6800/jsonrpc #下載全部
-$ dmhy dl [搖曳露營的sid]-08 --client=aria2 --jsonrpc=http://token:helloworld@localhost:6800/jsonrpc #下載單集
+# 假設搖曳露營的訂閱識別碼為 ALR
+$ dmhy #下載全部
+$ dmhy dl ALR-08 #下載單集
 ```
 
 ## 使用 UI 介面

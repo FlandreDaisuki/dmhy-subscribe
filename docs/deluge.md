@@ -5,6 +5,7 @@ Deluge 是一個多平台的 torrent 客戶端軟體，`dmhy-subscribe` 靠他�
 * [安裝方法](#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
 * [設置環境變數](#%E8%A8%AD%E7%BD%AE%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8)
 * [開啟 daemon](#%E9%96%8B%E5%95%9F-daemon)
+* [使用範例](#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B)
 * [管理頁面](#%E7%AE%A1%E7%90%86%E9%A0%81%E9%9D%A2)
 
 ## 安裝方法
@@ -51,6 +52,21 @@ libtorrent: 1.0.11.0
     ```shell
     PS C:\>  deluge-console info # 沒有錯誤即成功
     ```
+
+## 使用範例
+
+目前如果要用 `deluge` 來下載的話需要指定下載器
+
+```shell
+$ dmhy cfg downloader deluge
+```
+
+```shell
+$ dmhy add "搖曳露營,DHR,720,繁體,Yuru"
+# 假設搖曳露營的訂閱識別碼為 ALR
+$ dmhy #下載全部
+$ dmhy dl ALR-08 #下載單集
+```
 
 ## 管理頁面
 

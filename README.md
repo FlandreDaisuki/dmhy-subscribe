@@ -11,13 +11,16 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 * [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
 * [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
 * [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
+* [Feedbacks 回報問題](#feedbacks-%E5%9B%9E%E5%A0%B1%E5%95%8F%E9%A1%8C)
+* [Contributing 貢獻專案](#contributing-%E8%B2%A2%E7%8D%BB%E5%B0%88%E6%A1%88)
+* [Contributors](#contributors)
 
 ## Demo 範例影片
 
+GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
+
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=sGjh77-72vE">
-    <img src="https://img.youtube.com/vi/sGjh77-72vE/0.jpg">
-  </a>
+  <img src="./tty.gif" alt="tty demo">
 </p>
 
 ## Requirements 依賴軟體
@@ -27,11 +30,12 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
         或 [tj/n](https://github.com/tj/n)
   * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
-下載器下面三種擇一即可 (推薦使用 `deluge`)
+下載器目前提供下面四種，擇一即可 (推薦使用 `system`)
 
-* system: 若系統有註冊 `magnet://` 關聯程式，則推薦使用此下載器
-* deluge & deluge-console: [deluge 安裝教學](docs/deluge.md)
-* aria2c & (webui-aria2 或 AriaNg): [aria2 安裝教學](docs/aria2.md)
+* system(預設): 若系統有註冊 `magnet://` 關聯程式，則啟動該程式
+* deluge: [deluge 安裝教學](docs/deluge.md)
+* aria2c: [aria2 安裝教學](docs/aria2.md)
+* webhook: [webhook 安裝教學](docs/webhook.md)(待補)
 
 ## Installation 安裝方法
 
@@ -65,42 +69,48 @@ $ npm i -g dmhy-subscribe
 ## Usage 使用方法
 
 ```
-  Usage: dmhy [options] [command]
+使用方法: dmhy [命令] [選項]
+
+  若不指定命令，則到網站檢查更新，並*只*下載尚未紀錄的貼文
 
 
-  Options:
+命令：
+  dmhy add [subscribable...]         新增一筆訂閱
+  dmhy list [SID...]                 顯示訂閱資訊                   [別名: ls]
+  dmhy remove [SID...]               根據訂閱識別碼刪除訂閱         　[別名: rm]
+  dmhy search <subscribable-string>  直接搜尋貼文                   [別名: find]
+  dmhy config [key] [value]          設定內部參數                   [別名: cfg]
+  dmhy download <THID...>            根據下載識別碼下載訂閱           [別名: dl]
 
-    -V, --version             output the version number
-    -d, --destination <path>  下載路徑 (預設: 預設下載資料夾)
-    --client <client>         強制使用指定下載器。 <client>: "system", "aria2", "deluge"(預設)
-    --jsonrpc <jsonrpc_uri>   jsonrpc url for --client=aria2
-    -h, --help                output usage information
+選項：
+  -x, --no-dl    只更新訂閱但不下載                                   [布林]
+  -h, --help     顯示說明                                           [布林]
+  -v, --version  顯示版本                                           [布林]
 
-
-  Commands:
-
-    add [options] [subscribable...]     使用 {可訂閱字串} 新增 {訂閱}
-    remove|rm [options] [sid...]        根據 {sid} 刪除 {訂閱}
-    list|ls [options] [sid...]          列出所有 {訂閱} 或指定 {訂閱} 的詳細資訊
-    download|dl [thid...]               根據 {thid} 下載 {訂閱} 中的 {貼文}
-    search|find [options] <keywords>    直接搜尋 dmhy 網頁結果 (關鍵字用半形逗號分開)
-    update [sid...]                     只更新已訂閱的 {訂閱} 但不下載
-    config|cfg [options] [key] [value]  設定內部參數
-
-  例子:
-
-    $ dmhy add "紫羅蘭永恆花園,動漫國,繁體,1080P"  # 新增一筆 {訂閱}
-
-    $ dmhy                  # 更新並下載未下載的 {訂閱}
-    或
-    $ dmhy --client aria2   # 更新並使用 aria2 下載未下載的 {訂閱}
-    或
-    $ dmhy --client system  # 更新並使用系統關聯程式下載未下載的 {訂閱}
+例：
+  dmhy add "搖曳露營,喵萌,繁體"      最簡單的例子，新增訂閱並全部更新下載
+  dmhy
 ```
 
 ## Scheduling 自動排程
 
 參考[自動排程](docs/scheduling.md)教學
+
+## Feedbacks 回報問題
+
+先到 [issue](https://github.com/FlandreDaisuki/dmhy-subscribe/issues) 看看有沒有相似的問題，若沒有相似問題請點擊 New issue 描述問題。
+
+## Contributing 貢獻專案
+
+Fork 並 clone 到本地端
+```shell
+(master) $ git remote add upstream https://github.com/FlandreDaisuki/dmhy-subscribe.git
+(master) $ git merge upstream master # 更新上游分支
+(master) $ git checkout -b 0.6.x # *最新版本*的最後一個數字改成x
+(0.6.x) $ # 改改改
+(0.6.x) $ git push origin 0.6.x
+```
+到 GitHub 發 PR 到我的同名分支 (不要發到 master)
 
 ## Contributors
 
