@@ -1,4 +1,4 @@
-const { l10n, print, splitKeywords, fetchThreadsByKeywords } = require('../..');
+const { l10n, print, splitKeywords, fetchThreadLikesByKeywords, Thread } = require('../..');
 
 exports.command = 'search <subscribable-string>';
 
@@ -17,11 +17,17 @@ exports.builder = (yargs) => {
 
 exports.handler = async (argv) => {
   const { keywords, unkeywords } = splitKeywords(argv.ss.split(','));
-  const threads = await fetchThreadsByKeywords(keywords, unkeywords);
-  threads.forEach((th) => {
+  const threadLikes = await fetchThreadLikesByKeywords(keywords, unkeywords);
+  threadLikes.forEach((th) => {
     print.log(th.title);
   });
   console.log();
-  print.log(l10n('CMD_FIND_TOTAL', { total: threads.length }));
+  print.log(l10n('CMD_FIND_TOTAL', { total: threadLikes.length }));
+
+  // precheck
+  threadLikes.forEach((th) => {
+    Thread.parseEpisodeFromTitle(th.title);
+  });
+
   process.exit(0);
 };

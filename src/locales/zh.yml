@@ -127,5 +127,5 @@ THREAD_EPISODEPARSER_FALLBACK: |
     %title%
 
 THREAD_EP_PARSE_ERR: |
-  這行只有在出現 bug 時會印出。
+  這行只有在無法判斷集數時會印出。
   請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報

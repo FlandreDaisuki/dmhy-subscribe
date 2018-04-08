@@ -119,5 +119,5 @@ THREAD_EPISODEPARSER_FALLBACK: |
     %title%
 
 THREAD_EP_PARSE_ERR: |
-  This should never print unless having bugs.
+  This should never print unless parsing episode failed.
   Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.

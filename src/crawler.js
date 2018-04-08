@@ -27,7 +27,7 @@ async function fetchThreads(sub) {
     throw new TypeError('Parameter should be a Subscription.');
   }
   const kws = [sub.title, ...sub.keywords];
-  return (await fetchThreadsByKeywords(kws, sub.unkeywords))
+  return (await fetchThreadLikesByKeywords(kws, sub.unkeywords))
     .map((th) => {
       try {
         return new Thread(th, sub.episodeParser);
@@ -41,20 +41,22 @@ async function fetchThreads(sub) {
 /**
  * @param {string[]} kws
  * @param {string[]} ukws
- * @return {Thread[]} threads
+ * @return {threadLike[]} threadLikes
  */
-async function fetchThreadsByKeywords(kws, ukws = []) {
-  return parseThreadsFromHTML(await fetchSearchHTML(kws))
+async function fetchThreadLikesByKeywords(kws, ukws = []) {
+  const threadLikes = parseThreadLikesFromHTML(await fetchSearchHTML(kws))
     .filter((th) => !ukws.some((ukw) => th.title.includes(ukw)));
+
+  return threadLikes;
 }
 
 /**
  *
  *
  * @param {HTML} html
- * @return {Thread[]} threads
+ * @return {threadLike[]} threadLikes
  */
-function parseThreadsFromHTML(html) {
+function parseThreadLikesFromHTML(html) {
   const $ = cheerio.load(html);
   const titles = getTitlesFromCheerio($);
   const magnets = getMagnetsFromCheerio($);
@@ -64,8 +66,7 @@ function parseThreadsFromHTML(html) {
   }
 
   return titles
-    .map((title, i) => new Thread({ title, link: magnets[i] }))
-    .filter((th) => th.isValid());
+    .map((title, i) => ({ title, link: magnets[i] }));
 }
 
 /**
@@ -90,4 +91,4 @@ function getMagnetsFromCheerio($) {
 }
 
 exports.fetchThreads = fetchThreads;
-exports.fetchThreadsByKeywords = fetchThreadsByKeywords;
+exports.fetchThreadLikesByKeywords = fetchThreadLikesByKeywords;
