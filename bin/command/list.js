@@ -41,6 +41,7 @@ exports.builder = (yargs) => {
 
 exports.handler = (argv) => {
   const db = new Database();
+  db.sort();
 
   if (argv.ss) {
     const sids = argv.SID || db.subscriptions.map((sub) => sub.sid);
