@@ -1,6 +1,9 @@
 const fs = require('fs');
-const { CONST } = require('..');
-const { defaultProjectDataDir, defaultVersionPath, packageVersion } = CONST;
+const os = require('os');
+
+const defaultProjectDataDir = `${os.homedir()}/.dmhy-subscribe`;
+const defaultVersionPath = `${defaultProjectDataDir}/.version`;
+const packageVersion = require('../package.json').version;
 
 const ss = []; // subscribable string
 let version = '';
