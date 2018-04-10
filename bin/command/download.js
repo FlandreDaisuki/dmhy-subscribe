@@ -9,9 +9,9 @@ exports.desc = l10n('CMD_DL_DESC');
 exports.builder = (yargs) => {
   yargs
     .usage(l10n('CMD_DL_USAGE'))
-    .example('$0 dl AAA', l10n('CMD_DL_EXAMPLE1_DESC', { $0: yargs.$0 }))
-    .example('$0 dl AAA-1,4,9', l10n('CMD_DL_EXAMPLE2_DESC'))
-    .example('$0 dl AAA-OVA1..3', l10n('CMD_DL_EXAMPLE3_DESC'));
+    .example('dmhy dl AAA', l10n('CMD_DL_EXAMPLE1_DESC'))
+    .example('dmhy dl AAA-1,4,9', l10n('CMD_DL_EXAMPLE2_DESC'))
+    .example('dmhy dl AAA-OVA1..3', l10n('CMD_DL_EXAMPLE3_DESC'));
 };
 
 exports.handler = (argv) => {

@@ -35,8 +35,8 @@ exports.builder = (yargs) => {
       print.error(msg);
       process.exit(1);
     })
-    .example('$0 ls AAA', l10n('CMD_LS_EXAMPLE1_DESC'))
-    .example('$0 ls -ss', l10n('CMD_LS_EXAMPLE2_DESC'));
+    .example('dmhy ls AAA', l10n('CMD_LS_EXAMPLE1_DESC'))
+    .example('dmhy ls -ss', l10n('CMD_LS_EXAMPLE2_DESC'));
 };
 
 exports.handler = (argv) => {

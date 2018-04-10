@@ -61,7 +61,7 @@ function main() {
       type: 'boolean',
       global: false,
     })
-    .example('$0 add "搖曳露營,喵萌,繁體"\n$0', l10n('MAIN_EXAMPLE1_DESC'))
+    .example('dmhy add "搖曳露營,喵萌,繁體"\ndmhy', l10n('MAIN_EXAMPLE1_DESC'))
     .help('h')
     .alias('h', 'help')
     .alias('v', 'version')

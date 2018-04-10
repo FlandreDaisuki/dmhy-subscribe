@@ -14,9 +14,9 @@ exports.builder = (yargs) => {
       describe: l10n('CMD_CFG_OPT_RESET'),
       type: 'boolean',
     })
-    .example('$0 config', l10n('CMD_CFG_EXAMPLE1_DESC'))
-    .example('$0 config downloader', l10n('CMD_CFG_EXAMPLE2_DESC'))
-    .example('$0 config downloader deluge', l10n('CMD_CFG_EXAMPLE3_DESC'));
+    .example('dmhy config', l10n('CMD_CFG_EXAMPLE1_DESC'))
+    .example('dmhy config downloader', l10n('CMD_CFG_EXAMPLE2_DESC'))
+    .example('dmhy config downloader deluge', l10n('CMD_CFG_EXAMPLE3_DESC'));
 };
 
 exports.handler = (argv) => {

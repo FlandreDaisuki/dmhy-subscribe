@@ -1,7 +1,7 @@
 NEW_VERSION_MSG: New version released! use `npm i -g dmhy-subscribe` to upgrade!
 
 MAIN_USAGE: |
-  Usage: $0 [command] [options]
+  Usage: dmhy [command] [options]
 
     If no command is set, it will update all descriptions and download the threads which is not in the database.
 MAIN_OPT_X: Don't download subscriptions, just update
@@ -11,7 +11,7 @@ MAIN_EXAMPLE1_DESC: Most simple example, add a subscription, update and download
 
 CMD_ADD_DESC: Add a subscription
 CMD_ADD_USAGE: |
-  Usage: $0 add [options] [subscribable...]
+  Usage: dmhy add [options] [subscribable...]
 
     A subscribable can be a file path or string and we use it to search threads on website.
 
@@ -42,7 +42,7 @@ CMD_ADD_EXAMPLE3_DESC: Use interactive prompt
 
 CMD_RM_DESC: Remove subscriptions by their SID
 CMD_RM_USAGE: |
-  Usage: $0 remove [options] [SID...]
+  Usage: dmhy remove [options] [SID...]
 
     Remove subscriptions by their SID.
 CMD_RM_OPT_A: Remove all subscriptions
@@ -53,7 +53,7 @@ CMD_RM_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
 
 CMD_LS_DESC: Show subscriptions information
 CMD_LS_USAGE: |
-  Usage: $0 list [options] [SID...]
+  Usage: dmhy list [options] [SID...]
 
     Show subscriptions information.
     Show all subscriptions information if no specific SID.
@@ -74,7 +74,7 @@ CMD_LS_CELL_THREAD_TITLE: Thread Title
 
 CMD_DL_DESC: Download subscriptions by their THID
 CMD_DL_USAGE: |
-  Usage: $0 download <THID...>
+  Usage: dmhy download <THID...>
 
     A THID includes SID and episode(s).
 
@@ -84,20 +84,20 @@ CMD_DL_USAGE: |
 
     THID is <SID> that implies all episodes are included, same as <SID>-all.
 CMD_DL_SID_NOT_FOUND: Can't find subsciption with SID "%sid%"
-CMD_DL_EXAMPLE1_DESC: Download all threads in the subscription which SID is AAA. Same as `%$0% dl AAA-all`
+CMD_DL_EXAMPLE1_DESC: Download all threads in the subscription which SID is AAA. Same as `dmhy dl AAA-all`
 CMD_DL_EXAMPLE2_DESC: Download the threads that include episode 1, 4, 9 in the subscription which SID is AAA
 CMD_DL_EXAMPLE3_DESC: Download the threads that include OVA episode 1 ~ 3 in the subscription which SID is AAA
 
 CMD_FIND_DESC: Search threads on website directly
 CMD_FIND_USAGE: |
-  Usage: $0 search <subscribable-string>
+  Usage: dmhy search <subscribable-string>
 
     Search threads on website by subscribable string without opening browser.
 CMD_FIND_TOTAL: 'Total: %total% result(s)'
 
 CMD_CFG_DESC: Configure internal parameters
 CMD_CFG_USAGE: |
-  Usage: $0 config [key] [value]
+  Usage: dmhy config [key] [value]
 
     Configure internal parameters.
 CMD_CFG_OPT_RESET: Reset to default value

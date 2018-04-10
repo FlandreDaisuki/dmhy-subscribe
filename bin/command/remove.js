@@ -28,7 +28,7 @@ exports.builder = (yargs) => {
       print.error(msg);
       process.exit(1);
     })
-    .example('$0 rm AAA', l10n('CMD_RM_EXAMPLE1_DESC'));
+    .example('dmhy rm AAA', l10n('CMD_RM_EXAMPLE1_DESC'));
 };
 
 exports.handler = (argv) => {

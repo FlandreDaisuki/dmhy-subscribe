@@ -5,7 +5,7 @@
 NEW_VERSION_MSG: 有新版本囉～請用 `npm i -g dmhy-subscribe` 更新
 
 MAIN_USAGE: |
-  使用方法: $0 [命令] [選項]
+  使用方法: dmhy [命令] [選項]
 
     若不指定命令，則到網站檢查更新，並*只*下載尚未紀錄的貼文
 MAIN_OPT_X: 只更新訂閱但不下載
@@ -15,7 +15,7 @@ MAIN_EXAMPLE1_DESC: 最簡單的例子，新增訂閱並全部更新下載
 
 CMD_ADD_DESC: '新增一筆訂閱'
 CMD_ADD_USAGE: |
-  使用方法: $0 add [選項] [訂閱用字串|訂閱設定檔...]
+  使用方法: dmhy add [選項] [訂閱用字串|訂閱設定檔...]
 
     訂閱用字串和訂閱設定檔會用來搜尋貼文。
 
@@ -46,7 +46,7 @@ CMD_ADD_EXAMPLE3_DESC: 使用互動式界面
 
 CMD_RM_DESC: 根據訂閱識別碼刪除訂閱
 CMD_RM_USAGE: |
-  使用方法: $0 remove [選項] [訂閱識別碼...]
+  使用方法: dmhy remove [選項] [訂閱識別碼...]
 
     根據訂閱識別碼刪除訂閱。
 CMD_RM_OPT_A: 刪除所有訂閱
@@ -57,7 +57,7 @@ CMD_RM_SID_NOT_FOUND: 找不到訂閱識別碼：%sid%
 
 CMD_LS_DESC: 顯示訂閱資訊
 CMD_LS_USAGE: |
-  使用方法: $0 list [選項] [訂閱識別碼...]
+  使用方法: dmhy list [選項] [訂閱識別碼...]
 
     顯示訂閱資訊。若無指定訂閱識別碼，則顯示全部訂閱。
 CMD_LS_OPT_SS: 顯示訂閱用字串
@@ -78,7 +78,7 @@ CMD_LS_CELL_THREAD_TITLE: 貼文標題
 
 CMD_DL_DESC: 根據下載識別碼下載訂閱
 CMD_DL_USAGE: |
-  使用方法: $0 download <下載識別碼...>
+  使用方法: dmhy download <下載識別碼...>
 
     下載識別碼包含了訂閱識別碼和集數。
 
@@ -88,20 +88,20 @@ CMD_DL_USAGE: |
 
     若下載識別碼為 <訂閱識別碼>，代表該訂閱全部集數，即 <訂閱識別碼>-all。
 CMD_DL_SID_NOT_FOUND: 找不到訂閱識別碼：%sid%
-CMD_DL_EXAMPLE1_DESC: 下載訂閱識別碼為 AAA 的所有集數，即 `%$0% dl AAA-all`
+CMD_DL_EXAMPLE1_DESC: 下載訂閱識別碼為 AAA 的所有集數，即 `dmhy dl AAA-all`
 CMD_DL_EXAMPLE2_DESC: 下載訂閱識別碼為 AAA 的訂閱中，包含 1, 4, 9 集的貼文
 CMD_DL_EXAMPLE3_DESC: 下載訂閱識別碼為 AAA 的訂閱中，包含 OVA1 ~ 3 集的貼文
 
 CMD_FIND_DESC: 直接搜尋貼文
 CMD_FIND_USAGE: |
-  使用方法: $0 find <訂閱用字串>
+  使用方法: dmhy find <訂閱用字串>
 
     不用開起瀏覽器，使用訂閱用字串搜尋貼文。
 CMD_FIND_TOTAL: 共 %total% 筆結果
 
 CMD_CFG_DESC: 設定內部參數
 CMD_CFG_USAGE: |
-  使用方法: $0 config [參數鍵] [參數值]
+  使用方法: dmhy config [參數鍵] [參數值]
 
     設定內部參數。
 CMD_CFG_OPT_RESET: 設為預設值
