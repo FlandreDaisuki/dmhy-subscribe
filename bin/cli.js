@@ -17,7 +17,7 @@ const { l10n, print, CONST, Database, fetchThreads } = require('..');
       const { data } = await axios.get('https://registry.npmjs.org/dmhy-subscribe');
       const remoteVersion = data['dist-tags'].latest;
       count = 0;
-      if (semver.gt(remoteVersion, CONST.packageVersion) && semver.gt(remoteVersion, lastRemoteVersion)) {
+      if (semver.gt(remoteVersion, CONST.packageVersion) || semver.gt(remoteVersion, lastRemoteVersion)) {
         console.log();
         print.info(l10n('NEW_VERSION_MSG'));
         console.log();
