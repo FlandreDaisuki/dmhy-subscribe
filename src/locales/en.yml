@@ -121,3 +121,7 @@ THREAD_EPISODEPARSER_FALLBACK: |
 THREAD_EP_PARSE_ERR: |
   This should never print unless parsing episode failed.
   Please paste following information to https://github.com/FlandreDaisuki/dmhy-subscribe/issues.
+
+INCOMPATIBLE_UPGRADE: |
+  This version has imcompatible update.
+  Please check your subscriptions.

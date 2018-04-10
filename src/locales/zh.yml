@@ -129,3 +129,7 @@ THREAD_EPISODEPARSER_FALLBACK: |
 THREAD_EP_PARSE_ERR: |
   這行只有在無法判斷集數時會印出。
   請將下面印出的資訊貼上到 https://github.com/FlandreDaisuki/dmhy-subscribe/issues 回報
+
+INCOMPATIBLE_UPGRADE: |
+  此版本有重大更新，版本間移植可能不相容
+  請自行檢查訂閱是否遺漏或錯誤

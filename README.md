@@ -66,6 +66,12 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
 $ npm i -g dmhy-subscribe
 ```
 
+若之前已有安裝，推薦先輸出可訂閱字串作為備份
+```
+(0.3.x) $ dmhy ls --addable > backup.txt
+(0.5.x) $ dmhy ls -s > backup.txt
+```
+
 ## Usage 使用方法
 
 ```

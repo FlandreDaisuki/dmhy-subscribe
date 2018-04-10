@@ -7,6 +7,7 @@
   "description": "Subscribe by keywords and download megnets",
   "main": "./index.js",
   "scripts": {
+    "preinstall": "node npm-scripts/preinstall.js",
     "postinstall": "node npm-scripts/postinstall.js",
     "prepare": "eslint --fix *.js && npm run test",
     "test": "mocha",
