@@ -7,6 +7,11 @@ const packageVersion = require('../package.json').version;
 
 const ss = []; // subscribable string
 let version = '';
+
+if (!fs.existsSync(defaultProjectDataDir)) {
+  fs.mkdirSync(defaultProjectDataDir);
+}
+
 if (fs.existsSync(defaultVersionPath)) {
   version = fs.readFileSync(defaultVersionPath, 'utf-8');
 } else {
