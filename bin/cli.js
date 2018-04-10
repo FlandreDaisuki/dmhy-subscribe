@@ -98,6 +98,9 @@ function main() {
           print.success(l10n('MAIN_ALL_DONE'));
         }
         db.save();
+      })
+      .catch((_) => {
+        // Error will print by downloaders, keep quiet
       });
   } else if (argv._.length > 1 || !supportCommands.includes(argv._[0])) {
     // Unknown command

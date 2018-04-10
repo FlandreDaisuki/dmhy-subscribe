@@ -262,7 +262,11 @@ function splitKeywords(keywords) {
  */
 function downloadThreadWithDownloader(downloader, thread, config) {
   const dl = require(`${__dirname}/downloaders/${downloader}`);
-  return dl(thread, config);
+
+  return dl(thread, config).catch((error) => {
+    print.error(l10n('DOWNLOADER_START_FAILED', { downloader }), error);
+    return Promise.reject(error);
+  });
 }
 
 const defaultProjectDataDir = (() => {

@@ -9,6 +9,6 @@ module.exports = (thread, config) => {
     print.success(l10n('DOWNLOADER_DL_SUCCESS', { title: thread.title }));
   }).catch((error) => {
     print.error(l10n('DOWNLOADER_DL_FAILED', { title: thread.title }));
-    print.error(l10n('DOWNLOADER_START_FAILED', { downloader: 'system' }), error);
+    return Promise.reject(error);
   });
 };

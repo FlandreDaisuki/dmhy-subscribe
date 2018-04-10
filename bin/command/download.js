@@ -42,8 +42,8 @@ exports.handler = (argv) => {
     .then(() => {
       process.exit(0);
     })
-    .catch((error) => {
-      print.error(error);
+    .catch((_) => {
+      // Error will print by downloaders, keep quiet
       process.exit(1);
     });
 };
