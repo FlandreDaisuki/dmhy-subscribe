@@ -1,9 +1,14 @@
-const pkg = require('../package.json');
 const fs = require('fs-extra');
 const { CONST } = require('..');
-const { defaultProjectDataDir } = CONST;
+const { defaultProjectDataDir, defaultVersionPath, packageVersion } = CONST;
 
 const ss = []; // subscribable string
+let version = '';
+if (fs.existsSync(defaultVersionPath)) {
+  version = fs.readFileSync(defaultVersionPath, 'utf-8');
+} else {
+  version = packageVersion;
+}
 
 if (fs.existsSync(`${defaultProjectDataDir}/fakedb.json`)) {
   const db = fs.readJSONSync(`${defaultProjectDataDir}/fakedb.json`);
@@ -21,6 +26,6 @@ if (fs.existsSync(`${defaultProjectDataDir}/fakedb.json`)) {
 }
 
 fs.writeJSONSync(`${defaultProjectDataDir}/.preinstall.json`, {
-  version: pkg.version,
+  version,
   ss,
 });
