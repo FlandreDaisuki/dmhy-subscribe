@@ -46,5 +46,10 @@ describe('config', () => {
     config.reset();
     assert.deepEqual(config.parameters, Config.DEFAULTS);
     clearPaths();
+
+    _ = config.set('downloader', 'deluge');
+    const config2 = new TestConfig();
+    assert.deepEqual(config2.parameters, Object.assign({}, Config.DEFAULTS, { downloader: 'deluge' }));
+    clearPaths();
   });
 });

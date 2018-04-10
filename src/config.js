@@ -49,9 +49,7 @@ class Config {
       this.save();
     }
 
-    this.reset();
-
-    Object.assign(this.parameters, JSON.parse(fs.readFileSync(this.configpath, 'utf-8')));
+    this.parameters = Object.assign({}, DEFAULTS, JSON.parse(fs.readFileSync(this.configpath, 'utf-8')));
   }
 
   /**
