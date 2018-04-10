@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fs = require('fs');
 const { CONST } = require('..');
 const { defaultProjectDataDir, defaultVersionPath, packageVersion } = CONST;
 
@@ -11,7 +11,7 @@ if (fs.existsSync(defaultVersionPath)) {
 }
 
 if (fs.existsSync(`${defaultProjectDataDir}/fakedb.json`)) {
-  const db = fs.readJSONSync(`${defaultProjectDataDir}/fakedb.json`);
+  const db = JSON.parse(fs.readFileSync(`${defaultProjectDataDir}/fakedb.json`, 'utf-8'));
   if (Array.isArray(db)) {
     // 0.3.x
     for (const sub of db) {
@@ -25,7 +25,7 @@ if (fs.existsSync(`${defaultProjectDataDir}/fakedb.json`)) {
   }
 }
 
-fs.writeJSONSync(`${defaultProjectDataDir}/.preinstall.json`, {
+fs.writeFileSync(`${defaultProjectDataDir}/.preinstall.json`, JSON.stringify({
   version,
   ss,
-});
+}));
