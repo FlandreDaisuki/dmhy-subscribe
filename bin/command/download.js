@@ -24,12 +24,15 @@ exports.handler = (argv) => {
     if (found) {
       const threads = found.getThreads(epstr);
       print.debug('threads', threads);
-      const allThreadTasks = threads.map((th) => {
+      const allThreadTasks = Promise.all(threads.map((th) => {
         const downloader = db.config.get('downloader').value;
         return downloadThreadWithDownloader(downloader, th, db.config.parameters);
-      });
+      }));
 
-      return Promise.all(allThreadTasks);
+      // flatten promise for outer Pormise.all
+      return new Promise((resolve, reject) => {
+        allThreadTasks.then(resolve).catch(reject);
+      });
     } else {
       print.error(l10n('CMD_DL_SID_NOT_FOUND', { sid }));
     }

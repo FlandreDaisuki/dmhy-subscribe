@@ -73,7 +73,7 @@ function main() {
 
     const allTasks = db.subscriptions.map(async (sub) => {
       const remoteThreads = await fetchThreads(sub);
-      return Promise.all(remoteThreads.map((rth) => {
+      const allDownloadTasks = Promise.all(remoteThreads.map((rth) => {
         const found = sub.threads.find((th) => th.title === rth.title);
         if (!found) {
           sub.add(rth);
@@ -83,6 +83,11 @@ function main() {
           }
         }
       }));
+
+      // flatten promise for outer Pormise.all
+      return new Promise((resolve, reject) => {
+        allDownloadTasks.then(resolve).catch(reject);
+      });
     });
 
     Promise.all(allTasks)
