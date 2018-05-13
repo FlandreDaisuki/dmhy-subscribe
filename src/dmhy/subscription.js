@@ -59,7 +59,7 @@ class Subscription {
         if (loaded.userBlacklistPatterns && loaded.userBlacklistPatterns.length) {
           this.userBlacklistPatterns = loaded.userBlacklistPatterns
             .map((ubp) => strToRegexp(ubp))
-            .filter((_) => _);
+            .filter(Boolean);
         }
         Object.assign(this, { title, keywords, unkeywords, sid, latest });
       } else if (!ext || subscribable.includes(',')) {
@@ -188,7 +188,7 @@ class Subscription {
 
     return episodeLikes.map((epidodeLike) => {
       return this.threads.find((thread) => thread.episode.has(epidodeLike));
-    }).filter((_) => _);
+    }).filter(Boolean);
   }
 
   /**
@@ -259,7 +259,7 @@ class Subscription {
     if (this.userBlacklistPatterns && this.userBlacklistPatterns.length) {
       this.userBlacklistPatterns = this.userBlacklistPatterns
         .map((ubp) => (typeof ubp === 'string') ? strToRegexp(ubp) : ubp)
-        .filter((_) => _);
+        .filter(Boolean);
     }
 
     return sub;

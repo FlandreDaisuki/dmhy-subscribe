@@ -33,9 +33,10 @@ async function fetchThreads(sub) {
         return new Thread(th, sub.episodeParser);
       } catch (error) {
         print.warn(l10n('THREAD_EPISODEPARSER_FALLBACK', { sid: sub.sid, title: th.title }));
-        return new Thread(th);
+        return null;
       }
-    });
+    })
+    .filter(Boolean);
 }
 
 /**
@@ -77,7 +78,7 @@ function getTitlesFromCheerio($) {
   return $('#topic_list tr:nth-child(n+1) .title > a')
     .text()
     .split(/[\n\t]+/)
-    .filter((_) => _);
+    .filter(Boolean);
 }
 
 /**

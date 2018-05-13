@@ -23,7 +23,7 @@ describe('dmhy/thread', () => {
   });
 
   describe('Thread.parseEpisodeFromTitle', () => {
-    const lines = fs.readFileSync(`${__dirname}/title.txt`, 'utf-8').split(/\r?\n/).filter((_) => _);
+    const lines = fs.readFileSync(`${__dirname}/title.txt`, 'utf-8').split(/\r?\n/).filter(Boolean);
     for (let i = 0; i < lines.length;) {
       if (lines[i].startsWith('❤️')) {
         i += 1;

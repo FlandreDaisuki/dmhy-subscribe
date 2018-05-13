@@ -94,7 +94,7 @@ class Thread {
         if (/[+]/.test(tok)) {
           const eps = tok
             .split('+')
-            .filter((_) => _)
+            .filter(Boolean)
             .map((t) => Thread.parseEpisodeFromTitle(t, { depth: depth + 1, userBlacklistPatterns }).data)
             .reduce((a, b) => a.concat(b), []);
           return new Episode(eps);
@@ -112,7 +112,7 @@ class Thread {
       const globalTokens = title
         .split(/[[\]【】_\s]/g)
         .map((x) => x.toLowerCase())
-        .filter((_) => _);
+        .filter(Boolean);
 
       if (globalTokens.includes('ova')) {
         return new Episode({ ep: 1, type: 'OVA' });
