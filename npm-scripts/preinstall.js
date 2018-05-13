@@ -1,7 +1,13 @@
 const fs = require('fs');
 const os = require('os');
 
-const defaultProjectDataDir = `${os.homedir()}/.dmhy-subscribe`;
+const defaultProjectDataDir = (() => {
+  if (process.env.NODE_ENV === 'development') {
+    return `${os.homedir()}/.dmhy-subscribe-dev`;
+  } else {
+    return `${os.homedir()}/.dmhy-subscribe`;
+  }
+})();
 const defaultVersionPath = `${defaultProjectDataDir}/.version`;
 const packageVersion = require('../package.json').version;
 
