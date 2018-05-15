@@ -30,12 +30,13 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
         或 [tj/n](https://github.com/tj/n)
   * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
-下載器目前提供下面四種，擇一即可 (推薦使用 `system`)
+下載器目前提供下面五種，擇一即可 (推薦使用 `system`)
 
 * system(預設): 若系統有註冊 `magnet://` 關聯程式，則啟動該程式
 * deluge: [deluge 安裝教學](docs/deluge.md)
 * aria2c: [aria2 安裝教學](docs/aria2.md)
 * webhook: [webhook 安裝教學](docs/webhook.md)(待補)
+* stdout: 直接印出連結到 stdout
 
 ## Installation 安裝方法
 
