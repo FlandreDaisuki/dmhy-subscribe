@@ -8,6 +8,7 @@ const DEFAULTS = {
   'aria2-jsonrpc': 'http://localhost:6800/jsonrpc/',
   'destination': systemDownloadsFolder,
   'webhook-url': 'http://localhost/',
+  'webhook-token': 'DEFAULT_WEBHOOK_TOKEN',
 };
 const VALIDATORS = {
   'downloader': (downloader) => {
