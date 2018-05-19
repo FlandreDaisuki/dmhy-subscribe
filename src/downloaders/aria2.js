@@ -6,18 +6,22 @@ module.exports = (thread, config) => {
   print.debug('dmhy:downloaders:aria2:thread', thread);
   print.debug('dmhy:downloaders:aria2:config', config);
 
-  const u = new URL(config['aria2-jsonrpc']);
+  let u;
+  try {
+    u = new URL(config['aria2-jsonrpc']);
+  } catch (e) {
+    return Promise.reject(`Invalid URL: ${config['aria2-jsonrpc']}`);
+  }
   const verify = [
     [!u.hostname, 'You must provide hostname'],
     [u.username && u.username !== 'token', 'Only secret is supported!'],
-    [u.username && !u.password, 'You must provide secret'],
+    [u.username && !u.password, 'You must provide a secret'],
   ];
-  verify.forEach(([cond, msg]) => {
+  for (const [cond, msg] of verify) {
     if (cond) {
-      print.error(msg);
-      return;
+      return Promise.reject(msg);
     }
-  });
+  }
   const client = new Aria2({
     host: u.hostname,
     port: u.port || 6800,
