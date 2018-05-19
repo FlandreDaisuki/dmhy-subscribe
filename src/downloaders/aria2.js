@@ -10,7 +10,8 @@ module.exports = (thread, config) => {
   try {
     u = new URL(config['aria2-jsonrpc']);
   } catch (e) {
-    return Promise.reject(`Invalid URL: ${config['aria2-jsonrpc']}`);
+    print.error(`Invalid URL: ${config['aria2-jsonrpc']}`);
+    return Promise.resolve();
   }
   const verify = [
     [!u.hostname, 'You must provide hostname'],
@@ -19,7 +20,8 @@ module.exports = (thread, config) => {
   ];
   for (const [cond, msg] of verify) {
     if (cond) {
-      return Promise.reject(msg);
+      print.error(msg);
+      return Promise.resolve();
     }
   }
   const client = new Aria2({
