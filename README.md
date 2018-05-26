@@ -107,6 +107,13 @@ $ npm i -g dmhy-subscribe
 
 先到 [issue](https://github.com/FlandreDaisuki/dmhy-subscribe/issues) 看看有沒有相似的問題，若沒有相似問題請點擊 New issue 描述問題。
 
+## Known Issues 已知問題
+
+### 首頁已經有最新一集出現了，但是 `dmhy` 卻沒更新???
+
+這是正常的，因為動漫花園因為一些未知的原因，搜尋的結果會有點延遲
+可以試著去直接搜尋訂閱的關鍵字，是看不到最新一集的
+
 ## Contributing 貢獻專案
 
 Fork 並 clone 到本地端
