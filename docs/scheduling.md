@@ -61,10 +61,12 @@ PS C:\> Get-Command dmhy
 
 這是個好東西，至少在 Linux 上很方便，Windows 10 就不推薦了，安裝跟指令都很麻煩 zzz
 
+(2018.08) 最近 pm2 有 3.x 版的更新，但實測後發現他的 cron 功能有點問題，故若要使用 pm2 者可指定 2.x 版
+
 Ubuntu:
 
 ```shell
-$ npm i -g pm2
+$ npm i -g pm2@2
 $ pm2 start `which dmhy` --cron="0 * * * *"
 或
 $ pm2 start `which dmhy` --cron="0 * * * *" -- --no-dl # -- 之後的參數傳到 dmhy
