@@ -73,6 +73,9 @@ $ npm i -g dmhy-subscribe
 (0.5.x) $ dmhy ls -s > backup.txt
 ```
 
+如果習慣使用 Docker 或 npm 無法正確安裝，也可以透過 [Docker](https://www.docker.com) 來執行本程式。
+* [Dokcer 安裝與使用教學](docs/docker.md)
+
 ## Usage 使用方法
 
 ```

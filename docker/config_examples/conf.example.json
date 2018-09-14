@@ -1,0 +1,5 @@
+{
+  "destination": "/data",
+  "aria2-jsonrpc": "http://token:dockerdmhy@aria2:6800/jsonrpc",
+  "downloader": "aria2"
+}

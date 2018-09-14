@@ -1,0 +1,24 @@
+version: "3.2"
+
+services:
+  aria2:
+    image: abcminiuser/docker-aria2-with-webui:latest
+    ports:
+      - 6880:80
+      - 6800:6800
+    volumes:
+      - ./data/download:/data
+      - ./data/aria2:/conf
+    environment:
+      - PGID=20
+      - PUID=501
+      - SECRET=dockerdmhy
+    restart: unless-stopped
+
+  dmhy:
+    image: dmhy-subscribe
+    container_name: dmhy
+    volumes:
+      - ./data/dmhy:/root/.dmhy-subscribe
+      - ./data/cron/cron.log:/root/cron.log
+      - ./data/cron/dmhy-cron:/var/spool/cron/crontabs/root
