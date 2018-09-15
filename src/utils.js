@@ -90,7 +90,7 @@ const systemLocale = ((env) => {
     '0C04': 'zh_HK',
   };
 
-  const unix = () => (env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE).replace(/[.].*$/, '');
+  const unix = () => (env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE || '').replace(/[.].*$/, '');
 
 
   const windows = () => {
@@ -106,6 +106,7 @@ const systemLocale = ((env) => {
     freebsd: unix,
     linux: unix,
     sunos: unix,
+    darwin: unix,
     win32: windows,
   }[os.platform()]() || 'en_US';
 
