@@ -104,6 +104,8 @@ CMD_CFG_OPT_RESET: Reset to default value
 CMD_CFG_UNKNOWN_KEY: 'Unknown key: %key%'
 CMD_CFG_SET_SUCCESS: Configure successfully
 CMD_CFG_SET_FAILED: Configure failed
+CMD_CFG_CELL_KEY: Key
+CMD_CFG_CELL_VALUE: Value
 CMD_CFG_EXAMPLE1_DESC: Print all parameters key-value
 CMD_CFG_EXAMPLE2_DESC: Print value of parameter 'downloader'
 CMD_CFG_EXAMPLE3_DESC: Set value of parameter 'downloader' to 'deluge' and print changed key-value
