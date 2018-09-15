@@ -2,9 +2,10 @@
 
 set -x
 
-mkdir data
-mkdir data/dmhy
-mkdir data/cron
+mkdir -p data
+mkdir -p data/dmhy
+mkdir -p data/cron
+mkdir -p data/aria2
 touch data/cron/cron.log
 cp config_examples/conf.example.json data/dmhy/config.json
 cp config_examples/cron.example      data/cron/dmhy-cron
