@@ -5,8 +5,10 @@ set -ex
 mkdir -p data/dmhy data/cron data/aria2
 touch data/cron/cron.log
 cp config_examples/conf.example.json data/dmhy/config.json
-cp config_examples/cron.example      data/cron/dmhy-cron
 cp config_examples/aria2.conf        data/aria2/aria2.conf
+
+sed -i s/{YOUR_UID}/$(id -u)/g docker-compose.yml
+sed -i s/{YOUR_GID}/$(id -g)/g docker-compose.yml
 
 set +x
 

@@ -10,8 +10,8 @@ services:
       - ./data/download:/data
       - ./data/aria2:/conf
     environment:
-      - PGID=20
-      - PUID=501
+      - PGID={YOUR_GID}
+      - PUID={YOUR_UID}
       - SECRET=dockerdmhy
     restart: unless-stopped
 
@@ -21,4 +21,3 @@ services:
     volumes:
       - ./data/dmhy:/root/.dmhy-subscribe
       - ./data/cron/cron.log:/root/cron.log
-      - ./data/cron/dmhy-cron:/root/dmhy-cron
