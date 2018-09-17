@@ -21,3 +21,6 @@ services:
     volumes:
       - ./data/dmhy:/root/.dmhy-subscribe
       - ./data/cron/cron.log:/root/cron.log
+    environment:
+      - LANG=C.UTF-8
+      - CRON_FREQ='0 * * * *'

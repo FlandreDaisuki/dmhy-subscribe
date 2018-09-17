@@ -40,7 +40,7 @@ docker build . -t dmhy-subscribe
 
 ## dmhy-subscribe 個人化設定
 
-在 `run.sh` 內可以設定個人化參數
+在 `setup.bash` 內可以設定個人化參數
 
 ```sh
 # dmhy 的語系設定

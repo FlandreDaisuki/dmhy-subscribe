@@ -1,14 +1,19 @@
 #!/bin/bash
 
+export LANG='C.UTF-8'
+export CRON_FREQ='0 * * * *'
+
 set -ex
 
-mkdir -p data/dmhy data/cron data/aria2
+mkdir -p data/dmhy data/cron data/aria2 data/download
 touch data/cron/cron.log
 cp config_examples/conf.example.json data/dmhy/config.json
 cp config_examples/aria2.conf        data/aria2/aria2.conf
 
-sed -i s/{YOUR_UID}/$(id -u)/g docker-compose.yml
-sed -i s/{YOUR_GID}/$(id -g)/g docker-compose.yml
+sed -i s/PUID=.*/PUID=$(id -u)/g docker-compose.yml
+sed -i s/PGID=.*/PGID=$(id -g)/g docker-compose.yml
+sed -i s/LANG=.*/"LANG=${LANG}"/g docker-compose.yml
+sed -i s/CRON_FREQ=.*/"CRON_FREQ='${CRON_FREQ}'"/g docker-compose.yml
 
 set +x
 
