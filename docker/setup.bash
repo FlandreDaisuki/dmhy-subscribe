@@ -13,7 +13,7 @@ cp config_examples/aria2.conf        data/aria2/aria2.conf
 sed -i s/PUID=.*/PUID=$(id -u)/g docker-compose.yml
 sed -i s/PGID=.*/PGID=$(id -g)/g docker-compose.yml
 sed -i s/LANG=.*/"LANG=${LANG}"/g docker-compose.yml
-sed -i s/CRON_FREQ=.*/"CRON_FREQ='${CRON_FREQ}'"/g docker-compose.yml
+sed -i s/CRON_FREQ=.*/"CRON_FREQ=${CRON_FREQ}"/g docker-compose.yml
 
 set +x
 
