@@ -1,21 +1,17 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+const RssParser = require('rss-parser');
 const { Subscription } = require('./dmhy/subscription');
 const { Thread } = require('./dmhy/thread');
 const { print, l10n } = require('./utils');
 
+const parser = new RssParser();
 /**
  * @param {string[]} kws
- * @return {HTML} axios data
+ * @return {object} rss
  */
-async function fetchSearchHTML(kws) {
-  const response = await axios.get(
-    `https://share.dmhy.org/topics/list?sort_id=2&keyword=${kws.map(encodeURIComponent).join('+')}`
+function fetchRssFromKeywords(kws) {
+  return parser.parseURL(
+    `https://share.dmhy.org/topics/rss/rss.xml?sort_id=2&keyword=${kws.map(encodeURIComponent).join('+')}`
   );
-  if (response.status !== 200) {
-    throw new Error(response);
-  }
-  return response.data;
 }
 
 /**
@@ -45,50 +41,11 @@ async function fetchThreads(sub) {
  * @return {threadLike[]} threadLikes
  */
 async function fetchThreadLikesByKeywords(kws, ukws = []) {
-  const threadLikes = parseThreadLikesFromHTML(await fetchSearchHTML(kws))
+  const threadLikes = (await fetchRssFromKeywords(kws)).items
+    .map((item) => ({ title: item.title, link: item.enclosure.url }))
     .filter((th) => !ukws.some((ukw) => th.title.includes(ukw)));
 
   return threadLikes;
-}
-
-/**
- *
- *
- * @param {HTML} html
- * @return {threadLike[]} threadLikes
- */
-function parseThreadLikesFromHTML(html) {
-  const $ = cheerio.load(html);
-  const titles = getTitlesFromCheerio($);
-  const magnets = getMagnetsFromCheerio($);
-
-  if (titles.length !== magnets.length) {
-    throw new Error('titles.length !== magnets.length');
-  }
-
-  return titles
-    .map((title, i) => ({ title, link: magnets[i] }));
-}
-
-/**
- * @param {cheerio} $
- * @return {string[]} titles
- */
-function getTitlesFromCheerio($) {
-  return $('#topic_list tr:nth-child(n+1) .title > a')
-    .text()
-    .split(/[\n\t]+/)
-    .filter(Boolean);
-}
-
-/**
- * @param {cheerio} $
- * @return {string[]} links
- */
-function getMagnetsFromCheerio($) {
-  return $('#topic_list tr:nth-child(n+1) a.download-arrow')
-    .toArray()
-    .map((x) => x.attribs.href);
 }
 
 exports.fetchThreads = fetchThreads;
