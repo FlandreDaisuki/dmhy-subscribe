@@ -40,7 +40,7 @@ module.exports = (thread, config) => {
   }
   return client
     .open()
-    .then(() => client.addUri([thread.link], opts))
+    .then(() => client.call('addUri', [thread.link], opts))
     .then(() => print.success(l10n('DOWNLOADER_DL_SUCCESS', { title: thread.title })))
     .catch(() => print.error(l10n('DOWNLOADER_DL_FAILED', { title: thread.title })))
     .then(() => client.close()); // finally
