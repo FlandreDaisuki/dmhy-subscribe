@@ -158,7 +158,7 @@ class XSet extends Set {
    * @memberof XSet
    */
   isSuperset(subset) {
-    for (let elem of subset) {
+    for (const elem of subset) {
       if (!this.has(elem)) {
         return false;
       }
@@ -174,8 +174,8 @@ class XSet extends Set {
    * @memberof XSet
    */
   union(iterable) {
-    let union = new XSet(this);
-    for (let elem of iterable) {
+    const union = new XSet(this);
+    for (const elem of iterable) {
       union.add(elem);
     }
     return union;
@@ -188,7 +188,7 @@ class XSet extends Set {
    * @memberof XSet
    */
   unionWith(iterable) {
-    for (let elem of iterable) {
+    for (const elem of iterable) {
       this.add(elem);
     }
   }
@@ -201,8 +201,8 @@ class XSet extends Set {
    * @memberof XSet
    */
   intersection(iterable) {
-    let intersection = new XSet();
-    for (let elem of iterable) {
+    const intersection = new XSet();
+    for (const elem of iterable) {
       if (this.has(elem)) {
         intersection.add(elem);
       }
@@ -218,8 +218,8 @@ class XSet extends Set {
    * @memberof XSet
    */
   difference(iterable) {
-    let difference = new XSet(this);
-    for (let elem of iterable) {
+    const difference = new XSet(this);
+    for (const elem of iterable) {
       difference.delete(elem);
     }
     return difference;
