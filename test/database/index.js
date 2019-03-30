@@ -59,7 +59,9 @@ describe('database', () => {
     db.save();
 
     const db2 = new TestDatabase();
-    assert.deepEqual(db, db2);
+    assert.equal(db.dbpath, db2.dbpath);
+    assert.equal(db.isubsDir, db2.isubsDir);
+    assert.deepEqual(new Set(db.subscriptions), new Set(db2.subscriptions));
     clearPaths();
   });
 });
