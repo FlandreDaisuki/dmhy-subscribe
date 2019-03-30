@@ -1,5 +1,6 @@
 const os = require('os');
 const fs = require('fs-extra');
+const crypto = require('crypto');
 const { execSync, spawnSync } = require('child_process');
 const pkg = require('../package.json');
 const yaml = require('js-yaml');
@@ -34,13 +35,12 @@ const print = (() => {
  * @return {string} hash
  */
 function hash(str, seed = '') {
-  return Buffer.from(str + seed).toString('base64')
+  return crypto.createHash('sha1')
+    .update(str + seed)
+    .digest('hex')
     .replace(/[\W\d]/g, '')
     .toUpperCase()
-    .slice(-3)
-    .split('')
-    .reverse()
-    .join('');
+    .slice(-3);
 }
 
 // Modified from https://github.com/juliangruber/downloads-folder
