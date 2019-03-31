@@ -35,12 +35,15 @@ const print = (() => {
  * @return {string} hash
  */
 function hash(str, seed = '') {
-  return crypto.createHash('sha1')
+  const digest = crypto.createHash('sha1')
     .update(str + seed)
-    .digest('hex')
-    .replace(/[\W\d]/g, '')
-    .toUpperCase()
-    .slice(-3);
+    .digest('hex');
+
+  return Number(`0x${digest}`)
+    .toString(36)
+    .replace(/[^a-z]/g, '')
+    .slice(-3)
+    .toUpperCase();
 }
 
 // Modified from https://github.com/juliangruber/downloads-folder
