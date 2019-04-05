@@ -57,7 +57,7 @@ class Thread {
   static parseEpisodeFromTitle(title, { depth = 0, userBlacklistPatterns = [] } = {}) {
     try {
       const blacklistPatterns = [
-        /x?(1080|720)p?/,
+        /x?(1080|720|480)p?/,
         /\d+\s*月新番/,
         /x26[45]/,
         /10bit/,
@@ -75,7 +75,7 @@ class Thread {
         .filter((x) => !userBlacklistPatterns.some((rule) => rule.test(x)))
         .map((x) => x.trim());
 
-        // input [\d.]+-[\d.]+
+      // input [\d.]+-[\d.]+
       const parseRangeEpisode = (tok, type) => {
         const str = tok.replace(/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/, '$1$2');
         const [from, to] = str.split('-').map((t) => parseFloat(t));
@@ -85,7 +85,7 @@ class Thread {
         return new Episode(Episode.rangify([from, to], type));
       };
 
-        // Find episode from last is easier
+      // Find episode from last is easier
       for (const token of tokens.reverse()) {
         const tok = token
           .replace(/\s*(end|完)$/, '') // [24 end], [06完]
