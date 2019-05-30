@@ -2,7 +2,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const axios = require('axios');
+const fetch = require('node-fetch');
 const yargs = require('yargs');
 const semver = require('semver');
 const { downloadThreadWithDownloader } = require('..');
@@ -14,7 +14,7 @@ const { l10n, print, CONST, Database, fetchThreads } = require('..');
   if (fs.existsSync(CONST.remoteVersionPath)) {
     let { count, version: lastRemoteVersion } = fs.readJSONSync(CONST.remoteVersionPath, 'utf-8');
     if (count > REFETCH_TIMES) {
-      const { data } = await axios.get('https://registry.npmjs.org/dmhy-subscribe');
+      const data = await fetch('https://registry.npmjs.org/dmhy-subscribe').then((resp) => resp.json());
       const remoteVersion = data['dist-tags'].latest;
       count = 0;
       if (semver.gt(remoteVersion, CONST.packageVersion) || semver.gt(remoteVersion, lastRemoteVersion)) {

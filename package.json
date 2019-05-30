@@ -9,7 +9,7 @@
   "scripts": {
     "preinstall": "node npm-scripts/preinstall.js",
     "postinstall": "node npm-scripts/postinstall.js",
-    "prepare": "eslint --fix **/*.js && npm run test",
+    "prepare": "eslint --fix '**/*.js' && npm run test",
     "test": "mocha",
     "publish": "node npm-scripts/publish.js"
   },
@@ -25,23 +25,23 @@
   "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
   "devDependencies": {
     "ajv": "^6.10.0",
-    "all-contributors-cli": "^5.11.0",
+    "all-contributors-cli": "^6.6.1",
     "eslint": "^5.16.0",
-    "eslint-config-google": "^0.12.0",
-    "mocha": "^5.2.0"
+    "eslint-config-google": "^0.13.0",
+    "mocha": "^6.1.4"
   },
   "dependencies": {
     "aria2": "^4.0.3",
-    "axios": "^0.18.0",
     "chalk": "^2.4.2",
     "easy-table": "^1.1.1",
-    "fs-extra": "^7.0.1",
-    "js-yaml": "^3.13.0",
-    "opn": "^5.5.0",
-    "prompts": "^2.0.4",
-    "rss-parser": "^3.7.0",
-    "semver": "^5.7.0",
-    "yargs": "^12.0.5"
+    "fs-extra": "^8.0.1",
+    "js-yaml": "^3.13.1",
+    "node-fetch": "^2.6.0",
+    "opn": "^6.0.0",
+    "prompts": "^2.1.0",
+    "rss-parser": "^3.7.1",
+    "semver": "^6.1.1",
+    "yargs": "^13.2.4"
   },
   "yargs": {
     "short-option-groups": false
