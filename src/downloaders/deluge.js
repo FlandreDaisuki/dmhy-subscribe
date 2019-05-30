@@ -19,7 +19,7 @@ module.exports = (thread, config) => {
     });
     task.on('error', (error) => {
       print.error(l10n('DOWNLOADER_START_FAILED', { downloader: 'deluge' }), error);
-      rej();
+      rej(error);
     });
   });
 };
