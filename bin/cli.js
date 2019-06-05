@@ -48,6 +48,11 @@ function main() {
   }, []);
 
   const argv = yargs
+    .parserConfiguration({
+      yargs: {
+        'short-option-groups': false,
+      },
+    })
     .usage(l10n('MAIN_USAGE'))
     .command(command.add)
     .command(command.list)

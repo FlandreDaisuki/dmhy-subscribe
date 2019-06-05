@@ -42,8 +42,5 @@
     "rss-parser": "^3.7.1",
     "semver": "^6.1.1",
     "yargs": "^13.2.4"
-  },
-  "yargs": {
-    "short-option-groups": false
   }
 }
