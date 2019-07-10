@@ -34,6 +34,7 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
 
 * system(預設): 若系統有註冊 `magnet://` 關聯程式，則啟動該程式
 * deluge: [deluge 安裝教學](docs/deluge.md)
+* qBittorrent: [qBittorrent 安裝教學](docs/qbittorrent.md)
 * aria2c: [aria2 安裝教學](docs/aria2.md)
 * webhook: [webhook 安裝教學](docs/webhook.md)(待補)
 * stdout: 直接印出連結到 stdout

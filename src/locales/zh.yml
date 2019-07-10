@@ -133,3 +133,6 @@ THREAD_EP_PARSE_ERR: |
 INCOMPATIBLE_UPGRADE: |
   此版本有重大更新，版本間移植可能不相容
   請自行檢查訂閱是否遺漏或錯誤
+
+QBITTORRENT_WEBUI_NOT_AVAILABLE: 請確定您已經在 qBittorrent 的設定中啟用了 Web UI，並且檢查 "qbittorrent-url" 的設定是對的
+QBITTORRENT_LOGIN_FAILED: 無法登入到 qBittorrent 的 Web UI，可能是因為使用者名稱或密碼有誤

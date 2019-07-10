@@ -127,3 +127,6 @@ THREAD_EP_PARSE_ERR: |
 INCOMPATIBLE_UPGRADE: |
   This version has imcompatible update.
   Please check your subscriptions.
+
+QBITTORRENT_WEBUI_NOT_AVAILABLE: Please make sure you have enabled "Web UI" in qBittorrent's settings and check the configuration "qbittorrent-url" is correct.
+QBITTORRENT_LOGIN_FAILED: Unable to log in qBittorrent's "Web UI" due to incorrect username or password.
