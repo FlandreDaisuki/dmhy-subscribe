@@ -6,6 +6,8 @@ const { systemDownloadsFolder, defaultConfigPath } = CONST;
 const DEFAULTS = {
   'downloader': 'system',
   'aria2-jsonrpc': 'http://localhost:6800/jsonrpc/',
+  'qbittorrent-url': 'http://localhost:8080/',
+  'qbittorrent-auth': 'username:password',
   'destination': systemDownloadsFolder,
   'webhook-url': 'http://localhost/',
   'webhook-token': 'DEFAULT_WEBHOOK_TOKEN',
