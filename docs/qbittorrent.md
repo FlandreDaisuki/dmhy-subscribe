@@ -2,10 +2,10 @@
 
 qBittorrent 是個跨平台的 torrent 下載軟體，`dmhy-subscribe` 可以直接呼叫它來幫忙下載。
 
-* [安裝方法](#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-* [開啟 Web UI](#%E9%96%8B%E5%95%9F%20Web%20UI)
-* [dmhy-subscribe 的設定](#dmhy-subscribe%20%E7%9A%84%E8%A8%AD%E5%AE%9A)
-* [使用範例](#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B)
+* [安裝方法](#安裝方法)
+* [開啟 Web UI](#開啟-Web-UI)
+* [dmhy-subscribe 的設定](#dmhy-subscribe-的設定)
+* [使用範例](#使用範例)
 
 ## 安裝方法
 

@@ -4,16 +4,23 @@
 
 專案中的 Docker 設定整合了 `dmhy-subscribe` 、 `cron`(排程) 和 `aria2`(下載器) 的功能。
 
+* [Requirements 依賴軟體](#Requirements-依賴軟體)
+* [Installation 安裝方式](#Installation-安裝方式)
+* [dmhy-subscribe 個人化設定](#dmhy-subscribe-個人化設定)
+* [Aria2 設定](#Aria2-設定)
+* [Docker Compose 設定](#Docker-Compose-設定)
+  * [重要設定](#重要設定)
+* [執行方式](#執行方式)
+
 ## Requirements 依賴軟體
 
- - Docker
-   * [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-   * [MacOS](https://docs.docker.com/docker-for-mac/install/)
-   * [Windows](https://docs.docker.com/docker-for-windows/install/)
-   * [Synology NAS](https://www.synology.com/zh-tw/dsm/packages/Docker)
-   * 其他 Linux 系統族繁不及備載，敬請自行研究。
-
- - [Docker Compose](https://docs.docker.com/compose/install/) (optional)
+* Docker
+  * [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+  * [MacOS](https://docs.docker.com/docker-for-mac/install/)
+  * [Windows](https://docs.docker.com/docker-for-windows/install/)
+  * [Synology NAS](https://www.synology.com/zh-tw/dsm/packages/Docker)
+  * 其他 Linux 系統族繁不及備載，敬請自行研究。
+* [Docker Compose](https://docs.docker.com/compose/install/) (optional)
 
 ## Installation 安裝方式
 
@@ -84,7 +91,7 @@ docker-compose down
 
 在啟用服務之後，可以在 `http://localhost:6880` 看到 aria2 的 WebUI。
 
-若發現有連線到 RPC 伺服器但出現警告，是因為 WebUI 有設定 token，預設為 dockerdmhy (可在 `docker-compose.yml` 設定)，可以到 **設定>連線設定>密碼令牌** 輸入
+若發現有連線到 RPC 伺服器但出現警告，是因為 WebUI 有設定 token，預設為 `dockerdmhy` (可在 `docker-compose.yml` 設定)，可以到 **設定>連線設定>密碼令牌** 輸入
 
 要執行 dmhy 指令可以透過以下方式:
 

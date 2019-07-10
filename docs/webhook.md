@@ -15,7 +15,7 @@ webhook 會對目標伺服器 `webhook-url` 發送一個 `POST` 請求，內容�
 
 首先請先設定一個只有你知道的 token：
 
-```shell
+```bash
 $ dmhy config webhook-token YOUR_TOKEN
 ```
 

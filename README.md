@@ -6,14 +6,16 @@ Subscribe and schedule downloading magnets on dmhy. Support Linux & Windows 10.
 
 在動漫花園訂閱並排程下載磁鏈，支援 Linux & Windows 10
 
-* [Demo 範例影片](#demo-%E7%AF%84%E4%BE%8B%E5%BD%B1%E7%89%87)
-* [Requirements 依賴軟體](#requirements-%E4%BE%9D%E8%B3%B4%E8%BB%9F%E9%AB%94)
-* [Installation 安裝方法](#installation-%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-* [Usage 使用方法](#usage-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)
-* [Scheduling 自動排程](#scheduling-%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B)
-* [Feedbacks 回報問題](#feedbacks-%E5%9B%9E%E5%A0%B1%E5%95%8F%E9%A1%8C)
-* [Contributing 貢獻專案](#contributing-%E8%B2%A2%E7%8D%BB%E5%B0%88%E6%A1%88)
-* [Contributors](#contributors)
+* [Demo 範例影片](#Demo-範例影片)
+* [Requirements 依賴軟體](#Requirements-依賴軟體)
+* [Installation 安裝方法](#Installation-安裝方法)
+* [Usage 使用方法](#Usage-使用方法)
+* [Scheduling 自動排程](#Scheduling-自動排程)
+* [Feedbacks 回報問題](#Feedbacks-回報問題)
+* [Known Issues 已知問題](#Known-Issues-已知問題)
+  * [首頁已經有最新一集出現了，但是 `dmhy` 卻沒更新](#首頁已經有最新一集出現了但是-dmhy-卻沒更新)
+* [Contributing 貢獻專案](#Contributing-貢獻專案)
+* [Contributors](#Contributors)
 
 ## Demo 範例影片
 
@@ -30,7 +32,7 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
         或 [tj/n](https://github.com/tj/n)
   * Windows 10 推薦使用：[官方安裝](https://nodejs.org/)
 
-下載器目前提供下面五種，擇一即可 (推薦使用 `system`)
+下載器目前提供下面六種，擇一即可 (推薦使用 `system`)
 
 * system(預設): 若系統有註冊 `magnet://` 關聯程式，則啟動該程式
 * deluge: [deluge 安裝教學](docs/deluge.md)
@@ -46,7 +48,7 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
   <p>
   Ubuntu:
 
-  ```
+  ```bash
   $ node -v
   v9.4.0
   $ npm -v
@@ -55,31 +57,34 @@ GIF 由 [ttygif](https://github.com/icholy/ttygif) 生成
 
   Windows10 (PowerShell):
 
-  ```
+  ```powershell
   PS C:\> node -v
   v9.4.0
   PS C:\> npm -v
   5.6.0
   ```
+
   </p>
 </details>
 
-```
+```bash
 $ npm i -g dmhy-subscribe
 ```
 
 若之前已有安裝，推薦先輸出可訂閱字串作為備份
-```
+
+```bash
 (0.3.x) $ dmhy ls --addable > backup.txt
 (0.5.x) $ dmhy ls -s > backup.txt
 ```
 
 如果習慣使用 Docker 或 npm 無法正確安裝，也可以透過 [Docker](https://www.docker.com) 來執行本程式。
+
 * [Docker 安裝與使用教學](docs/docker.md)
 
 ## Usage 使用方法
 
-```
+```txt
 使用方法: dmhy [命令] [選項]
 
   若不指定命令，則到網站檢查更新，並*只*下載尚未紀錄的貼文
@@ -113,7 +118,7 @@ $ npm i -g dmhy-subscribe
 
 ## Known Issues 已知問題
 
-### 首頁已經有最新一集出現了，但是 `dmhy` 卻沒更新???
+### 首頁已經有最新一集出現了，但是 `dmhy` 卻沒更新
 
 這是正常的，因為動漫花園因為一些未知的原因，搜尋的結果會有點延遲
 可以試著去直接搜尋訂閱的關鍵字，是看不到最新一集的
@@ -121,13 +126,15 @@ $ npm i -g dmhy-subscribe
 ## Contributing 貢獻專案
 
 Fork 並 clone 到本地端
-```shell
+
+```bash
 (master) $ git remote add upstream https://github.com/FlandreDaisuki/dmhy-subscribe.git
 (master) $ git merge upstream master # 更新上游分支
 (master) $ git checkout -b 0.6.x # *最新版本*的最後一個數字改成x
 (0.6.x) $ # 改改改
 (0.6.x) $ git push origin 0.6.x
 ```
+
 到 GitHub 發 PR 到我的同名分支 (不要發到 master)
 
 ## Contributors

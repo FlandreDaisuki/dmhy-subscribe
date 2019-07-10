@@ -2,15 +2,15 @@
 
 aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理 magnet
 
-* [安裝方法](#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-* [設置 aria2.conf](#%E8%A8%AD%E7%BD%AE-aria2conf)
-* [開啟 daemon](#%E9%96%8B%E5%95%9F-daemon)
-* [使用範例](#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B)
-* [使用 UI 介面](#%E4%BD%BF%E7%94%A8-ui-%E4%BB%8B%E9%9D%A2)
-  + [瀏覽器插件](#%E7%80%8F%E8%A6%BD%E5%99%A8%E6%8F%92%E4%BB%B6)
-  + [使用 webui-aria2 (手動)](#%E4%BD%BF%E7%94%A8-webui-aria2-%E6%89%8B%E5%8B%95)
-  + [使用 AriaNg (手動)](#%E4%BD%BF%E7%94%A8-ariang-%E6%89%8B%E5%8B%95)
-    - [AriaNg 調整語言](#ariang-%E8%AA%BF%E6%95%B4%E8%AA%9E%E8%A8%80)
+* [安裝方法](#安裝方法)
+* [設置 aria2.conf](#設置-aria2conf)
+* [開啟 daemon](#開啟-daemon)
+* [使用範例](#使用範例)
+* [使用 UI 介面](#使用-UI-介面)
+  * [瀏覽器插件](#瀏覽器插件)
+  * [使用 webui-aria2 (手動)](#使用-webui-aria2-手動)
+  * [使用 AriaNg (手動)](#使用-AriaNg-手動)
+    * [AriaNg 調整語言](#AriaNg-調整語言)
 
 ## 安裝方法
 
@@ -25,7 +25,7 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
   <summary>aria2.conf</summary>
   <p>
 
-  ```
+  ```ini
   # 開啟 daemon 模式
   enable-rpc=true
   rpc-allow-origin-all=true
@@ -46,17 +46,19 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 ## 開啟 daemon
 
 * Ubuntu:
-    ```shell
-    $ nohup aria2c & # ~/.aria2/aria2.conf
-    # 或
-    $ nohup aria2c -conf-path="aria2.conf的路徑" &
-    ```
+
+  ```bash
+  $ nohup aria2c & # ~/.aria2/aria2.conf
+  # 或
+  $ nohup aria2c -conf-path="aria2.conf的路徑" &
+  ```
+
 * Windows 10: 將下面程式碼存成 `daemonize.vbs` 並雙擊執行，注意路徑
   <details open>
     <summary>daemonize.vbs</summary>
     <p>
 
-    ```
+    ```vbs
     ' https://gist.github.com/aa65535/5e956c4eb4f451ddec29
 
     CreateObject("Wscript.Shell").Run "D:\aria2\aria2c.exe --conf-path=D:\aria2\aria2.conf -D", 0
@@ -70,13 +72,14 @@ aria2 是一個強大的下載工具，`dmhy-subscribe` 靠他來下載並管理
 ## 使用範例
 
 目前如果要用 `aria2` 來下載的話需要指定下載器及 jsonrpc
-```shell
+
+```bash
 $ dmhy cfg downloader aria2
 $ dmhy cfg aria2-jsonrpc "http://token:helloworld@localhost:6800/jsonrpc"
 # helloworld 要改成前面設定的密碼
 ```
 
-```shell
+```bash
 $ dmhy add "搖曳露營,DHR,720,繁體,Yuru"
 # 假設搖曳露營的訂閱識別碼為 ALR
 $ dmhy #下載全部
@@ -127,7 +130,7 @@ token: 'helloworld'
 
 其中一種方法可以用 [httpsrv](https://github.com/maple3142/httpsrv) 來快速開啟一個伺服器。
 
-```shell
+```bash
 $ npm i -g httpsrv
 $ cd AriaNg # AriaNg 所在的資料夾
 $ httpsrv -i .

@@ -2,11 +2,11 @@
 
 Deluge 是一個多平台的 torrent 客戶端軟體，`dmhy-subscribe` 靠他來下載並管理 magnet
 
-* [安裝方法](#%E5%AE%89%E8%A3%9D%E6%96%B9%E6%B3%95)
-* [設置環境變數](#%E8%A8%AD%E7%BD%AE%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8)
-* [開啟 daemon](#%E9%96%8B%E5%95%9F-daemon)
-* [使用範例](#%E4%BD%BF%E7%94%A8%E7%AF%84%E4%BE%8B)
-* [管理頁面](#%E7%AE%A1%E7%90%86%E9%A0%81%E9%9D%A2)
+* [安裝方法](#安裝方法)
+* [設置環境變數](#設置環境變數)
+* [開啟 daemon](#開啟-daemon)
+* [使用範例](#使用範例)
+* [管理頁面](#管理頁面)
 
 ## 安裝方法
 
@@ -19,7 +19,7 @@ Deluge 是一個多平台的 torrent 客戶端軟體，`dmhy-subscribe` 靠他�
 
 只有 Windows 10 需要設定。打開 PowerShell 在下面輸入
 
-```shell
+```powershell
 PS C:\> $oldpath = [Environment]::GetEnvironmentVariable("PATH", "User")
 PS C:\> $delugepath = "C:\Program Files (x86)\deluge" # 你的 deluge 路徑
 PS C:\> [Environment]::SetEnvironmentVariable("PATH", "$oldpath;$delugepath", "User")
@@ -28,7 +28,7 @@ PS C:\> exit
 
 檢查設置是否成功：打開一個 **新的** PowerShell 在下面輸入
 
-```shell
+```powershell
 PS C:\> deluge-console -v
 deluge-console: 1.3.15 # 有版本號跳出來就是成功了
 libtorrent: 1.0.11.0
@@ -37,31 +37,36 @@ libtorrent: 1.0.11.0
 ## 開啟 daemon
 
 * Ubuntu:
-  ```shell
+
+  ```bash
   $ dekuged
   ```
+
 * Windows 10: 到你的 deluge 路徑下執行 `deluged.exe`
 
 檢查是否開啟成功：
 
 * Ubuntu:
-    ```shell
-    $ deluge-console info # 沒有錯誤即成功
-    ```
+
+  ```bash
+  $ deluge-console info # 沒有錯誤即成功
+  ```
+
 * Windows 10:
-    ```shell
-    PS C:\>  deluge-console info # 沒有錯誤即成功
-    ```
+
+  ```powershell
+  PS C:\>  deluge-console info # 沒有錯誤即成功
+  ```
 
 ## 使用範例
 
 目前如果要用 `deluge` 來下載的話需要指定下載器
 
-```shell
+```bash
 $ dmhy cfg downloader deluge
 ```
 
-```shell
+```bash
 $ dmhy add "搖曳露營,DHR,720,繁體,Yuru"
 # 假設搖曳露營的訂閱識別碼為 ALR
 $ dmhy #下載全部

@@ -2,22 +2,22 @@
 
 寫一個搭配自動排程檢查並下載我要的字幕組是這個工具的初衷，下面介紹幾種搭配排程的方法。
 
-* [Linux cron/crontab](#linux-croncrontab)
-* [Windows 10 排程](#windows-10-%E6%8E%92%E7%A8%8B)
+* [Linux cron/crontab](#Linux-croncrontab)
+* [Windows 10 排程](#Windows-10-排程)
 * [pm2](#pm2)
 
 ## Linux cron/crontab
 
 確定 `dmhy-subscribe` 確實安裝完成：
 
-```shell
+```bash
 $ dmhy --version
 0.6.0 # 有版本跳出來
 ```
 
 加入到 crontab
 
-```shell
+```bash
 $ (crontab -l 2>/dev/null; echo "0 * * * * `which dmhy`") | crontab -
 ```
 
@@ -27,7 +27,7 @@ $ (crontab -l 2>/dev/null; echo "0 * * * * `which dmhy`") | crontab -
 
 到 PowerShell 執行並記住 Source 路徑
 
-```shell
+```powershell
 PS C:\> Get-Command dmhy
 ```
 
@@ -41,16 +41,19 @@ PS C:\> Get-Command dmhy
 測試是否成功
 
 1. 到 PowerShell 隨便新增一筆訂閱
-   ```
+
+   ```powershell
    PS C:\> dmhy add "搖曳露營,喵萌,繁體"
    PS C:\> dmhy ls
    訂閱識別碼    最新集數   標題
    ---------   --------  ---------
    ALR         --        搖曳露營
    ```
+
 2. 到 `工作排程器程式庫` 找到這個工作 → 右鍵[執行]
 3. 在輸入一次 `dmhy ls`，有最新集數就成功了
-   ```
+
+   ```powershell
    PS C:\> dmhy ls
    訂閱識別碼    最新集數   標題
    ---------   --------  ---------
@@ -65,7 +68,7 @@ PS C:\> Get-Command dmhy
 
 Ubuntu:
 
-```shell
+```bash
 $ npm i -g pm2@2
 $ pm2 start `which dmhy` --cron="0 * * * *"
 或
