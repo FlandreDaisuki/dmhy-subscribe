@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.6.22",
+  "version": "0.6.23",
   "bin": {
     "dmhy": "./bin/cli.js"
   },
@@ -9,7 +9,7 @@
   "scripts": {
     "preinstall": "node npm-scripts/preinstall.js",
     "postinstall": "node npm-scripts/postinstall.js",
-    "prepare": "eslint --fix '**/*.js' && npm run test",
+    "prepare": "eslint --fix \"**/*.js\" && npm run test",
     "test": "mocha",
     "publish": "node npm-scripts/publish.js"
   },
