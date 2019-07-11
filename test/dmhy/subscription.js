@@ -84,6 +84,29 @@ describe('dmhy/subscription', () => {
     assert.deepEqual(camp.threads, camp2.threads);
   });
 
+  it('Subscription#getThreads', () => {
+    const senko = new Subscription(`${__dirname}/../subscribables/senkosan.yml`); // It has episodes from [01]~[12] and [1-12]
+    const rand = new Buffer(new Date().toString())
+      .toString('base64')
+      .toUpperCase()
+      .slice(0, 32);
+    const threads = [];
+    threads.push(new Thread({
+      title: `[ZERO字幕组]賢惠幼妻仙狐小姐·Sewayaki Kitsune no Senko-san[1-12][BIG5][1080p]`,
+      link: `magnet:?xt=urn:btih:${rand}`,
+    }));
+    for (let idx = 1; idx < 10; idx++) {
+      threads.push(new Thread({
+        title: `[ZERO字幕组]賢惠幼妻仙狐小姐·Sewayaki Kitsune no Senko-san[${idx.toString().padStart(2, 0)}][BIG5][1080p]`,
+        link: `magnet:?xt=urn:btih:${rand}`,
+      }));
+    }
+    senko.loadThreads(threads);
+    const result1 = senko.getThreads('3');
+    assert.ok(result1.find((th) => th.title.includes('[1-12]')));
+    assert.ok(result1.find((th) => th.title.includes('[03]')));
+  });
+
   it('Subscription.parseEpisodeStringToEpisodeLike', () => {
     const normals = Subscription.parseEpisodeStringToEpisodeLike('1,5,4');
     const normalAns = [{ ep: 1, type: '' }, { ep: 5, type: '' }, { ep: 4, type: '' }];
