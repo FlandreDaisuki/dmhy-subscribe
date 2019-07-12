@@ -46,6 +46,31 @@ function hash(str, seed = '') {
     .toUpperCase();
 }
 
+/**
+ * Flatten an array (recursively)
+ * @param {any[]} array
+ * @return {any[]} flattenedArray
+ */
+function flatten(array) {
+  return array.reduce((newArr, item) => {
+    if (Array.isArray(item)) {
+      newArr = newArr.concat(flatten(item));
+    } else {
+      newArr.push(item);
+    }
+    return newArr;
+  }, []);
+}
+
+/**
+ * Remove duplicates from an array
+ * @param {any[]} array
+ * @return {any[]} uniqueArray
+ */
+function unique(array) {
+  return Array.from(new Set(array));
+}
+
 // Modified from https://github.com/juliangruber/downloads-folder
 const systemDownloadsFolder = (() => {
   const darwin = () => {
@@ -284,6 +309,8 @@ const defaultProjectDataDir = (() => {
 module.exports = {
   print,
   hash,
+  flatten,
+  unique,
   l10n,
   XSet,
   strToRegexp,

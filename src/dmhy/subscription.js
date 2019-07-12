@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const ymal = require('js-yaml');
 const { Thread } = require('./thread');
-const { l10n, print, hash, XSet, strToRegexp, splitKeywords } = require('../utils');
+const { l10n, print, hash, flatten, unique, XSet, strToRegexp, splitKeywords } = require('../utils');
 const { SubscriptionError } = require('../errors');
 
 const SUPPORT_FORMAT = new Set(['.yml', '.yaml']);
@@ -185,10 +185,10 @@ class Subscription {
     }
 
     const episodeLikes = Subscription.parseEpisodeStringToEpisodeLike(epstr);
-
-    return episodeLikes.map((epidodeLike) => {
-      return this.threads.find((thread) => thread.episode.has(epidodeLike));
-    }).filter(Boolean);
+    const filtered = episodeLikes.map((epidodeLike) => {
+      return this.threads.filter((thread) => thread.episode.has(epidodeLike));
+    });
+    return unique(flatten(filtered).filter(Boolean));
   }
 
   /**
