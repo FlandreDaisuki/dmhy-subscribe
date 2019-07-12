@@ -62,6 +62,15 @@ function flatten(array) {
   }, []);
 }
 
+/**
+ * Remove duplicates from an array
+ * @param {any[]} array
+ * @return {any[]} uniqueArray
+ */
+function unique(array) {
+  return Array.from(new Set(array));
+}
+
 // Modified from https://github.com/juliangruber/downloads-folder
 const systemDownloadsFolder = (() => {
   const darwin = () => {
@@ -301,6 +310,7 @@ module.exports = {
   print,
   hash,
   flatten,
+  unique,
   l10n,
   XSet,
   strToRegexp,

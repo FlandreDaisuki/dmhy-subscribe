@@ -103,8 +103,11 @@ describe('dmhy/subscription', () => {
     }
     senko.loadThreads(threads);
     const result1 = senko.getThreads('3');
-    assert.ok(result1.find((th) => th.title.includes('[1-12]')));
-    assert.ok(result1.find((th) => th.title.includes('[03]')));
+    assert.equal(result1.filter((th) => th.title.includes('[1-12]')).length, 1);
+    assert.equal(result1.filter((th) => th.title.includes('[03]')).length, 1);
+    const result2 = senko.getThreads('4,5,6');
+    assert.equal(result2.filter((th) => th.title.includes('[1-12]')).length, 1);
+    assert.equal(result2.filter((th) => th.title.includes('[06]')).length, 1);
   });
 
   it('Subscription.parseEpisodeStringToEpisodeLike', () => {
