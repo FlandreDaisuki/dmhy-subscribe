@@ -47,7 +47,7 @@ describe('dmhy/subscription', () => {
     const camp = new Subscription('搖曳露營');
     const threads = [];
     for (let idx = 1; idx < 10; idx++) {
-      const rand = new Buffer(new Date().toString())
+      const rand = Buffer.from(new Date().toString())
         .toString('base64')
         .toUpperCase()
         .slice(0, 32);
@@ -68,7 +68,7 @@ describe('dmhy/subscription', () => {
     const camp2 = new Subscription('搖曳露營');
     const threads = [];
     for (let idx = 1; idx < 10; idx++) {
-      const rand = new Buffer(new Date(idx + new Date()).toString())
+      const rand = Buffer.from(new Date(idx + new Date()).toString())
         .toString('base64')
         .toUpperCase()
         .slice(0, 32);
@@ -86,7 +86,7 @@ describe('dmhy/subscription', () => {
 
   it('Subscription#getThreads', () => {
     const senko = new Subscription(`${__dirname}/../subscribables/senkosan.yml`); // It has episodes from [01]~[12] and [1-12]
-    const rand = new Buffer(new Date().toString())
+    const rand = Buffer.from(new Date().toString())
       .toString('base64')
       .toUpperCase()
       .slice(0, 32);
