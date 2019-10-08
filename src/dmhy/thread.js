@@ -58,6 +58,7 @@ class Thread {
     try {
       const blacklistPatterns = [
         /x?(1080|720|480)p?/,
+        /^\d+\s*月$/,
         /\d+\s*月新番/,
         /x26[45]/,
         /10bit/,
@@ -100,8 +101,12 @@ class Thread {
           return new Episode(eps);
         }
         let type = '';
-        if (tokens.some((tok) => /(ova|sp)/.test(tok))) {
-          type = tok.match(/(ova|sp)/)[0];
+        if (tokens.some((tok) => /(ova|sp|特別[篇編])/.test(tok))) {
+          if (/ova/.test(tok)) {
+            type = 'ova';
+          } else {
+            type = 'sp';
+          }
         }
 
         if (/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/.test(tok)) {
@@ -116,7 +121,7 @@ class Thread {
 
       if (globalTokens.includes('ova')) {
         return new Episode({ ep: 1, type: 'OVA' });
-      } else if (globalTokens.includes('sp')) {
+      } else if (globalTokens.some((tok) => /sp|特別[篇編]/.test(tok))) {
         return new Episode({ ep: 1, type: 'SP' });
       }
 
