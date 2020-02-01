@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   aria2:
-    image: abcminiuser/docker-aria2-with-webui:latest
+    image: abcminiuser/docker-aria2-with-webui:latest-ng
     ports:
       - 6880:80
       - 6800:6800
@@ -23,4 +23,6 @@ services:
       - ./data/cron/cron.log:/root/cron.log
     environment:
       - LANG=C.UTF-8
-      - CRON_FREQ='0 * * * *'
+      - CRON_FREQ=0 * * * *
+      # - TZ=Asia/Taipei
+    restart: unless-stopped
