@@ -5,20 +5,37 @@
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 8,
+        "ecmaVersion": 11,
         "sourceType": "module"
     },
     "extends": [
         "eslint:recommended",
-        "google"
+        "plugin:node/recommended"
     ],
     "rules": {
-        "no-console": "off",
-        "object-curly-spacing": ["error", "always"],
-        "arrow-spacing": "error",
-        "max-len": "off",
-        "space-infix-ops": "error",
         "indent": ["error", 2],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        // "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+        "arrow-parens": ["error", "always"],
+        "comma-dangle": ["error", "always-multiline"],
+        // spacings
+        "key-spacing": "error",
+        "comma-spacing": "error",
+        "arrow-spacing": "error",
+        "keyword-spacing": "error",
+        "object-curly-spacing": ["error", "always"],
+        "space-infix-ops": "error",
+        "space-before-blocks": "error",
+        "space-before-function-paren": ["error", "never"],
+        // prefers
+        "prefer-const": "error",
+        // warnings
+        "no-unused-vars": "warn",
+        // off
+        "max-len": "off",
+        "no-console": "off",
+        "no-process-exit":"off",
         "no-constant-condition": "off"
     }
 }

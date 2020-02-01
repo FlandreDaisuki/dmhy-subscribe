@@ -36,6 +36,7 @@ exports.builder = (yargs) => {
       }
       return true;
     })
+    // eslint-disable-next-line no-unused-vars
     .fail((msg, err) => {
       yargs.showHelp();
       console.log();
@@ -47,10 +48,10 @@ exports.builder = (yargs) => {
     .example('dmhy add -i', l10n('CMD_ADD_EXAMPLE3_DESC'));
 };
 
-exports.handler = async (argv) => {
+exports.handler = async(argv) => {
   const db = new Database();
 
-  const safeAdd = async (sub) => {
+  const safeAdd = async(sub) => {
     const existed = db.find(sub);
     if (existed) {
       if (argv.yes) {

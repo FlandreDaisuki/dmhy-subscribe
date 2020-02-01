@@ -92,7 +92,7 @@ describe('dmhy/subscription', () => {
       .slice(0, 32);
     const threads = [];
     threads.push(new Thread({
-      title: `[ZERO字幕组]賢惠幼妻仙狐小姐·Sewayaki Kitsune no Senko-san[1-12][BIG5][1080p]`,
+      title: '[ZERO字幕组]賢惠幼妻仙狐小姐·Sewayaki Kitsune no Senko-san[1-12][BIG5][1080p]',
       link: `magnet:?xt=urn:btih:${rand}`,
     }));
     for (let idx = 1; idx < 10; idx++) {

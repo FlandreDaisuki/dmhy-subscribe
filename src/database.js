@@ -38,7 +38,7 @@ class Database {
 
     this.config = config;
     if (!(config instanceof Config)) {
-      throw new Error(`Bad config`);
+      throw new Error('Bad config');
     }
 
     const threadsMap = JSON.parse(fs.readFileSync(this.dbpath, 'utf-8'));
@@ -92,7 +92,8 @@ class Database {
     fs.mkdirsSync(this.isubsDir);
 
     this.subscriptions.forEach((sub) => {
-      let { sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns } = sub;
+      const { sid, title, keywords, unkeywords } = sub;
+      let { episodeParser, userBlacklistPatterns } = sub;
       if (episodeParser) {
         episodeParser = episodeParser.toString();
       }

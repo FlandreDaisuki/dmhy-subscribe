@@ -9,10 +9,12 @@ const { downloadThreadWithDownloader } = require('..');
 const { l10n, print, CONST, Database, fetchThreads } = require('..');
 
 // fetch remote version every 15 times
-(async () => {
+(async() => {
   const REFETCH_TIMES = 15;
   if (fs.existsSync(CONST.remoteVersionPath)) {
-    let { count, version: lastRemoteVersion } = fs.readJSONSync(CONST.remoteVersionPath, 'utf-8');
+    const remoteVersion = fs.readJSONSync(CONST.remoteVersionPath, 'utf-8');
+    const { version: lastRemoteVersion } = remoteVersion;
+    let { count } = remoteVersion;
     if (count > REFETCH_TIMES) {
       const data = await fetch('https://registry.npmjs.org/dmhy-subscribe').then((resp) => resp.json());
       const remoteVersion = data['dist-tags'].latest;
@@ -76,7 +78,7 @@ function main() {
   if (!argv._.length) {
     const db = new Database();
 
-    const allTasks = db.subscriptions.map(async (sub) => {
+    const allTasks = db.subscriptions.map(async(sub) => {
       const remoteThreads = await fetchThreads(sub);
       const allDownloadTasks = Promise.all(remoteThreads.map((rth) => {
         const found = sub.threads.find((th) => th.title === rth.title);
@@ -104,7 +106,7 @@ function main() {
         }
         db.save();
       })
-      .catch((_) => {
+      .catch(() => {
         // Error will print by downloaders, keep quiet
       });
   } else if (argv._.length > 1 || !supportCommands.includes(argv._[0])) {

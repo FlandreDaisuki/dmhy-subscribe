@@ -10,7 +10,7 @@ const parser = new RssParser();
  */
 function fetchRssFromKeywords(kws) {
   return parser.parseURL(
-    `https://share.dmhy.org/topics/rss/rss.xml?sort_id=2&keyword=${kws.map(encodeURIComponent).join('+')}`
+    `https://share.dmhy.org/topics/rss/rss.xml?sort_id=2&keyword=${kws.map(encodeURIComponent).join('+')}`,
   );
 }
 

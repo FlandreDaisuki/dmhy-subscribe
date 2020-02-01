@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const { print, l10n } = require('../..');
 const url = require('url');
 
-module.exports = async (thread, config) => {
+module.exports = async(thread, config) => {
   print.debug('dmhy:downloaders:qbittorrent:thread', thread);
   print.debug('dmhy:downloaders:qbittorrent:config', config);
 
@@ -17,7 +17,7 @@ module.exports = async (thread, config) => {
   const loginParams = new URLSearchParams();
   loginParams.append('username', username);
   loginParams.append('password', password);
-  const loginResponse = await fetch(url.resolve(config['qbittorrent-url'], '/login'), {
+  const loginResponse = await fetch(url.URL(config['qbittorrent-url'], '/login'), {
     method: 'POST',
     body: loginParams.toString(),
     headers: {
@@ -34,7 +34,7 @@ module.exports = async (thread, config) => {
   const downloadParams = new URLSearchParams();
   downloadParams.append('urls', thread.link);
   downloadParams.append('savepath', config['destination']);
-  const downloadResponse = await fetch(url.resolve(config['qbittorrent-url'], '/command/download'), {
+  const downloadResponse = await fetch(url.URL(config['qbittorrent-url'], '/command/download'), {
     method: 'POST',
     headers: {
       'Cookie': sid,

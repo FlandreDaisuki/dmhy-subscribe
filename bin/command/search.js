@@ -15,7 +15,7 @@ exports.builder = (yargs) => {
     });
 };
 
-exports.handler = async (argv) => {
+exports.handler = async(argv) => {
   const { keywords, unkeywords } = splitKeywords(argv.ss.split(','));
   const threadLikes = await fetchThreadLikesByKeywords(keywords, unkeywords);
   threadLikes.forEach((th) => {

@@ -1,4 +1,4 @@
-const open = require('opn');
+const open = require('open');
 const { print, l10n } = require('../utils');
 
 module.exports = (thread, config) => {

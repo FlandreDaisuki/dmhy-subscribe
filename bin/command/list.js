@@ -29,6 +29,7 @@ exports.builder = (yargs) => {
       }
       return true;
     })
+    // eslint-disable-next-line no-unused-vars
     .fail((msg, err) => {
       yargs.showHelp();
       console.log();

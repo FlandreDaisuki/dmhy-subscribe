@@ -41,7 +41,8 @@ class Subscription {
       const { ext } = path.parse(subscribable);
       if (SUPPORT_FORMAT.has(ext)) {
         const loaded = this.loadMetaFromFile(path.resolve(subscribable));
-        let { title, keywords, unkeywords, sid, latest } = loaded;
+        const { title } = loaded;
+        let { keywords, unkeywords, sid, latest } = loaded;
 
         if (!title) {
           throw new SubscriptionError('Subscribable file must have title');
