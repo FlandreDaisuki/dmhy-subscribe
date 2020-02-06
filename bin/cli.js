@@ -37,7 +37,7 @@ const { l10n, print, CONST, Database, fetchThreads } = require('..');
 /**
  * Entry point
  */
-function main() {
+async function main() {
   const command = fs.readdirSync(`${__dirname}/command`)
     .map((cmdpath) => path.basename(cmdpath, '.js'))
     .reduce((prev, cur) => {
@@ -77,38 +77,33 @@ function main() {
   // No command, update and download all
   if (!argv._.length) {
     const db = new Database();
+    const downloader = db.config.get('downloader').value;
 
-    const allTasks = db.subscriptions.map(async(sub) => {
+    const allDownloadTasks = [];
+    for (const sub of db.subscriptions) {
       const remoteThreads = await fetchThreads(sub);
-      const allDownloadTasks = Promise.all(remoteThreads.map((rth) => {
+      for (const rth of remoteThreads) {
         const found = sub.threads.find((th) => th.title === rth.title);
         if (!found) {
           sub.add(rth);
           if (!argv.x) {
-            const downloader = db.config.get('downloader').value;
-            return downloadThreadWithDownloader(downloader, rth, db.config.parameters);
+            allDownloadTasks.push(downloadThreadWithDownloader(downloader, rth, db.config.parameters));
           }
         }
-      }));
+      }
+    }
 
-      // flatten promise for outer Pormise.all
-      return new Promise((resolve, reject) => {
-        allDownloadTasks.then(resolve).catch(reject);
-      });
-    });
-
-    Promise.all(allTasks)
-      .then(() => {
-        if (argv.x) {
-          print.success(l10n('MAIN_ALL_X_DONE'));
-        } else {
-          print.success(l10n('MAIN_ALL_DONE'));
-        }
-        db.save();
-      })
-      .catch(() => {
-        // Error will print by downloaders, keep quiet
-      });
+    try {
+      await Promise.all(allDownloadTasks);
+      if (argv.x) {
+        print.success(l10n('MAIN_ALL_X_DONE'));
+      } else {
+        print.success(l10n('MAIN_ALL_DONE'));
+      }
+      db.save();
+    } catch {
+      // Error will print by downloaders, keep quiet
+    }
   } else if (argv._.length > 1 || !supportCommands.includes(argv._[0])) {
     // Unknown command
     yargs.showHelp();
