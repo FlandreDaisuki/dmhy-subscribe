@@ -76,10 +76,10 @@ class Thread {
         .filter((x) => !userBlacklistPatterns.some((rule) => rule.test(x)))
         .map((x) => x.trim());
 
-      // input [\d.]+-[\d.]+
+      // input [\d.]+[-~][\d.]+
       const parseRangeEpisode = (tok, type) => {
-        const str = tok.replace(/(?:\D*|^)([\d.]+)(-[\d.]+)?(?:\D*|$)/, '$1$2');
-        const [from, to] = str.split('-').map((t) => parseFloat(t));
+        const str = tok.replace(/(?:\D*|^)([\d.]+)([-~][\d.]+)?(?:\D*|$)/, '$1$2');
+        const [from, to] = str.split(/[-~]/).map((t) => parseFloat(t));
         if (to === undefined) {
           return new Episode({ ep: from, type });
         }
