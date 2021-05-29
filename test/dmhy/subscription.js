@@ -8,29 +8,29 @@ describe('dmhy/subscription', () => {
     assert.throws(() => new Subscription(',,,'), Error);
 
     const camp = new Subscription(`${__dirname}/../subscribables/camp.yml`);
-    assert.equal(camp.title, '搖曳露營');
-    assert.deepEqual(camp.keywords, ['喵萌', '繁體'].sort());
-    assert.deepEqual(camp.unkeywords, ['合集'].sort());
-    assert.deepEqual(camp.episodeParser, /第\s*(\d+(?:-\d+)?)\s*[話话]/);
-    assert.deepEqual(camp.userBlacklistPatterns, [/\d+月\d+日/, /\d+\s*月新番/]);
+    assert.strictEqual(camp.title, '搖曳露營');
+    assert.deepStrictEqual(camp.keywords, ['喵萌', '繁體'].sort());
+    assert.deepStrictEqual(camp.unkeywords, ['合集'].sort());
+    assert.deepStrictEqual(camp.episodeParser, /第\s*(\d+(?:-\d+)?)\s*[話话]/);
+    assert.deepStrictEqual(camp.userBlacklistPatterns, [/\d+月\d+日/, /\d+\s*月新番/]);
 
     const good = new Subscription(`${__dirname}/../subscribables/good.yml`);
-    assert.equal(good.title, '牙鬥獸娘');
-    assert.deepEqual(good.keywords, []);
-    assert.deepEqual(good.unkeywords, []);
-    assert.equal(good.episodeParser, null);
-    assert.deepEqual(good.userBlacklistPatterns, []);
+    assert.strictEqual(good.title, '牙鬥獸娘');
+    assert.deepStrictEqual(good.keywords, []);
+    assert.deepStrictEqual(good.unkeywords, []);
+    assert.strictEqual(good.episodeParser, null);
+    assert.deepStrictEqual(good.userBlacklistPatterns, []);
 
     assert.throws(() => new Subscription(`${__dirname}/bad.yml`), Error);
 
     const killingbites = new Subscription('牙鬥獸娘,BIG5');
-    assert.equal(killingbites.title, '牙鬥獸娘');
-    assert.deepEqual(killingbites.keywords, ['BIG5']);
+    assert.strictEqual(killingbites.title, '牙鬥獸娘');
+    assert.deepStrictEqual(killingbites.keywords, ['BIG5']);
 
     const camp2 = new Subscription('搖曳露營');
-    assert.equal(camp2.title, '搖曳露營');
-    assert.deepEqual(camp2.keywords, []);
-    assert.deepEqual(camp2.unkeywords, []);
+    assert.strictEqual(camp2.title, '搖曳露營');
+    assert.deepStrictEqual(camp2.keywords, []);
+    assert.deepStrictEqual(camp2.unkeywords, []);
 
     const subLike = {
       title: '紫羅蘭永恆花園',
@@ -38,9 +38,9 @@ describe('dmhy/subscription', () => {
       unkeywords: ['合集'],
     };
     const violet = Subscription.from(subLike);
-    assert.equal(violet.title, '紫羅蘭永恆花園');
-    assert.deepEqual(violet.keywords, ['動漫國']);
-    assert.deepEqual(violet.unkeywords, ['合集']);
+    assert.strictEqual(violet.title, '紫羅蘭永恆花園');
+    assert.deepStrictEqual(violet.keywords, ['動漫國']);
+    assert.deepStrictEqual(violet.unkeywords, ['合集']);
   });
 
   it('Subscription#loadThreads', () => {
@@ -57,7 +57,7 @@ describe('dmhy/subscription', () => {
       }));
     }
     camp.loadThreads(threads);
-    assert.equal(camp.threads.length, 9);
+    assert.strictEqual(camp.threads.length, 9);
 
     threads.push({});
     assert.throws(() => camp.loadThreads(threads), Error);
@@ -81,7 +81,7 @@ describe('dmhy/subscription', () => {
     threads.unshift(threads.pop()); // last to first
     threads.unshift(threads.pop()); // last to first
     camp2.loadThreads(threads);
-    assert.deepEqual(camp.threads, camp2.threads);
+    assert.deepStrictEqual(camp.threads, camp2.threads);
   });
 
   it('Subscription#getThreads', () => {
@@ -103,21 +103,21 @@ describe('dmhy/subscription', () => {
     }
     senko.loadThreads(threads);
     const result1 = senko.getThreads('3');
-    assert.equal(result1.filter((th) => th.title.includes('[1-12]')).length, 1);
-    assert.equal(result1.filter((th) => th.title.includes('[03]')).length, 1);
+    assert.strictEqual(result1.filter((th) => th.title.includes('[1-12]')).length, 1);
+    assert.strictEqual(result1.filter((th) => th.title.includes('[03]')).length, 1);
     const result2 = senko.getThreads('4,5,6');
-    assert.equal(result2.filter((th) => th.title.includes('[1-12]')).length, 1);
-    assert.equal(result2.filter((th) => th.title.includes('[06]')).length, 1);
+    assert.strictEqual(result2.filter((th) => th.title.includes('[1-12]')).length, 1);
+    assert.strictEqual(result2.filter((th) => th.title.includes('[06]')).length, 1);
   });
 
   it('Subscription.parseEpisodeStringToEpisodeLike', () => {
     const normals = Subscription.parseEpisodeStringToEpisodeLike('1,5,4');
     const normalAns = [{ ep: 1, type: '' }, { ep: 5, type: '' }, { ep: 4, type: '' }];
-    assert.deepEqual(normals.sort(TheEpisode.descendCompare), normalAns.sort(TheEpisode.descendCompare));
+    assert.deepStrictEqual(normals.sort(TheEpisode.descendCompare), normalAns.sort(TheEpisode.descendCompare));
 
     const normalWithOvaSps = Subscription.parseEpisodeStringToEpisodeLike('12,SP2,OVA3');
     const normalWithOvaSpAns = [{ ep: 12, type: '' }, { ep: 2, type: 'SP' }, { ep: 3, type: 'OVA' }];
-    assert.deepEqual(normalWithOvaSps.sort(TheEpisode.descendCompare), normalWithOvaSpAns.sort(TheEpisode.descendCompare));
+    assert.deepStrictEqual(normalWithOvaSps.sort(TheEpisode.descendCompare), normalWithOvaSpAns.sort(TheEpisode.descendCompare));
 
     const complexs = Subscription.parseEpisodeStringToEpisodeLike('1,SP3..1,OVA3,4..5.5,12,7.5');
     const complexAns = [
@@ -131,6 +131,6 @@ describe('dmhy/subscription', () => {
     ]
       .concat(normalAns)
       .concat(normalWithOvaSpAns);
-    assert.deepEqual(complexs.sort(TheEpisode.descendCompare), complexAns.sort(TheEpisode.descendCompare));
+    assert.deepStrictEqual(complexs.sort(TheEpisode.descendCompare), complexAns.sort(TheEpisode.descendCompare));
   });
 });

@@ -153,7 +153,7 @@ const l10n = (() => {
   const dict = candidates.reduce((prev, cur) => {
     if (fs.existsSync(cur)) {
       try {
-        const localeStrings = yaml.safeLoad(fs.readFileSync(cur, 'utf-8'));
+        const localeStrings = yaml.load(fs.readFileSync(cur, 'utf-8'));
         return Object.assign(prev, localeStrings);
       } catch (error) {
         print.error(error);

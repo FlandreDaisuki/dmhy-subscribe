@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const ymal = require('js-yaml');
+const yaml = require('js-yaml');
 const { Thread } = require('./thread');
 const { l10n, print, hash, flatten, unique, XSet, strToRegexp, splitKeywords } = require('../utils');
 const { SubscriptionError } = require('../errors');
@@ -92,7 +92,7 @@ class Subscription {
     const { ext } = path.parse(subscribable);
     try {
       if (ext === '.yml' || ext === '.yaml') {
-        return ymal.safeLoad(fs.readFileSync(subscribable, 'utf-8'));
+        return yaml.load(fs.readFileSync(subscribable, 'utf-8'));
       } else {
         throw new SubscriptionError(`Unknown file extension: ${ ext }`);
       }

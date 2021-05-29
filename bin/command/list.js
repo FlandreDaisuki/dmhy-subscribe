@@ -58,7 +58,7 @@ exports.handler = (argv) => {
     sids.forEach((sid) => {
       const sub = db.find({ sid }); // bad use XD
       const { title, keywords, unkeywords, episodeParser } = sub;
-      console.log(yaml.safeDump({ title,
+      console.log(yaml.dump({ title,
         keywords,
         unkeywords,
         episodeParser: `${episodeParser}` }));

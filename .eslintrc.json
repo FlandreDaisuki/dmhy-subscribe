@@ -5,8 +5,7 @@
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 11,
-        "sourceType": "module"
+        "ecmaVersion": 2021
     },
     "extends": [
         "eslint:recommended",

@@ -98,7 +98,7 @@ class Database {
         episodeParser = episodeParser.toString();
       }
       userBlacklistPatterns = userBlacklistPatterns.map((ubp) => ubp.toString());
-      const yamlData = yaml.safeDump({ sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns });
+      const yamlData = yaml.dump({ sid, title, keywords, unkeywords, episodeParser, userBlacklistPatterns });
       fs.writeFileSync(`${this.isubsDir}/${sid}.yml`, yamlData);
     });
   }
