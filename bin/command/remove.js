@@ -10,7 +10,7 @@ exports.builder = (yargs) => {
   yargs
     .usage(l10n('CMD_RM_USAGE'))
     .options({
-      'a': {
+      a: {
         alias: 'all',
         describe: l10n('CMD_RM_OPT_A'),
         type: 'boolean',

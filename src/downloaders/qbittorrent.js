@@ -37,7 +37,7 @@ module.exports = async(thread, config) => {
   const downloadResponse = await fetch(url.URL(config['qbittorrent-url'], '/command/download'), {
     method: 'POST',
     headers: {
-      'Cookie': sid,
+      Cookie: sid,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: downloadParams.toString(),

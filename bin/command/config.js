@@ -29,7 +29,7 @@ exports.handler = (argv) => {
       process.exit(1);
     }
     if (argv.value) {
-      const validator = Config.VALIDATORS[pkv.key] || (() => ({ 'ok': true }));
+      const validator = Config.VALIDATORS[pkv.key] || (() => ({ ok: true }));
       const result = validator(argv.value);
       if (!result.ok) {
         print.warn(result.msg);

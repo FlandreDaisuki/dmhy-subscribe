@@ -4,16 +4,16 @@ const { CONST, l10n } = require('./utils');
 const { systemDownloadsFolder, defaultConfigPath } = CONST;
 
 const DEFAULTS = {
-  'downloader': 'system',
+  downloader: 'system',
   'aria2-jsonrpc': 'http://localhost:6800/jsonrpc/',
   'qbittorrent-url': 'http://localhost:8080/',
   'qbittorrent-auth': 'username:password',
-  'destination': systemDownloadsFolder,
+  destination: systemDownloadsFolder,
   'webhook-url': 'http://localhost/',
   'webhook-token': 'DEFAULT_WEBHOOK_TOKEN',
 };
 const VALIDATORS = {
-  'downloader': (downloader) => {
+  downloader: (downloader) => {
     const result = { ok: true, msg: '' };
     const downloaders = fs.readdirSync(`${__dirname}/downloaders`).map((d) => path.basename(d, '.js'));
     if (!(new Set(downloaders)).has(downloader)) {
@@ -22,7 +22,7 @@ const VALIDATORS = {
     }
     return result;
   },
-  'destination': (destination) => {
+  destination: (destination) => {
     const result = { ok: true, msg: '' };
     if (!(fs.existsSync(destination))) {
       result.ok = false;

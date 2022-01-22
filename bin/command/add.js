@@ -11,17 +11,17 @@ exports.builder = (yargs) => {
   yargs
     .usage(l10n('CMD_ADD_USAGE'))
     .options({
-      'i': {
+      i: {
         alias: 'interactive',
         describe: l10n('CMD_ADD_OPT_I'),
         type: 'boolean',
       },
-      'y': {
+      y: {
         alias: 'yes',
         describe: l10n('CMD_ADD_OPT_Y'),
         type: 'boolean',
       },
-      'n': {
+      n: {
         alias: 'no',
         describe: l10n('CMD_ADD_OPT_N'),
         type: 'boolean',

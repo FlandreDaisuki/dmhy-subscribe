@@ -12,12 +12,12 @@ exports.builder = (yargs) => {
   yargs
     .usage(l10n('CMD_LS_USAGE'))
     .options({
-      'ss': {
+      ss: {
         alias: 'subscribable-string',
         describe: l10n('CMD_LS_OPT_SS'),
         type: 'boolean',
       },
-      'sy': {
+      sy: {
         alias: 'subscribable-yaml',
         describe: l10n('CMD_LS_OPT_SY'),
         type: 'boolean',

@@ -94,7 +94,7 @@ class Subscription {
       if (ext === '.yml' || ext === '.yaml') {
         return yaml.load(fs.readFileSync(subscribable, 'utf-8'));
       } else {
-        throw new SubscriptionError(`Unknown file extension: ${ ext }`);
+        throw new SubscriptionError(`Unknown file extension: ${ext}`);
       }
     } catch (error) {
       print.error(error);

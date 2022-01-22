@@ -85,14 +85,14 @@ const systemDownloadsFolder = (() => {
     let dir;
     try {
       dir = execSync('xdg-user-dir DOWNLOAD', { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] });
-    } catch (_) {/**/}
+    } catch (_) { /**/ }
     if (dir) return dir.trim();
 
     let stat;
     const homeDownloads = `${process.env.HOME}/Downloads`;
     try {
       stat = fs.statSync(homeDownloads);
-    } catch (_) {/**/}
+    } catch (_) { /**/ }
     if (stat) return homeDownloads;
 
     return '/tmp';
@@ -112,9 +112,9 @@ const systemLocale = ((env) => {
   const LOCALEID = {
     // https://zh.wikipedia.org/wiki/地區設定
     '0804': 'zh_CN',
-    '20804': 'zh_CN',
+    20804: 'zh_CN',
     '0404': 'zh_TW',
-    '30404': 'zh_TW',
+    30404: 'zh_TW',
     '0C04': 'zh_HK',
   };
 
