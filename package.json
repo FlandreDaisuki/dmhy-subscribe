@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.6.31",
+  "version": "0.6.32",
   "bin": {
     "dmhy": "./bin/cli.js"
   },
@@ -36,7 +36,7 @@
     "easy-table": "^1.2.0",
     "fs-extra": "^10.0.0",
     "js-yaml": "^4.1.0",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^2.6.7",
     "open": "^8.4.0",
     "prompts": "^2.4.2",
     "rss-parser": "^3.12.0",
