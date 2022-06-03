@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "0.6.32",
+  "version": "0.6.33",
   "bin": {
     "dmhy": "./bin/cli.js"
   },
@@ -24,24 +24,24 @@
   },
   "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
   "devDependencies": {
-    "ajv": "^8.9.0",
+    "ajv": "^8.11.0",
     "all-contributors-cli": "^6.20.0",
-    "eslint": "^8.7.0",
+    "eslint": "^8.16.0",
     "eslint-plugin-node": "^11.1.0",
-    "mocha": "^9.1.4"
+    "mocha": "^10.0.0"
   },
   "dependencies": {
     "aria2": "^4.1.2",
     "chalk": "^4.1.2",
     "easy-table": "^1.2.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.1.0",
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.7",
     "open": "^8.4.0",
     "prompts": "^2.4.2",
     "rss-parser": "^3.12.0",
-    "semver": "^7.3.5",
-    "yargs": "^17.3.1"
+    "semver": "^7.3.7",
+    "yargs": "^17.5.1"
   },
   "engines": {
     "node": ">=12"
