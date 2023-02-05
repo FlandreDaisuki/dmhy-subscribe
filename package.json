@@ -1,0 +1,33 @@
+{
+  "name": "dmhy-subscribe",
+  "version": "1.0.0",
+  "description": "Subscribe by keywords and download megnets",
+  "keywords": [],
+  "license": "ISC",
+  "author": "FlandreDaisuki <vbnm123c+github@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlandreDaisuki/dmhy-subscribe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlandreDaisuki/dmhy-subscribe/issues"
+  },
+  "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
+  "main": "index.mjs",
+  "bin": {
+    "dmhy": "./src/cli/index.mjs"
+  },
+  "scripts": {
+    "lint": "eslint --fix ."
+  },
+  "dependencies": {
+    "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "@flandredaisuki/eslint-config": "^0.0.4",
+    "eslint": "^8.33.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
