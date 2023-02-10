@@ -1,0 +1,25 @@
+CMD_ADD_DESC: '新增一筆訂閱'
+CMD_ADD_USAGE: |
+  使用方法: dmhy add [選項] <標題> [關鍵字...]
+
+    關鍵字 := 訂閱包含的關鍵字 | -x 訂閱不要包含的關鍵字(黑名單關鍵字)
+CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」及相同關鍵字的訂閱，繼續新增？
+CMD_ADD_SUCCESS: 成功新增訂閱「%title%」
+CMD_ADD_EXAMPLE1: dmhy add 搖曳露營 萌喵 繁體
+CMD_ADD_EXAMPLE1_DESC: 訂閱使用標題及關鍵字來搜尋貼文
+CMD_ADD_EXAMPLE2: dmhy add 搖曳露營 萌喵 繁體 -x 720p
+CMD_ADD_EXAMPLE2_DESC: 同上，但過濾掉出現 720p 的貼文
+CMD_ADD_EXAMPLE3: dmhy add 輕旅輕營 --excludes-title 露營 悠哈
+CMD_ADD_EXAMPLE3_DESC: 訂閱只使用關鍵字來搜尋貼文
+
+CMD_FIND_DESC: 直接搜尋貼文
+CMD_FIND_USAGE: |
+  使用方法: dmhy find <標題> [關鍵字...]
+
+    關鍵字 := 訂閱包含的關鍵字 | -x 訂閱不要包含的關鍵字(黑名單關鍵字)
+CMD_FIND_EXAMPLE1: dmhy find 搖曳露營 萌喵 繁體
+CMD_FIND_EXAMPLE1_DESC: 訂閱使用標題及關鍵字來搜尋貼文
+CMD_FIND_EXAMPLE2: dmhy find 搖曳露營 萌喵 繁體 -x 720p
+CMD_FIND_EXAMPLE2_DESC: 同上，但過濾掉出現 720p 的貼文
+CMD_FIND_EXAMPLE3: dmhy find 輕旅輕營 --excludes-title 露營 悠哈
+CMD_FIND_EXAMPLE3_DESC: 訂閱只使用關鍵字來搜尋貼文
