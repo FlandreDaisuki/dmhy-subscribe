@@ -3,8 +3,6 @@ import fs from 'fs/promises';
 import { execSync, spawnSync } from 'child_process';
 import debug from 'debug';
 
-const d = debug('dmhy:env');
-
 // Modified from https://github.com/sindresorhus/os-locale
 export const LOCALE = ((env) => {
   const LOCALE_ID = {
@@ -57,15 +55,16 @@ export const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR ?? await(async() => {
       }).trim();
       if ((await fs.stat(xdgDownloadDir)).isDirectory()) { return xdgDownloadDir; }
     } catch (err){
-      d('xdgDownloadDir:err', err);
+      debug('dmhy:env:xdgDownloadDir')(err);
     }
 
     try {
       const homeDownloadDir = `${os.homedir()}/Downloads`;
       if ((await fs.stat(homeDownloadDir)).isDirectory()) { return homeDownloadDir; }
-    } catch (err){
-      d('homeDownloadDir:err', err);
+    } catch (err) {
+      debug('dmhy:env:homeDownloadDir')(err);
     }
+
     return '/tmp';
   };
 

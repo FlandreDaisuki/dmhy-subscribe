@@ -1,8 +1,8 @@
 import debug from 'debug';
-import chalk from 'chalk';
 import RSSParser from 'rss-parser';
 
-const d = debug('dmhy:cli:find');
+import * as logger from '../../logger.mjs';
+import { t } from '../../locale.mjs';
 
 export const command = 'find <title> [keywords..]';
 
@@ -24,18 +24,18 @@ export const builder = (yargs) => {
 };
 
 export const handler = async(argv) => {
-  d('argv:', argv);
+  debug('dmhy:cli:find')('argv:', argv);
 
   const u = new URL('https://share.dmhy.org/topics/rss/rss.xml');
   u.searchParams.append('sort_id', '2');
   u.searchParams.append('keyword', [argv.title].concat(argv.keywords).join(' '));
 
-  d('url:', u.href);
+  debug('dmhy:cli:find')('url:', u.href);
 
   try {
     const rss = await (new RSSParser).parseURL(u.href)
       .catch((err) => {
-        console.error(chalk.blueBright('RSSParser:'), err.message);
+        logger.error('RSSParser')(err.message);
       });
 
     if (!rss) { return process.exit(1); }
@@ -47,10 +47,10 @@ export const handler = async(argv) => {
     });
 
     for (const item of filteredRssItems) {
-      // eslint-disable-next-line no-console
-      console.log(item.title);
+      logger.log(item.title);
     }
   } catch (err) {
-    console.error(err);
+    debug('dmhy:cli:find')(err);
+    logger.error('dmhy:cli:find')(err.message);
   }
 };

@@ -6,9 +6,7 @@ import semver from 'semver';
 import debug from 'debug';
 
 import * as ENV from './env.mjs';
-import { isFileExists } from './utils.mjs';
-
-const d = debug('dmhy:database');
+import * as logger from './logger.mjs';
 
 const databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3');
 const thisFilePath = fileURLToPath(import.meta.url);
@@ -29,7 +27,7 @@ const getLastMigrateVersion = async() => {
   return new Promise((resolve) => {
     db.get('SELECT version FROM migrations ORDER BY created_at DESC LIMIT 1', (err, row) => {
       if (err) {
-        d('getLastMigrateVersion:err', err);
+        debug('dmhy:database:getLastMigrateVersion')(err);
       }
 
       resolve(row?.version ?? '0.0.0');
@@ -47,26 +45,26 @@ const sortedAllMigrations = (await fs.readdir(migrationDir))
   .sort((a, b) => semver.compare(a.version, b.version));
 
 const lastMigrateVersion = await getLastMigrateVersion();
-d('lastMigrateVersion', lastMigrateVersion);
+debug('dmhy:database:lastMigrateVersion')(lastMigrateVersion);
 
 const sortedUnexecutedMigrations = sortedAllMigrations.filter((m) => semver.gt(m.version, lastMigrateVersion));
 
 for (const unexecutedMigration of sortedUnexecutedMigrations) {
   const { filename } = unexecutedMigration;
   const filePath = path.join(migrationDir, filename);
-  d('unexecutedMigration::filePath', filePath);
+  debug('dmhy:database:unexecutedMigration')(filePath);
 
   const pseudoSql = await fs.readFile(filePath, 'utf8');
   const sql = pseudoSql.replaceAll('app_datetime_now()', JSON.stringify((new Date()).toISOString()));
   await new Promise((resolve, reject) => {
     db.exec(sql, (err) => {
       if (err) {
-        d('unexecutedMigration:exec::err', err);
+        debug('dmhy:database:unexecutedMigration')(err);
         return reject(err);
       }
       resolve();
     });
   });
 
-  console.log(`Successfully run migration: ${filename}`);
+  logger.log(`Successfully run migration: ${filename}`);
 }
