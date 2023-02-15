@@ -2,7 +2,7 @@ import debug from 'debug';
 import RSSParser from 'rss-parser';
 
 import * as logger from '../../logger.mjs';
-import { t } from '../../locale.mjs';
+import { joinToRegExp, parsePattern } from '../../utils.mjs';
 
 export const command = 'find <title> [keywords..]';
 
@@ -15,10 +15,15 @@ export const builder = (yargs) => {
       'exclude-title': {
         type: 'boolean',
       },
+      'episode-pattern': {
+        type: 'string',
+      },
+      'exclude-pattern': {
+        type: 'string',
+      },
       'excludes': {
         alias: 'x',
         type: 'array',
-        default: [],
       },
     });
 };
@@ -28,7 +33,9 @@ export const handler = async(argv) => {
 
   const u = new URL('https://share.dmhy.org/topics/rss/rss.xml');
   u.searchParams.append('sort_id', '2');
-  u.searchParams.append('keyword', [argv.title].concat(argv.keywords).join(' '));
+
+  const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
+  u.searchParams.append('keyword', keywords.join(' '));
 
   debug('dmhy:cli:find')('url:', u.href);
 
@@ -40,10 +47,18 @@ export const handler = async(argv) => {
 
     if (!rss) { return process.exit(1); }
 
+    const getExcludePattern = () => {
+      if (argv.excludePattern) {
+        return parsePattern(argv.excludePattern);
+      }
+      if (argv.excludes) {
+        return joinToRegExp(argv.excludes);
+      }
+      return /$^/;
+    };
+
     const filteredRssItems = rss.items.filter((item) => {
-      return argv.excludes.every((exclude) => {
-        return !item.title.includes(exclude);
-      });
+      return !(getExcludePattern().test(item.title));
     });
 
     for (const item of filteredRssItems) {

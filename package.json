@@ -18,7 +18,8 @@
     "dmhy": "./src/cli/index.mjs"
   },
   "scripts": {
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "test": "vitest"
   },
   "dependencies": {
     "chalk": "^5.2.0",
@@ -31,7 +32,8 @@
   },
   "devDependencies": {
     "@flandredaisuki/eslint-config": "^0.0.4",
-    "eslint": "^8.33.0"
+    "eslint": "^8.33.0",
+    "vitest": "^0.28.5"
   },
   "engines": {
     "node": ">=18"

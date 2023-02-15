@@ -1,6 +1,8 @@
 import debug from 'debug';
 
-const d = debug('dmhy:cli:add');
+import * as logger from '../../logger.mjs';
+import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
+import { createSubscription, isTitleUniq } from '../../database.mjs';
 
 export const command = 'add <title> [keywords..]';
 
@@ -13,6 +15,12 @@ export const builder = (yargs) => {
       'exclude-title': {
         type: 'boolean',
       },
+      'episode-pattern': {
+        type: 'string',
+      },
+      'exclude-pattern': {
+        type: 'string',
+      },
       'excludes': {
         alias: 'x',
         type: 'array',
@@ -20,7 +28,38 @@ export const builder = (yargs) => {
     });
 };
 
-export const handler = (argv) => {
-  d(argv);
-  // TODO
+export const handler = async(argv) => {
+  debug('dmhy:cli:add')(argv);
+
+  try {
+    if (!await isTitleUniq(argv.title)) {
+
+      const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);
+      if (!/(?:y|yes)/i.test(answer)) {
+        return process.exit(1);
+      }
+    }
+    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
+    const getExcludePattern = () => {
+      if (argv.excludePattern) {
+        return parsePattern(argv.excludePattern);
+      }
+      if (argv.excludes) {
+        return joinToRegExp(argv.excludes);
+      }
+      return /$^/;
+    };
+    const episodePattern = argv.episodePattern ? parsePattern(argv.episodePattern) : /$^/;
+
+    await createSubscription(argv.title, {
+      keywords,
+      excludePatternString: String(getExcludePattern()),
+      episodePatternString: String(episodePattern),
+    });
+
+    logger.log(`成功新增「${argv.title}」！`);
+  } catch (err) {
+    debug('dmhy:cli:add')(err);
+    logger.error('dmhy:cli:add')(err.message);
+  }
 };

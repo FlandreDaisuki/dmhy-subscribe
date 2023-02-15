@@ -7,6 +7,7 @@ import debug from 'debug';
 
 import * as ENV from './env.mjs';
 import * as logger from './logger.mjs';
+import { isFileExists, sidHash } from './utils.mjs';
 
 const databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3');
 const thisFilePath = fileURLToPath(import.meta.url);
@@ -68,3 +69,47 @@ for (const unexecutedMigration of sortedUnexecutedMigrations) {
 
   logger.log(`Successfully run migration: ${filename}`);
 }
+
+export const isSidUniq = async(sid) => {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT id FROM subscriptions WHERE sid = '${sid}'`, (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(!rows);
+    });
+  });
+};
+
+export const isTitleUniq = async(title) => {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT id FROM subscriptions WHERE title = '${title}'`, (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(!rows);
+    });
+  });
+};
+
+/**
+ * @param {string} title
+ * @param {Object} option
+ * @param {string[]} option.keywords
+ * @param {string} option.episodePatternString
+ * @param {string} option.excludePatternString
+ */
+export const createSubscription = async(title, option = {}) => {
+  let sid = '';
+  const keywords = option?.keywords ?? [];
+  const episodePatternString = option?.episodePatternString ?? '/$^/';
+  const excludePatternString = option?.excludePatternString ?? '/$^/';
+  do {
+    sid = sidHash(title, keywords, excludePatternString, episodePatternString, sid);
+  } while (!await isSidUniq(sid));
+
+  const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
+  statement.run([
+    sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString,
+  ], (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+};
