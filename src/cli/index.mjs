@@ -15,6 +15,7 @@ debug('dmhy:cli:process.argv')(process.argv);
 const argv = await yargs(process.argv.slice(2))
   .command(await loadCommand('add'))
   .command(await loadCommand('find'))
+  .command(await loadCommand('pull'))
   .argv;
 
 debug('dmhy:cli:argv')(argv);

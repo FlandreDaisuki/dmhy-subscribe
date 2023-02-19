@@ -25,6 +25,14 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   exclude_pattern TEXT /* String of Regexp */
 );
 
+CREATE TABLE IF NOT EXISTS subscriptions_threads (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  subscription_id INTEGER,
+  thread_id INTEGER,
+  FOREIGN KEY(subscription_id) REFERENCES subscriptions(id),
+  FOREIGN KEY(thread_id) REFERENCES threads(id)
+);
+
 CREATE TABLE IF NOT EXISTS migrations (
   version TEXT NOT NULL UNIQUE,
   filename TEXT NOT NULL,

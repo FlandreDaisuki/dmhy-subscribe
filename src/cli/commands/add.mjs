@@ -2,7 +2,7 @@ import debug from 'debug';
 
 import * as logger from '../../logger.mjs';
 import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
-import { createSubscription, isTitleUniq } from '../../database.mjs';
+import { createSubscription, isExistingSubscriptionTitle } from '../../database.mjs';
 
 export const command = 'add <title> [keywords..]';
 
@@ -32,7 +32,7 @@ export const handler = async(argv) => {
   debug('dmhy:cli:add')(argv);
 
   try {
-    if (!await isTitleUniq(argv.title)) {
+    if (!await isExistingSubscriptionTitle(argv.title)) {
 
       const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);
       if (!/(?:y|yes)/i.test(answer)) {

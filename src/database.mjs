@@ -4,10 +4,9 @@ import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 import semver from 'semver';
 import debug from 'debug';
-
 import * as ENV from './env.mjs';
 import * as logger from './logger.mjs';
-import { isFileExists, sidHash } from './utils.mjs';
+import { isFileExists, parsePattern, sidHash } from './utils.mjs';
 
 const databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3');
 const thisFilePath = fileURLToPath(import.meta.url);
@@ -70,18 +69,18 @@ for (const unexecutedMigration of sortedUnexecutedMigrations) {
   logger.log(`Successfully run migration: ${filename}`);
 }
 
-export const isSidUniq = async(sid) => {
+export const isExistingSubscriptionSid = async(sid) => {
   return new Promise((resolve, reject) => {
-    db.get(`SELECT id FROM subscriptions WHERE sid = '${sid}'`, (err, rows) => {
+    db.get('SELECT id FROM subscriptions WHERE sid = ?', [sid], (err, rows) => {
       if (err) { return reject(err); }
       resolve(!rows);
     });
   });
 };
 
-export const isTitleUniq = async(title) => {
+export const isExistingSubscriptionTitle = async(title) => {
   return new Promise((resolve, reject) => {
-    db.get(`SELECT id FROM subscriptions WHERE title = '${title}'`, (err, rows) => {
+    db.get('SELECT id FROM subscriptions WHERE title = ?', [title], (err, rows) => {
       if (err) { return reject(err); }
       resolve(!rows);
     });
@@ -102,14 +101,66 @@ export const createSubscription = async(title, option = {}) => {
   const excludePatternString = option?.excludePatternString ?? '/$^/';
   do {
     sid = sidHash(title, keywords, excludePatternString, episodePatternString, sid);
-  } while (!await isSidUniq(sid));
+  } while (!await isExistingSubscriptionSid(sid));
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
-  statement.run([
-    sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString,
-  ], (err) => {
-    if (err) {
-      console.error(err);
-    }
+  return new Promise((resolve) => {
+    // eslint-disable-next-line prefer-arrow-callback
+    statement.run([sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString], function(err) {
+      if (err) {
+        console.error(err);
+      }
+      resolve(this);
+    });
+  });
+};
+
+export const getAllSubscriptions = async() => {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT * FROM subscriptions', (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(rows.map((row) => {
+        return {
+          id: row.id,
+          sid: row.sid,
+          title: row.title,
+          keywords: JSON.parse(row.keywords),
+          episodePattern: parsePattern(row.episode_pattern),
+          excludePattern: parsePattern(row.exclude_pattern),
+        };
+      }));
+    });
+  });
+};
+
+export const isExistingThreadDmhyLink = async(dmhyLink) => {
+  return new Promise((resolve, reject) => {
+    // query the threads table to see if the dmhy_link already exists
+    db.get('SELECT EXISTS(SELECT 1 FROM threads WHERE dmhy_link = ?) as existing', [dmhyLink], (err, row) => {
+      if (err) { return reject(err); }
+      resolve(Boolean(row.existing));
+    });
+  });
+};
+
+export const createThread = async(dmhyLink, magnet, title, publishDate) => {
+  const statement = db.prepare('INSERT INTO threads (dmhy_link, magnet, title, publish_date) VALUES (?, ?, ?, ?)');
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line prefer-arrow-callback
+    statement.run([dmhyLink, magnet, title, publishDate], function(err) {
+      if (err) { return reject(err); }
+      resolve(this);
+    });
+  });
+};
+
+export const bindSubscriptionAndThread = async(subscriptionId, threadId) => {
+  const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line prefer-arrow-callback
+    statement.run([subscriptionId, threadId], function(err) {
+      if (err) { return reject(err); }
+      resolve(this);
+    });
   });
 };

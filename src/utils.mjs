@@ -1,6 +1,10 @@
-import * as readline from 'readline';
 import fs from 'fs/promises';
 import { createHash } from 'crypto';
+import * as readline from 'readline';
+import debug from 'debug';
+import RSSParser from 'rss-parser';
+import * as logger from './logger.mjs';
+
 
 /** @param {string} path */
 export const isFileExists = (path) =>
@@ -47,4 +51,20 @@ export const sidHash = (...args) => {
     .replaceAll(/[^a-z]/ig, '')
     .toUpperCase()
   }`.slice(-3);
+};
+
+export const getRssListByKeywords = async(keywords = []) => {
+  const u = new URL('https://share.dmhy.org/topics/rss/rss.xml');
+  u.searchParams.append('sort_id', '2');
+
+  u.searchParams.append('keyword', Array.from(keywords).join(' '));
+  debug('dmhy:utils:getRssListByKeywords:url')( u.href);
+
+  const rss = await (new RSSParser).parseURL(u.href)
+    .catch((err) => {
+      logger.error('RSSParser')(err.message);
+    });
+
+  if (!rss) { return process.exit(1); }
+  return rss;
 };
