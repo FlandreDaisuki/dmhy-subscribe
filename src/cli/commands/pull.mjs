@@ -19,7 +19,7 @@ export const builder = (yargs) => {
 };
 
 export const handler = async(argv) => {
-  debug('dmhy:cli:pull')('argv:', argv);
+  debug('dmhy:cli:pull:argv')(argv);
 
   try {
     const subscriptions = await getAllSubscriptions();

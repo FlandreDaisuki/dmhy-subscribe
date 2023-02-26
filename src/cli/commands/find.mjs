@@ -10,25 +10,24 @@ export const describe = 'find specific keywords to describe a subscription';
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
-    .option({
-      'exclude-title': {
-        type: 'boolean',
-      },
-      'episode-pattern': {
-        type: 'string',
-      },
-      'exclude-pattern': {
-        type: 'string',
-      },
-      'excludes': {
-        alias: 'x',
-        type: 'array',
-      },
-    });
+    .option('exclude-title', {
+      type: 'boolean',
+    })
+    .option('episode-pattern', {
+      type: 'string',
+    })
+    .option('exclude-pattern', {
+      type: 'string',
+    })
+    .option('excludes', {
+      alias: 'x',
+      type: 'array',
+    })
+    .conflicts('excludes', 'exclude-pattern');
 };
 
 export const handler = async(argv) => {
-  debug('dmhy:cli:find')('argv:', argv);
+  debug('dmhy:cli:find:argv')(argv);
 
   try {
     const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
