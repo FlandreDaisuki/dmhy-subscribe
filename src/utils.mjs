@@ -68,3 +68,70 @@ export const getRssListByKeywords = async(keywords = []) => {
   if (!rss) { return process.exit(1); }
   return rss;
 };
+
+/** @param {string} threadTitle */
+export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
+  const parseRangeEpisode = (s) => {
+    // [\d.]+[-~][\d.]+
+    const str = s.replace(/(?:\D*|^)([\d.]+)([-~][\d.]+)?(?:\D*|$)/, '$1$2');
+    const [from, to] = str.split(/[-~]/).map((t) => parseFloat(t));
+    return { from: Number(from), to: Number(to) };
+  };
+
+  try {
+    // matched group 1
+    const mg1 = threadTitle.match(parsePattern(episodePatternString))?.[1];
+    if (mg1 && /\d/.test(mg1)) {
+      return parseRangeEpisode(mg1);
+    }
+
+    // rule-based episode parse
+    const BLACKLIST_PATTERNS = [
+      /x?(1080|720|480)p?/,
+      /^\d+\s*月$/,
+      /\d+\s*月新番/,
+      /x26[45]/,
+      /(10|8)bit/,
+      /ma10p/,
+      /\bv\d/,
+      /big5/,
+      /mp4/,
+    ];
+
+    const tokens = threadTitle
+      .split(/[[\]【】_\s]/g)
+      .filter(Boolean)
+      .map((x) => x.toLowerCase())
+      .filter((x) => /\d/.test(x))
+      .filter((x) => !BLACKLIST_PATTERNS.some((rule) => rule.test(x)))
+      .map((x) => x.trim());
+
+    // Find episode from last is easier
+    for (const token of tokens.reverse()) {
+      const tok = token
+        .replace(/\s*(end|完)$/, '') // [24 end], [06完]
+        .replace(/\s*v\d+$/, '') // [20v2]
+        .replace(/[+].*$/, ''); // 03+SP03
+
+      const tokParsed = parseRangeEpisode(tok);
+      if (tokParsed.from) {
+        return tokParsed;
+      }
+    }
+    return {};
+  } catch (error) {
+    return {};
+  }
+};
+
+export const toEpisodeDisplay = (episode) => {
+  if (!episode.from) {
+    return '??';
+  }
+
+  if (!episode.to) {
+    return episode.from;
+  }
+
+  return `${episode.from}-${episode.to}`;
+};

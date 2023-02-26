@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
+    "console-table-printer": "^2.11.1",
     "debug": "^4.3.4",
     "js-yaml": "^4.1.0",
     "rss-parser": "^3.12.0",

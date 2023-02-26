@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@flandredaisuki/eslint-config': ^0.0.4
   chalk: ^5.2.0
+  console-table-printer: ^2.11.1
   debug: ^4.3.4
   eslint: ^8.33.0
   js-yaml: ^4.1.0
@@ -14,6 +15,7 @@ specifiers:
 
 dependencies:
   chalk: 5.2.0
+  console-table-printer: 2.11.1
   debug: 4.3.4
   js-yaml: 4.1.0
   rss-parser: 3.12.0
@@ -682,6 +684,12 @@ packages:
 
   /console-control-strings/1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
+    dev: false
+
+  /console-table-printer/2.11.1:
+    resolution: {integrity: sha512-8LfFpbF/BczoxPwo2oltto5bph8bJkGOATXsg3E9ddMJOGnWJciKHldx2zDj5XIBflaKzPfVCjOTl6tMh7lErg==}
+    dependencies:
+      simple-wcswidth: 1.0.1
     dev: false
 
   /cross-spawn/7.0.3:
@@ -2158,6 +2166,10 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: false
+
+  /simple-wcswidth/1.0.1:
+    resolution: {integrity: sha512-xMO/8eNREtaROt7tJvWJqHBDTMFN4eiQ5I4JRMuilwfnFcV5W9u7RUkueNkdw0jPqGMX36iCywelS5yilTuOxg==}
     dev: false
 
   /slice-ansi/5.0.0:

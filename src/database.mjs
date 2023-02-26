@@ -133,6 +133,34 @@ export const getAllSubscriptions = async() => {
   });
 };
 
+export const listLatestSubscriptionThreads = async() => {
+  const sql = `
+  SELECT sub.id AS sub_id, sub.sid, sub.title AS sub_title, sub.episode_pattern, t.id AS thread_id, t.title AS thread_title
+  FROM subscriptions sub
+  JOIN (
+    SELECT subscription_id AS sub_id, t.id AS tid
+    FROM subscriptions_threads st
+    JOIN threads t ON st.thread_id = t.id
+    GROUP BY subscription_id
+  ) latest ON sub.id = latest.sub_id
+  JOIN threads t ON latest.tid = t.id;
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.all(sql, (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(rows.map((row) => ({
+        subscriptionId: row.sub_id,
+        threadId: row.thread_id,
+        sid: row.sid,
+        subscriptionTitle: row.sub_title,
+        threadTitle: row.thread_title,
+        episodePatternString: row.episode_pattern,
+      })));
+    });
+  });
+};
+
 export const isExistingThreadDmhyLink = async(dmhyLink) => {
   return new Promise((resolve, reject) => {
     // query the threads table to see if the dmhy_link already exists
