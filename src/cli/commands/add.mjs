@@ -2,7 +2,11 @@ import debug from 'debug';
 
 import * as logger from '../../logger.mjs';
 import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
-import { createSubscription, isExistingSubscriptionTitle } from '../../database.mjs';
+import {
+  createSubscription,
+  getMigratedDb,
+  isExistingSubscriptionTitle,
+} from '../../database.mjs';
 
 export const command = 'add <title> [keywords..]';
 
@@ -31,7 +35,8 @@ export const handler = async(argv) => {
   debug('dmhy:cli:add:argv')(argv);
 
   try {
-    if (!await isExistingSubscriptionTitle(argv.title)) {
+    const db = await getMigratedDb();
+    if (!(await isExistingSubscriptionTitle(argv.title, db))) {
 
       const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);
       if (!/(?:y|yes)/i.test(answer)) {
@@ -54,7 +59,7 @@ export const handler = async(argv) => {
       keywords,
       excludePatternString: String(getExcludePattern()),
       episodePatternString: String(episodePattern),
-    });
+    }, db);
 
     logger.log(`成功新增「${argv.title}」！`);
   } catch (err) {

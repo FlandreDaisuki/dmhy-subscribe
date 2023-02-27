@@ -8,22 +8,8 @@ import * as ENV from './env.mjs';
 import * as logger from './logger.mjs';
 import { isFileExists, parsePattern, sidHash } from './utils.mjs';
 
-const databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3');
-const thisFilePath = fileURLToPath(import.meta.url);
-const thisFileDir = path.dirname(thisFilePath);
-const migrationDir = path.join(thisFileDir, 'migrations');
-
-if (!(await isFileExists(databasePath))) {
-  await fs.writeFile(databasePath, '');
-}
-
-const sqlite = sqlite3.verbose();
-export const db = new sqlite.Database(databasePath, (err) => {
-  if (err) { console.error(err); }
-});
-
-/** @type {() => Promise<string>} */
-const getLastMigrateVersion = async() => {
+/** @type {(db: sqlite3.Database) => Promise<string>} */
+const getLastMigrateVersion = async(db) => {
   return new Promise((resolve) => {
     db.get('SELECT version FROM migrations ORDER BY created_at DESC LIMIT 1', (err, row) => {
       if (err) {
@@ -35,41 +21,60 @@ const getLastMigrateVersion = async() => {
   });
 };
 
-const sortedAllMigrations = (await fs.readdir(migrationDir))
-  .map((filename) => {
-    return ({
-      version: filename.replace(/-.*$/, ''),
-      filename,
+const execMigration = async(migrationDir, db) => {
+  const sortedAllMigrations = (await fs.readdir(migrationDir))
+    .map((filename) => {
+      return ({
+        version: filename.replace(/-.*$/, ''),
+        filename,
+      });
+    })
+    .sort((a, b) => semver.compare(a.version, b.version));
+
+  const lastMigrateVersion = await getLastMigrateVersion(db);
+  debug('dmhy:database:lastMigrateVersion')(lastMigrateVersion);
+
+  const sortedUnexecutedMigrations = sortedAllMigrations.filter((m) => semver.gt(m.version, lastMigrateVersion));
+
+  for (const unexecutedMigration of sortedUnexecutedMigrations) {
+    const { filename } = unexecutedMigration;
+    const filePath = path.join(migrationDir, filename);
+    debug('dmhy:database:unexecutedMigration')(filePath);
+
+    const pseudoSql = await fs.readFile(filePath, 'utf8');
+    const sql = pseudoSql.replaceAll('app_datetime_now()', JSON.stringify((new Date()).toISOString()));
+    await new Promise((resolve, reject) => {
+      db.exec(sql, (err) => {
+        if (err) {
+          debug('dmhy:database:unexecutedMigration')(err);
+          return reject(err);
+        }
+        resolve();
+      });
     });
-  })
-  .sort((a, b) => semver.compare(a.version, b.version));
 
-const lastMigrateVersion = await getLastMigrateVersion();
-debug('dmhy:database:lastMigrateVersion')(lastMigrateVersion);
+    logger.log(`Successfully run migration: ${filename}`);
+  }
+};
 
-const sortedUnexecutedMigrations = sortedAllMigrations.filter((m) => semver.gt(m.version, lastMigrateVersion));
+export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3')) => {
+  if (databasePath !== ':memory:' && !(await isFileExists(databasePath))) {
+    await fs.writeFile(databasePath, '');
+  }
 
-for (const unexecutedMigration of sortedUnexecutedMigrations) {
-  const { filename } = unexecutedMigration;
-  const filePath = path.join(migrationDir, filename);
-  debug('dmhy:database:unexecutedMigration')(filePath);
-
-  const pseudoSql = await fs.readFile(filePath, 'utf8');
-  const sql = pseudoSql.replaceAll('app_datetime_now()', JSON.stringify((new Date()).toISOString()));
-  await new Promise((resolve, reject) => {
-    db.exec(sql, (err) => {
-      if (err) {
-        debug('dmhy:database:unexecutedMigration')(err);
-        return reject(err);
-      }
-      resolve();
-    });
+  const sqlite = sqlite3.verbose();
+  const db = new sqlite.Database(databasePath, (err) => {
+    if (err) { console.error(err); }
   });
 
-  logger.log(`Successfully run migration: ${filename}`);
-}
+  const thisFilePath = fileURLToPath(import.meta.url);
+  const thisFileDir = path.dirname(thisFilePath);
+  const migrationDir = path.join(thisFileDir, 'migrations');
+  await execMigration(migrationDir, db);
+  return db;
+};
 
-export const isExistingSubscriptionSid = async(sid) => {
+export const isExistingSubscriptionSid = async(sid, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE sid = ?', [sid], (err, rows) => {
       if (err) { return reject(err); }
@@ -78,7 +83,7 @@ export const isExistingSubscriptionSid = async(sid) => {
   });
 };
 
-export const isExistingSubscriptionTitle = async(title) => {
+export const isExistingSubscriptionTitle = async(title, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE title = ?', [title], (err, rows) => {
       if (err) { return reject(err); }
@@ -94,14 +99,14 @@ export const isExistingSubscriptionTitle = async(title) => {
  * @param {string} option.episodePatternString
  * @param {string} option.excludePatternString
  */
-export const createSubscription = async(title, option = {}) => {
+export const createSubscription = async(title, option = {}, db) => {
   let sid = '';
   const keywords = option?.keywords ?? [];
   const episodePatternString = option?.episodePatternString ?? '/$^/';
   const excludePatternString = option?.excludePatternString ?? '/$^/';
   do {
     sid = sidHash(title, keywords, excludePatternString, episodePatternString, sid);
-  } while (!await isExistingSubscriptionSid(sid));
+  } while (!(await isExistingSubscriptionSid(sid, db)));
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
   return new Promise((resolve) => {
@@ -115,7 +120,7 @@ export const createSubscription = async(title, option = {}) => {
   });
 };
 
-export const getAllSubscriptions = async() => {
+export const getAllSubscriptions = async(db) => {
   return new Promise((resolve, reject) => {
     db.all('SELECT * FROM subscriptions', (err, rows) => {
       if (err) { return reject(err); }
@@ -133,7 +138,7 @@ export const getAllSubscriptions = async() => {
   });
 };
 
-export const listLatestSubscriptionThreads = async() => {
+export const listLatestSubscriptionThreads = async(db) => {
   const sql = `
   SELECT sub.id AS sub_id, sub.sid, sub.title AS sub_title, sub.episode_pattern, t.id AS thread_id, t.title AS thread_title
   FROM subscriptions sub
@@ -161,7 +166,7 @@ export const listLatestSubscriptionThreads = async() => {
   });
 };
 
-export const isExistingThreadDmhyLink = async(dmhyLink) => {
+export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     // query the threads table to see if the dmhy_link already exists
     db.get('SELECT EXISTS(SELECT 1 FROM threads WHERE dmhy_link = ?) as existing', [dmhyLink], (err, row) => {
@@ -171,7 +176,7 @@ export const isExistingThreadDmhyLink = async(dmhyLink) => {
   });
 };
 
-export const createThread = async(dmhyLink, magnet, title, publishDate) => {
+export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
   const statement = db.prepare('INSERT INTO threads (dmhy_link, magnet, title, publish_date) VALUES (?, ?, ?, ?)');
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line prefer-arrow-callback
@@ -182,7 +187,7 @@ export const createThread = async(dmhyLink, magnet, title, publishDate) => {
   });
 };
 
-export const bindSubscriptionAndThread = async(subscriptionId, threadId) => {
+export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => {
   const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line prefer-arrow-callback

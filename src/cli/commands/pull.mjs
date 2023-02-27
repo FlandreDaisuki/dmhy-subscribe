@@ -3,6 +3,7 @@ import {
   bindSubscriptionAndThread,
   createThread,
   getAllSubscriptions,
+  getMigratedDb,
   isExistingThreadDmhyLink,
 } from '../../database.mjs';
 import * as logger from '../../logger.mjs';
@@ -22,7 +23,8 @@ export const handler = async(argv) => {
   debug('dmhy:cli:pull:argv')(argv);
 
   try {
-    const subscriptions = await getAllSubscriptions();
+    const db = await getMigratedDb();
+    const subscriptions = await getAllSubscriptions(db);
     const pullingSids = (argv.sid ?? []).map((s) => String(s).toLowerCase());
     await Promise.all(
       subscriptions
@@ -43,14 +45,14 @@ export const handler = async(argv) => {
             const magnet = rssItem.enclosure.url;
             const title = rssItem.title;
             const publishDate = rssItem.isoDate;
-            if (await isExistingThreadDmhyLink(dmhyLink)) {
+            if (await isExistingThreadDmhyLink(dmhyLink, db)) {
               return;
             }
 
-            const threadResult = await createThread(dmhyLink, magnet, title, publishDate);
+            const threadResult = await createThread(dmhyLink, magnet, title, publishDate, db);
             debug('dmhy:cli:pull:threadResult')(threadResult);
 
-            await bindSubscriptionAndThread(sub.id, threadResult.lastID);
+            await bindSubscriptionAndThread(sub.id, threadResult.lastID, db);
             debug('dmhy:cli:pull:rssItem')(rssItem);
 
             logger.log(`pull 「${title}」`);
