@@ -31,11 +31,14 @@ export const builder = (yargs) => {
     .conflicts('excludes', 'exclude-pattern');
 };
 
-export const handler = async(argv) => {
+/**
+ * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
+ */
+export const handler = async(argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:add:argv')(argv);
 
   try {
-    const db = await getMigratedDb();
+    const db = await getDb();
     if (!(await isExistingSubscriptionTitle(argv.title, db))) {
 
       const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);

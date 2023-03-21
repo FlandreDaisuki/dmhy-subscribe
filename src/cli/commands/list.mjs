@@ -22,11 +22,14 @@ export const builder = (yargs) => {
     });
 };
 
-export const handler = async(argv) => {
+/**
+ * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
+ */
+export const handler = async(argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:list:argv')(argv);
 
   try {
-    const db = await getMigratedDb();
+    const db = await getDb();
     const subscriptionThreads = await listLatestSubscriptionThreads(db);
     for (const st of subscriptionThreads) {
       debug('dmhy:cli:list:subscriptionThread')(JSON.stringify(st));

@@ -19,11 +19,14 @@ export const builder = (yargs) => {
     .option({});
 };
 
-export const handler = async(argv) => {
+/**
+ * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
+ */
+export const handler = async(argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:pull:argv')(argv);
 
   try {
-    const db = await getMigratedDb();
+    const db = await getDb();
     const subscriptions = await getAllSubscriptions(db);
     const pullingSids = (argv.sid ?? []).map((s) => String(s).toLowerCase());
     await Promise.all(
