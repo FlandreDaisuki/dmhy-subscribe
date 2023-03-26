@@ -78,7 +78,7 @@ export const isExistingSubscriptionSid = async(sid, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE sid = ?', [sid], (err, rows) => {
       if (err) { return reject(err); }
-      resolve(!rows);
+      resolve(Boolean(rows));
     });
   });
 };
@@ -87,7 +87,7 @@ export const isExistingSubscriptionTitle = async(title, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE title = ?', [title], (err, rows) => {
       if (err) { return reject(err); }
-      resolve(!rows);
+      resolve(Boolean(rows));
     });
   });
 };
@@ -106,7 +106,7 @@ export const createSubscription = async(title, option = {}, db) => {
   const excludePatternString = option?.excludePatternString ?? '/$^/';
   do {
     sid = sidHash(title, keywords, excludePatternString, episodePatternString, sid);
-  } while (!(await isExistingSubscriptionSid(sid, db)));
+  } while (await isExistingSubscriptionSid(sid, db));
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
   return new Promise((resolve) => {
@@ -169,9 +169,9 @@ export const listLatestSubscriptionThreads = async(db) => {
 export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     // query the threads table to see if the dmhy_link already exists
-    db.get('SELECT EXISTS(SELECT 1 FROM threads WHERE dmhy_link = ?) as existing', [dmhyLink], (err, row) => {
+    db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {
       if (err) { return reject(err); }
-      resolve(Boolean(row.existing));
+      resolve(Boolean(rows));
     });
   });
 };

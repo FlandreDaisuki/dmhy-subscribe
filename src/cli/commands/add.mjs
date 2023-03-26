@@ -39,13 +39,14 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   try {
     const db = await getDb();
-    if (!(await isExistingSubscriptionTitle(argv.title, db))) {
+    if (await isExistingSubscriptionTitle(argv.title, db)) {
 
       const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);
       if (!/(?:y|yes)/i.test(answer)) {
         return process.exit(1);
       }
     }
+
     const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
     const getExcludePattern = () => {
       if (argv.excludePattern) {
