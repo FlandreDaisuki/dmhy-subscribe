@@ -28,13 +28,13 @@ export const handler = async(argv, getDb = getMigratedDb) => {
   try {
     const db = await getDb();
     const subscriptions = await getAllSubscriptions(db);
-    const pullingSids = (argv.sid ?? []).map((s) => String(s).toLowerCase());
+    const pullingSids = (argv.sid ?? []).map((s) => String(s).toUpperCase());
     await Promise.all(
       subscriptions
         .filter((sub) => {
           if (pullingSids.length === 0) { return true; }
 
-          return pullingSids.includes(String(sub.sid).toLowerCase());
+          return pullingSids.includes(String(sub.sid).toUpperCase());
         })
         .map(async(sub) => {
           debug('dmhy:cli:pull:subscription')(sub);
