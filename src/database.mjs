@@ -165,6 +165,34 @@ export const getLatestThreadsInEachSubscription = async(db) => {
   });
 };
 
+/**
+ * @param {string} sid
+ * @param {sqlite3.Database} db
+ */
+export const getThreadsBySid = async(sid, db) => {
+  const sql = `
+  SELECT t.*, sub.episode_pattern, sub.sid
+  FROM subscriptions sub
+  JOIN subscriptions_threads st ON st.subscription_id = sub.id
+  JOIN threads t ON st.thread_id = t.id
+  WHERE sub.sid = ?;
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.all(sql, [sid], (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(rows.map((row) => ({
+        id: row.id,
+        sid: row.sid,
+        title: row.title,
+        episodePatternString: row.episode_pattern,
+        magnet: row.magnet,
+        publishDate: row.publish_date,
+      })));
+    });
+  });
+};
+
 export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {

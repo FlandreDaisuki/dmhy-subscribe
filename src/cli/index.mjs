@@ -18,6 +18,7 @@ const argv = await yargs(process.argv.slice(2))
   .command(await loadCommand('pull'))
   .command(await loadCommand('list'))
   .command(await loadCommand('config'))
+  .command(await loadCommand('download'))
   .argv;
 
 debug('dmhy:cli:argv')(argv);
