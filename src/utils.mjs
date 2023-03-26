@@ -6,9 +6,9 @@ import RSSParser from 'rss-parser';
 import * as logger from './logger.mjs';
 
 
-/** @param {string} path */
-export const isFileExists = (path) =>
-  fs.access(path)
+/** @param {string} absPath */
+export const isFileExists = (absPath) =>
+  fs.access(absPath)
     .then(() => true)
     .catch(() => false);
 

@@ -138,7 +138,7 @@ export const getAllSubscriptions = async(db) => {
   });
 };
 
-export const listLatestSubscriptionThreads = async(db) => {
+export const getLatestSubscriptionThreads = async(db) => {
   const sql = `
   SELECT sub.id AS sub_id, sub.sid, sub.title AS sub_title, sub.episode_pattern, t.id AS thread_id, t.title AS thread_title
   FROM subscriptions sub
