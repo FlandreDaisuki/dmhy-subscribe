@@ -9,7 +9,7 @@ import {
   isExistingSubscriptionSid,
 } from '../../database.mjs';
 import * as logger from '../../logger.mjs';
-import { isFileExists } from '../../utils.mjs';
+import { compileEpisodeQuery, isFileExists, parseEpisode } from '../../utils.mjs';
 
 export const command = 'download <sid> [episode-queries..]';
 
@@ -30,28 +30,36 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   try {
     const db = await getDb();
-    const configs = await getAllConfigurations(db);
-    const downloaderConfig = configs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
+    const allConfigs = await getAllConfigurations(db);
+    const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
 
-    const downloaderName = downloaderConfig?.downloader ?? 'system';
+    const downloaderName = config?.downloader ?? 'system';
     const thisFilePath = fileURLToPath(import.meta.url);
     const thisFileDir = path.dirname(thisFilePath);
-    const downloaderPath = path.resolve( thisFileDir, `../../downloaders/${downloaderName}.mjs`);
+    const downloaderPath = path.resolve(thisFileDir, `../../downloaders/${downloaderName}.mjs`);
 
     if (!(await isFileExists(downloaderPath))) {
       return logger.error('dmhy:cli:download')('Unknown downloader:', downloaderName);
     }
+    /** @type {{download: (thread: {title: string, magnet: string;}, config: Record<string, string>) => Promise<void>}} */
     const downloader = await import(downloaderPath);
 
     const targetSid = String(argv.sid).toUpperCase();
     if (!(await isExistingSubscriptionSid(targetSid, db))) {
       return logger.error('dmhy:cli:download')('Can not find sid:', targetSid);
     }
-    const threads = await getThreadsBySid(targetSid, db);
+    const extendThreads = (await getThreadsBySid(targetSid, db))
+      .sort((a, b) => Date.parse(a.publishDate) - Date.parse(b.publishDate))
+      .map((t, i) => ({
+        ...t,
+        order: i + 1,
+        episode: parseEpisode(t.title, t.episodePatternString),
+      }));
 
-    if (argv.episodeQueries.length === 0) {
-      for (const thread of threads) {
-        downloader.download(thread, downloaderConfig);
+    const episodeQuery = compileEpisodeQuery(...argv.episodeQueries);
+    for (const extendThread of extendThreads) {
+      if (episodeQuery.match(extendThread)) {
+        downloader.download(extendThread, config);
       }
     }
 

@@ -5,6 +5,23 @@ import debug from 'debug';
 import RSSParser from 'rss-parser';
 import * as logger from './logger.mjs';
 
+const isNil = (v) => v === undefined || v === null;
+
+const range = (start, end, step) => {
+  if (isNil(end) && isNil(step)) {
+    return Array.from({ length: start }, (_, i) => i);
+  }
+
+  const min = Math.min(start, end);
+  const max = Math.max(start, end);
+
+  if (isNil(step)) {
+    return Array.from({ length: max - min }, (_, i) => i + min);
+  } else {
+    const length = Math.round((max - min) / step);
+    return Array.from({ length }, (_, i) => i * step + min);
+  }
+};
 
 /** @param {string} absPath */
 export const isFileExists = (absPath) =>
@@ -134,4 +151,52 @@ export const toEpisodeDisplay = (episode) => {
   }
 
   return `${episode.from}-${episode.to}`;
+};
+
+/**
+ * @param  {...(string|number)} episodeQueries
+ */
+export const compileEpisodeQuery = (...episodeQueries) => {
+  const normalizedQueries = episodeQueries
+    .flatMap((q) => String(q).split(','))
+    .flatMap((q) => q.trim());
+
+  const episodes = [];
+  const orders = [];
+
+  for (const q of normalizedQueries) {
+    const ord = /^#/.test(q);
+    const rng = /~/.test(q);
+
+    const list = ord ? orders : episodes;
+    const z = q.replace(/^#?/, '');
+
+    if (!rng) {
+      const n = Number(z);
+      list.push(n);
+    } else {
+      const [l, r] = z.split('~').filter(Boolean).map(Number);
+      for (const rn of range(l, r + 1)) {
+        list.push(rn);
+      }
+    }
+  }
+
+  return {
+    match: (extendThread) => {
+      const threadEpisodes = !extendThread.episode.to
+        ? [extendThread.episode.from]
+        : range(extendThread.episode.from, extendThread.episode.to + 1);
+
+      if (episodes.length > 0 && orders.length > 0) {
+        return threadEpisodes.some((ep) => episodes.includes(ep)) || orders.includes(extendThread.order);
+      } else if (episodes.length > 0 && orders.length === 0){
+        return threadEpisodes.some((ep) => episodes.includes(ep));
+      } else if (episodes.length === 0 && orders.length > 0){
+        return orders.includes(extendThread.order);
+      } else {
+        return true;
+      }
+    },
+  };
 };

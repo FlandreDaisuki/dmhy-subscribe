@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { joinToRegExp, parseEpisode, parsePattern } from './utils.mjs';
+import { compileEpisodeQuery, joinToRegExp, parseEpisode, parsePattern } from './utils.mjs';
 
 test('parsePattern', () => {
   expect(parsePattern('//').test('abc123')).toBe(true);
@@ -69,4 +69,66 @@ describe('parseEpisode', () => {
     expect(parseEpisode('[c.c動漫][8月][Fate Grand Order - 絕對魔獸戰線巴比倫尼亞][特別篇][BIG5][1080P][網盤]')).toMatchObject({});
   });
   // cSpell:enable
+});
+
+describe('compileEpisodeQuery', () => {
+  test('single query in same type', () => {
+    expect(compileEpisodeQuery('1').match({ episode: parseEpisode('1'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('1').match({ episode: parseEpisode('3'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('1'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('3'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('#1').match({ episode: parseEpisode('99'), order: 1 })).toBe(true);
+    expect(compileEpisodeQuery('#1').match({ episode: parseEpisode('99'), order: 3 })).toBe(false);
+    expect(compileEpisodeQuery('#2~4').match({ episode: parseEpisode('99'), order: 1 })).toBe(false);
+    expect(compileEpisodeQuery('#2~4').match({ episode: parseEpisode('99'), order: 3 })).toBe(true);
+  });
+
+  test('multiple query in same type', () => {
+    expect(compileEpisodeQuery('1', '3').match({ episode: parseEpisode('1'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('1', '4~6').match({ episode: parseEpisode('3'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('1~4', '6~9').match({ episode: parseEpisode('5'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('1, 3').match({ episode: parseEpisode('1'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('1, 6~9').match({ episode: parseEpisode('3'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('1~4, 6~9').match({ episode: parseEpisode('5'), order: 99 })).toBe(false);
+  });
+
+  test('mixed query', () => {
+    expect(compileEpisodeQuery('4', '#3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1', '#6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1~4', '#3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1', '#3~6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1~3', '#3~5').match({ episode: parseEpisode('4'), order: 6 })).toBe(false);
+  });
+
+  test('all pass query', () => {
+    expect(compileEpisodeQuery().match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery().match({ episode: parseEpisode('1'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery().match({ episode: parseEpisode('99'), order: 3 })).toBe(true);
+    expect(compileEpisodeQuery().match({ episode: parseEpisode('99'), order: 3.5 })).toBe(true);
+    expect(compileEpisodeQuery().match({ episode: parseEpisode('3.14'), order: 3.5 })).toBe(true);
+  });
+
+  test('half range query', () => {
+    // match 2, 3, 4
+    expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('3'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('3.5'), order: 99 })).toBe(false);
+
+    // match 2.5, 3.5
+    expect(compileEpisodeQuery('2.5~4').match({ episode: parseEpisode('3.5'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('2.5~4').match({ episode: parseEpisode('4'), order: 99 })).toBe(false);
+
+    // match 2, 3, 4
+    expect(compileEpisodeQuery('2~4.5').match({ episode: parseEpisode('3.5'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('2~4.5').match({ episode: parseEpisode('4'), order: 99 })).toBe(true);
+
+    // match 2.5, 3.5, 4.5
+    expect(compileEpisodeQuery('2.5~4.5').match({ episode: parseEpisode('4'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('2.5~4.5').match({ episode: parseEpisode('4.5'), order: 99 })).toBe(true);
+  });
+
+  test('query overlapping', () => {
+    expect(compileEpisodeQuery('2').match({ episode: parseEpisode('3~5'), order: 99 })).toBe(false);
+    expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('3~5'), order: 99 })).toBe(true);
+    expect(compileEpisodeQuery('2~6').match({ episode: parseEpisode('3~5'), order: 99 })).toBe(true);
+  });
 });

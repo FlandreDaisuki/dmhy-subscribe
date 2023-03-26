@@ -175,7 +175,8 @@ export const getThreadsBySid = async(sid, db) => {
   FROM subscriptions sub
   JOIN subscriptions_threads st ON st.subscription_id = sub.id
   JOIN threads t ON st.thread_id = t.id
-  WHERE sub.sid = ?;
+  WHERE sub.sid = ?
+  ORDER BY t.publish_date DESC;
   `;
 
   return new Promise((resolve, reject) => {
