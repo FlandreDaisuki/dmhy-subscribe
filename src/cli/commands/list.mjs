@@ -46,7 +46,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
         ],
         rows: subscriptionThreads.map((st) => ({
           sid: st.sid,
-          episode: toEpisodeDisplay(parseEpisode(st.threadTitle)),
+          episode: toEpisodeDisplay(parseEpisode(st.threadTitle, st.episodePatternString)),
           subscriptionTitle: st.subscriptionTitle,
         })),
       }).printTable();
