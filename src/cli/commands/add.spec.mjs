@@ -1,7 +1,15 @@
-import { expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import yargs from 'yargs';
 import { getAllSubscriptions, getMigratedDb } from '../../database.mjs';
 import * as addCommand from './add.mjs';
+
+beforeEach(() => {
+  vi.stubGlobal('console', { log: vi.fn() });
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 test('add 搖曳露營', async() => {
   const argv = await yargs(['add', '搖曳露營'])
