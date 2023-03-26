@@ -110,7 +110,6 @@ export const createSubscription = async(title, option = {}, db) => {
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
   return new Promise((resolve) => {
-    // eslint-disable-next-line prefer-arrow-callback
     statement.run([sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString], function(err) {
       if (err) {
         console.error(err);
@@ -168,7 +167,6 @@ export const getLatestSubscriptionThreads = async(db) => {
 
 export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
-    // query the threads table to see if the dmhy_link already exists
     db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {
       if (err) { return reject(err); }
       resolve(Boolean(rows));
@@ -179,7 +177,6 @@ export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
 export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
   const statement = db.prepare('INSERT INTO threads (dmhy_link, magnet, title, publish_date) VALUES (?, ?, ?, ?)');
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line prefer-arrow-callback
     statement.run([dmhyLink, magnet, title, publishDate], function(err) {
       if (err) { return reject(err); }
       resolve(this);
@@ -190,7 +187,6 @@ export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
 export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => {
   const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line prefer-arrow-callback
     statement.run([subscriptionId, threadId], function(err) {
       if (err) { return reject(err); }
       resolve(this);
