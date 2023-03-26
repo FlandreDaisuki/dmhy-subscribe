@@ -8,14 +8,6 @@ CREATE TABLE IF NOT EXISTS threads (
   publish_date TEXT
 );
 
-CREATE TABLE IF NOT EXISTS episodes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  thread_id INTEGER,
-  type TEXT NOT NULL,
-  episode INTEGER,
-  FOREIGN KEY (thread_id) REFERENCES threads(id)
-);
-
 CREATE TABLE IF NOT EXISTS subscriptions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   sid TEXT UNIQUE,
