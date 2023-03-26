@@ -33,6 +33,15 @@ CREATE TABLE IF NOT EXISTS subscriptions_threads (
   FOREIGN KEY(thread_id) REFERENCES threads(id)
 );
 
+CREATE TABLE IF NOT EXISTS configurations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE,
+  value TEXT /* JSON */
+);
+
+INSERT OR IGNORE INTO configurations (name, value)
+  VALUES ('downloader', 'system');
+
 CREATE TABLE IF NOT EXISTS migrations (
   version TEXT NOT NULL UNIQUE,
   filename TEXT NOT NULL,

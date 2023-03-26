@@ -197,3 +197,33 @@ export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => 
     });
   });
 };
+
+export const getAllConfigurations = async(db) => {
+  return new Promise((resolve, reject) => {
+    db.all('SELECT * FROM configurations', (err, rows) => {
+      if (err) { return reject(err); }
+      resolve(rows.map((row) => {
+        return {
+          name: row.name,
+          value: row.value,
+        };
+      }));
+    });
+  });
+};
+
+/**
+ * @param {string} name
+ * @param {string} value
+ * @param {sqlite3.Database} db
+ * @returns {Promise<sqlite3.RunResult>}
+ */
+export const setConfiguration = async(name, value, db) => {
+  const statement = db.prepare('UPDATE configurations SET value = ? WHERE name = ?');
+  return new Promise((resolve, reject) => {
+    statement.run([value, name], function(err) {
+      if (err) { return reject(err); }
+      resolve(this);
+    });
+  });
+};
