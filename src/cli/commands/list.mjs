@@ -2,7 +2,7 @@ import debug from 'debug';
 import { Table } from 'console-table-printer';
 
 import * as logger from '../../logger.mjs';
-import { getLatestSubscriptionThreads, getMigratedDb } from '../../database.mjs';
+import { getLatestThreadsInEachSubscription, getMigratedDb } from '../../database.mjs';
 import { parseEpisode, toEpisodeDisplay } from '../../utils.mjs';
 
 export const command = 'list [sid]';
@@ -30,7 +30,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   try {
     const db = await getDb();
-    const subscriptionThreads = await getLatestSubscriptionThreads(db);
+    const subscriptionThreads = await getLatestThreadsInEachSubscription(db);
     for (const st of subscriptionThreads) {
       debug('dmhy:cli:list:subscriptionThread')(JSON.stringify(st));
     }

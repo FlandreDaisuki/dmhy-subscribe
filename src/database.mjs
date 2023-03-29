@@ -137,17 +137,17 @@ export const getAllSubscriptions = async(db) => {
   });
 };
 
-export const getLatestSubscriptionThreads = async(db) => {
+export const getLatestThreadsInEachSubscription = async(db) => {
   const sql = `
-  SELECT sub.id AS sub_id, sub.sid, sub.title AS sub_title, sub.episode_pattern, t.id AS thread_id, t.title AS thread_title
+  SELECT sub.id AS sub_id, sub.sid, sub.title AS sub_title, sub.episode_pattern, et.id AS thread_id, et.title AS thread_title
   FROM subscriptions sub
   JOIN (
-    SELECT subscription_id AS sub_id, t.id AS tid
+    SELECT st.subscription_id, t.*, ROW_NUMBER() OVER (
+      PARTITION BY st.subscription_id ORDER BY t.publish_date DESC
+    ) AS rn
     FROM subscriptions_threads st
     JOIN threads t ON st.thread_id = t.id
-    GROUP BY subscription_id
-  ) latest ON sub.id = latest.sub_id
-  JOIN threads t ON latest.tid = t.id;
+  ) et ON sub.id = et.subscription_id AND et.rn = 1;
   `;
 
   return new Promise((resolve, reject) => {
