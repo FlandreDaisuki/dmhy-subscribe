@@ -8,19 +8,22 @@ import {
   getThreadsBySid,
   isExistingSubscriptionSid,
 } from '../../database.mjs';
+import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
 import { compileEpisodeQuery, isFileExists, parseEpisode } from '../../utils.mjs';
 
 
 export const command = 'download <sid> [episode-queries..]';
 
-export const describe = 'download your subscriptions by following description';
-
 export const aliases = ['dl'];
 
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
-  yargs;
+  yargs
+    .usage(t('CMD_DL_USAGE'))
+    .example(t('CMD_DL_EXAMPLE1'), t('CMD_DL_EXAMPLE1_DESC'))
+    .example(t('CMD_DL_EXAMPLE2'), t('CMD_DL_EXAMPLE2_DESC'))
+    .example(t('CMD_DL_EXAMPLE3'), t('CMD_DL_EXAMPLE3_DESC'));
 };
 
 /**
@@ -44,13 +47,13 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     const downloaderPath = path.resolve(thisFileDir, `../../downloaders/${downloaderName}.mjs`);
 
     if (!(await isFileExists(downloaderPath))) {
-      return logger.error('dmhy:cli:download')('Unknown downloader:', downloaderName);
+      return logger.error('dmhy:cli:download:downloader')(t('CMD_DL_DLR_NOT_FOUND', { name: downloaderName }));
     }
     const downloader = await import(downloaderPath);
 
     const targetSid = String(argv.sid).toUpperCase();
     if (!(await isExistingSubscriptionSid(targetSid, db))) {
-      return logger.error('dmhy:cli:download')('Can not find sid:', targetSid);
+      return logger.error('dmhy:cli:download:sid')(t('CMD_DL_SID_NOT_FOUND', { sid: targetSid }));
     }
     const extendThreads = (await getThreadsBySid(targetSid, db))
       .sort((a, b) => Date.parse(a.publishDate) - Date.parse(b.publishDate))

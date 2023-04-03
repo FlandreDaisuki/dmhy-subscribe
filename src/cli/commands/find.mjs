@@ -1,15 +1,15 @@
 import debug from 'debug';
 
+import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
 import { getRssListByKeywords, joinToRegExp, parsePattern } from '../../utils.mjs';
 
 export const command = 'find <title> [keywords..]';
 
-export const describe = 'find specific keywords to describe a subscription';
-
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
+    .usage(t('CMD_FIND_USAGE'))
     .option('exclude-title', {
       type: 'boolean',
     })
@@ -23,7 +23,10 @@ export const builder = (yargs) => {
       alias: 'x',
       type: 'array',
     })
-    .conflicts('excludes', 'exclude-pattern');
+    .conflicts('excludes', 'exclude-pattern')
+    .example(t('CMD_FIND_EXAMPLE1'), t('CMD_FIND_EXAMPLE1_DESC'))
+    .example(t('CMD_FIND_EXAMPLE2'), t('CMD_FIND_EXAMPLE2_DESC'))
+    .example(t('CMD_FIND_EXAMPLE3'), t('CMD_FIND_EXAMPLE3_DESC'));
 };
 
 /**

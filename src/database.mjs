@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 import semver from 'semver';
 import debug from 'debug';
+
+import { t } from './locale.mjs';
 import * as ENV from './env.mjs';
 import * as logger from './logger.mjs';
 import { isFileExists, parsePattern, sidHash } from './utils.mjs';
@@ -66,7 +68,7 @@ const execMigration = async(migrationDir, db) => {
       });
     })));
 
-    logger.log(`Successfully run migration: ${filename}`);
+    logger.log(t('DB_MIGRATION_SUCCESS', { filename }));
   }
 };
 

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Aria2 from 'aria2';
 import debug from 'debug';
+import { t } from '../locale.mjs';
 import * as logger from '../logger.mjs';
 
 /** @type {import('~types').Downloader['download']} */
@@ -11,9 +12,9 @@ export const download = async(thread, config) => {
   try {
     const u = new URL(config['aria2-jsonrpc']);
     const rules = [
-      [!u.hostname, 'You must provide hostname'],
-      [u.username && u.username !== 'token', 'Only secret is supported!'],
-      [u.username && !u.password, 'You must provide a secret'],
+      [!u.hostname, t('DLR_ARIA2_HOST_ERR')],
+      [u.username && u.username !== 'token', t('DLR_ARIA2_SECRET_ERR')],
+      [u.username && !u.password, t('DLR_ARIA2_SECRET_ERR')],
     ];
     for (const [rule, msg] of rules) {
       if (rule) {
@@ -38,7 +39,7 @@ export const download = async(thread, config) => {
     return client
       .open()
       .then(() => client.call('addUri', [thread.magnet], opts))
-      .then(() => logger.log('DOWNLOADER_DL_SUCCESS', { title: thread.title }))
+      .then(() => logger.log(t('DLR_ARIA2_SUCCESS', { title: thread.title })))
       .catch(() => logger.error('dmhy:downloaders:aria2:downloadError')({ title: thread.title }))
       .then(() => client.close());
   } catch (error) {

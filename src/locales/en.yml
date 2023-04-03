@@ -1,0 +1,85 @@
+CMD_ADD_USAGE: |
+  Add a new subscription
+
+  Usage: dmhy add <title> [keywords...]
+
+    keywords := included keyword | -x excluded keyword (blacklist keyword)
+CMD_ADD_EXAMPLE1: dmhy add 搖曳露營 喵萌 繁體
+CMD_ADD_EXAMPLE1_DESC: Subscribe by "搖曳露營", "喵萌", and "繁體"
+CMD_ADD_EXAMPLE2: dmhy add 搖曳露營 喵萌 繁體 -x 720p
+CMD_ADD_EXAMPLE2_DESC: Same as above, but filter out posts containing "720p"
+CMD_ADD_EXAMPLE3: dmhy add 搖曳露營 露營 悠哈 二季 --exclude-title
+CMD_ADD_EXAMPLE3_DESC: Subscribe by "露營", "悠哈", and "二季"
+CMD_ADD_PROMPTS_CONFIRM: A subscription for the title "%title%" already exists in the database. Continue to add? (y/N)
+CMD_ADD_SUCCESS: Successfully added subscription for "%title%"!
+
+CMD_CONFIG_USAGE: |
+  Personalized configuration
+
+  Usage: dmhy config [setting name] [setting value]
+CMD_CONFIG_EXAMPLE1: dmhy config
+CMD_CONFIG_EXAMPLE1_DESC: Show all settings
+CMD_CONFIG_EXAMPLE2: dmhy config downloader
+CMD_CONFIG_EXAMPLE2_DESC: Show the setting value for "downloader"
+CMD_CONFIG_EXAMPLE3: dmhy config downloader system
+CMD_CONFIG_EXAMPLE3_DESC: Set the setting value for "downloader" to "system"
+CMD_CONFIG_KEY_NOT_FOUND: Setting name "%name%" not found
+CMD_CONFIG_SUCCESS: Configuration successful
+
+CMD_DL_USAGE: |
+  Download subscribed posts
+
+  Usage: dmhy download <sid> [episode-queries...]
+
+    episode-queries := integer | float | #integer | integer~integer | float~float | #integer~integer
+
+    sid and post order can be queried with `dmhy ls`
+CMD_DL_EXAMPLE1: dmhy dl XYZ
+CMD_DL_EXAMPLE1_DESC: Download all posts for sid "XYZ"
+CMD_DL_EXAMPLE2: dmhy dl XYZ 1 3 5~7
+CMD_DL_EXAMPLE2_DESC: |
+   Download posts for sid "XYZ" with episodes 1, 3, 5, 6, 7 included
+CMD_DL_EXAMPLE3: "dmhy dl XYZ #1 3 #5~7"
+CMD_DL_EXAMPLE3_DESC: |
+  Download posts for sid "XYZ" with episode 3 and episodes #1, #5, #6, #7 in order included
+CMD_DL_DLR_NOT_FOUND: Downloader "%name%" not found
+CMD_DL_SID_NOT_FOUND: sid "%sid%" not found
+
+CMD_FIND_USAGE: |
+  Search posts with keywords
+
+  Usage: dmhy find <title> [keywords...]
+
+    keywords := included keyword | -x excluded keyword (blacklist keyword)
+CMD_FIND_EXAMPLE1: dmhy find 搖曳露營 喵萌 繁體
+CMD_FIND_EXAMPLE1_DESC: Search for posts with "搖曳露營", "喵萌", and "繁體"
+CMD_FIND_EXAMPLE2: dmhy find 搖曳露營 喵萌 繁體 -x 720p
+CMD_FIND_EXAMPLE2_DESC: Same as above, but filter out posts containing "720p"
+CMD_FIND_EXAMPLE3: dmhy find 搖曳露營 露營 悠哈 二季 --exclude-title
+CMD_FIND_EXAMPLE3_DESC: Search for posts with "露營", "悠哈", and "二季"
+
+CMD_LS_USAGE: |
+  List specified or all subscriptions
+
+  Usage: dmhy list [sid]
+CMD_LS_SID_NOT_FOUND: Cannot find sid "%sid%"
+CMD_LS_TH_ORDER: Order
+CMD_LS_TH_EPISODE: Episode
+CMD_LS_TH_TITLE: Title
+CMD_LS_TH_EPISODE_ALL: Latest Episode
+CMD_LS_TH_TITLE_ALL: Subscription Title
+
+CMD_PULL_USAGE: |
+  Update the posts of subscriptions
+
+  Usage: dmhy pull [sid..]
+CMD_PULL_SUCCESS: Update post "%title%"
+
+DLR_ARIA2_HOST_ERR: Please set the correct "aria2-jsonrpc" URL using `dmhy config` first
+DLR_ARIA2_SECRET_ERR: |
+  The "aria2-jsonrpc" URL must include token:secret
+DLR_ARIA2_SUCCESS: Successfully downloaded "%title%"
+
+DLR_SYSTEM_SUCCESS: Successfully downloaded "%title%"
+
+DB_MIGRATION_SUCCESS: Successfully executed "%filename%"

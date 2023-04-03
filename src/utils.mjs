@@ -86,7 +86,7 @@ export const getRssListByKeywords = async(keywords = []) => {
 
   const rss = await (new RSSParser).parseURL(u.href)
     .catch((err) => {
-      logger.error('RSSParser')(err.message);
+      logger.error('dmhy:RSSParser')(err.message);
     });
 
   if (!rss) { return process.exit(1); }

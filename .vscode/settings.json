@@ -7,4 +7,9 @@
     "dmhy",
     "nocheck"
   ],
+  "i18n-ally.localesPaths": [
+    "src/locales"
+  ],
+  "i18n-ally.sourceLanguage": "zh",
+  "i18n-ally.displayLanguage": "zh"
 }

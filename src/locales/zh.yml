@@ -1,25 +1,85 @@
-CMD_ADD_DESC: '新增一筆訂閱'
 CMD_ADD_USAGE: |
-  使用方法: dmhy add [選項] <標題> [關鍵字...]
+  新增一筆訂閱
 
-    關鍵字 := 訂閱包含的關鍵字 | -x 訂閱不要包含的關鍵字(黑名單關鍵字)
-CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」及相同關鍵字的訂閱，繼續新增？
-CMD_ADD_SUCCESS: 成功新增訂閱「%title%」
-CMD_ADD_EXAMPLE1: dmhy add 搖曳露營 萌喵 繁體
-CMD_ADD_EXAMPLE1_DESC: 訂閱使用標題及關鍵字來搜尋貼文
-CMD_ADD_EXAMPLE2: dmhy add 搖曳露營 萌喵 繁體 -x 720p
-CMD_ADD_EXAMPLE2_DESC: 同上，但過濾掉出現 720p 的貼文
-CMD_ADD_EXAMPLE3: dmhy add 輕旅輕營 --excludes-title 露營 悠哈
-CMD_ADD_EXAMPLE3_DESC: 訂閱只使用關鍵字來搜尋貼文
+  使用方法: dmhy add <標題> [關鍵字...]
 
-CMD_FIND_DESC: 直接搜尋貼文
+    關鍵字 := 包含的關鍵字 | -x 不包含的關鍵字(黑名單關鍵字)
+CMD_ADD_EXAMPLE1: dmhy add 搖曳露營 喵萌 繁體
+CMD_ADD_EXAMPLE1_DESC: 以「搖曳露營」、「喵萌」、「繁體」訂閱
+CMD_ADD_EXAMPLE2: dmhy add 搖曳露營 喵萌 繁體 -x 720p
+CMD_ADD_EXAMPLE2_DESC: 同上，但過濾掉出現「720p」的貼文
+CMD_ADD_EXAMPLE3: dmhy add 搖曳露營 露營 悠哈 二季 --exclude-title
+CMD_ADD_EXAMPLE3_DESC: 以「露營」、「悠哈」、「二季」訂閱
+CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」的訂閱，繼續新增？（y/N）
+CMD_ADD_SUCCESS: 成功新增訂閱「%title%」！
+
+CMD_CONFIG_USAGE: |
+  個人化設定
+
+  使用方法: dmhy config [設定名] [設定值]
+CMD_CONFIG_EXAMPLE1: dmhy config
+CMD_CONFIG_EXAMPLE1_DESC: 顯示所有設定
+CMD_CONFIG_EXAMPLE2: dmhy config downloader
+CMD_CONFIG_EXAMPLE2_DESC: 顯示「downloader」的設定值
+CMD_CONFIG_EXAMPLE3: dmhy config downloader system
+CMD_CONFIG_EXAMPLE3_DESC: 將「downloader」的設定值改為「system」
+CMD_CONFIG_KEY_NOT_FOUND: 找不到設定名「%name%」
+CMD_CONFIG_SUCCESS: 設定成功
+
+CMD_DL_USAGE: |
+  下載訂閱貼文
+
+  使用方法: dmhy download <sid> [貼文查詢字..]
+
+    貼文查詢字 := 整數 | 小數 | #整數 | 整數~整數 | 小數~小數 | #整數~整數
+
+    sid 及貼文順序可以使用 dmhy ls 查詢
+CMD_DL_EXAMPLE1: dmhy dl XYZ
+CMD_DL_EXAMPLE1_DESC: 下載 sid 為「XYZ」的所有貼文
+CMD_DL_EXAMPLE2: dmhy dl XYZ 1 3 5~7
+CMD_DL_EXAMPLE2_DESC: |
+  下載 sid 為「XYZ」且集數包含 1, 3, 5, 6, 7 的貼文
+CMD_DL_EXAMPLE3: "dmhy dl XYZ #1 3 #5~7"
+CMD_DL_EXAMPLE3_DESC: |
+  下載 sid 為「XYZ」且集數包含 3 及順序為 #1, #5, #6, #7 的貼文
+CMD_DL_DLR_NOT_FOUND: 找不到下載器「%name%」
+CMD_DL_SID_NOT_FOUND: 找不到 sid「%sid%」
+
 CMD_FIND_USAGE: |
+  用關鍵字搜尋貼文
+
   使用方法: dmhy find <標題> [關鍵字...]
 
-    關鍵字 := 訂閱包含的關鍵字 | -x 訂閱不要包含的關鍵字(黑名單關鍵字)
-CMD_FIND_EXAMPLE1: dmhy find 搖曳露營 萌喵 繁體
-CMD_FIND_EXAMPLE1_DESC: 訂閱使用標題及關鍵字來搜尋貼文
-CMD_FIND_EXAMPLE2: dmhy find 搖曳露營 萌喵 繁體 -x 720p
-CMD_FIND_EXAMPLE2_DESC: 同上，但過濾掉出現 720p 的貼文
-CMD_FIND_EXAMPLE3: dmhy find 輕旅輕營 --excludes-title 露營 悠哈
-CMD_FIND_EXAMPLE3_DESC: 訂閱只使用關鍵字來搜尋貼文
+    關鍵字 := 包含的關鍵字 | -x 不包含的關鍵字(黑名單關鍵字)
+CMD_FIND_EXAMPLE1: dmhy find 搖曳露營 喵萌 繁體
+CMD_FIND_EXAMPLE1_DESC: 以「搖曳露營」、「喵萌」、「繁體」搜尋
+CMD_FIND_EXAMPLE2: dmhy find 搖曳露營 喵萌 繁體 -x 720p
+CMD_FIND_EXAMPLE2_DESC: 同上，但過濾掉出現「720p」的貼文
+CMD_FIND_EXAMPLE3: dmhy find 搖曳露營 露營 悠哈 二季 --exclude-title
+CMD_FIND_EXAMPLE3_DESC: 以「露營」、「悠哈」、「二季」搜尋
+
+CMD_LS_USAGE: |
+  列出指定或全部訂閱
+
+  使用方法: dmhy list [sid]
+CMD_LS_SID_NOT_FOUND: 找不到 sid「%sid%」
+CMD_LS_TH_ORDER: 順序
+CMD_LS_TH_EPISODE: 集數
+CMD_LS_TH_TITLE: 標題
+CMD_LS_TH_EPISODE_ALL: 最新集數
+CMD_LS_TH_TITLE_ALL: 訂閱標題
+
+CMD_PULL_USAGE: |
+  更新訂閱的貼文
+
+  使用方法: dmhy pull [sid..]
+CMD_PULL_SUCCESS: 更新貼文「%title%」
+
+DLR_ARIA2_HOST_ERR: 請先使用 dmhy config 設定「aria2-jsonrpc」正確網址
+DLR_ARIA2_SECRET_ERR: |
+  「aria2-jsonrpc」正確網址須包含 token:secret
+DLR_ARIA2_SUCCESS: 成功下載「%title%」
+
+DLR_SYSTEM_SUCCESS: 成功下載「%title%」
+
+DB_MIGRATION_SUCCESS: 成功執行「%filename%」

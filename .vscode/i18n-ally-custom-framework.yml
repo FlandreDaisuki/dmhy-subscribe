@@ -1,0 +1,9 @@
+# https://github.com/lokalise/i18n-ally/wiki/Custom-Framework
+
+languageIds:
+  - javascript
+
+usageMatchRegex:
+  - "[^\\w\\d]t\\(['\"`]({key})['\"`]"
+
+monopoly: true

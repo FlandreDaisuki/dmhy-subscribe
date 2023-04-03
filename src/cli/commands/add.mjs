@@ -1,20 +1,20 @@
 import debug from 'debug';
 
-import * as logger from '../../logger.mjs';
-import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
 import {
   createSubscription,
   getMigratedDb,
   isExistingSubscriptionTitle,
 } from '../../database.mjs';
+import { t } from '../../locale.mjs';
+import * as logger from '../../logger.mjs';
+import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
 
 export const command = 'add <title> [keywords..]';
-
-export const describe = 'add specific keywords to describe a subscription';
 
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
+    .usage(t('CMD_ADD_USAGE'))
     .option('exclude-title', {
       type: 'boolean',
     })
@@ -28,7 +28,10 @@ export const builder = (yargs) => {
       alias: 'x',
       type: 'array',
     })
-    .conflicts('excludes', 'exclude-pattern');
+    .conflicts('excludes', 'exclude-pattern')
+    .example(t('CMD_ADD_EXAMPLE1'), t('CMD_ADD_EXAMPLE1_DESC'))
+    .example(t('CMD_ADD_EXAMPLE2'), t('CMD_ADD_EXAMPLE2_DESC'))
+    .example(t('CMD_ADD_EXAMPLE3'), t('CMD_ADD_EXAMPLE3_DESC'));
 };
 
 /**
@@ -42,7 +45,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     const db = await getDb();
     if (await isExistingSubscriptionTitle(argv.title, db)) {
 
-      const answer = await ask(`資料庫中已有「${argv.title}」，是否繼續新增？（y/N）`);
+      const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: argv.title }));
       if (!/(?:y|yes)/i.test(answer)) {
         return process.exit(1);
       }
@@ -68,7 +71,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       episodePatternString: String(episodePattern),
     }, db);
 
-    logger.log(`成功新增「${argv.title}」！`);
+    logger.log(t('CMD_ADD_SUCCESS', { title: argv.title }));
   } catch (err) {
     debug('dmhy:cli:add')(err);
     // @ts-expect-error

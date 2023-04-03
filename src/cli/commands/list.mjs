@@ -2,24 +2,25 @@ import assert from 'assert';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
-import * as logger from '../../logger.mjs';
-import { getAllSubscriptions,
+import {
+  getAllSubscriptions,
   getLatestThreadsInEachSubscription,
   getMigratedDb,
   getThreadsBySid,
   isExistingSubscriptionSid,
 } from '../../database.mjs';
+import { t } from '../../locale.mjs';
+import * as logger from '../../logger.mjs';
 import { parseEpisode, toEpisodeDisplay } from '../../utils.mjs';
 
 export const command = 'list [sid]';
-
-export const describe = 'list described or all subscriptions';
 
 export const aliases = ['ls'];
 
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
+    .usage(t('CMD_LS_USAGE'))
     .option('format', {
       alias: 'f',
       choices: ['table', 'json'],
@@ -46,7 +47,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     if (argv.sid) {
       const targetSid = String(argv.sid).toUpperCase();
       if (!(await isExistingSubscriptionSid(targetSid, db))) {
-        return logger.error('dmhy:cli:list')('Can not find sid:', targetSid);
+        return logger.error('dmhy:cli:list')(t('CMD_LS_SID_NOT_FOUND', { sid: targetSid }));
       }
 
       // TODO: getSubscriptionBySid & remove assert
@@ -67,16 +68,18 @@ export const handler = async(argv, getDb = getMigratedDb) => {
           })),
         }, null, 2));
       } else {
+        // TODO: i18n & print style
         logger.log('sid:', targetSubscription.sid);
         logger.log('title:', targetSubscription.title);
         logger.log('keywords:', targetSubscription.keywords.join(', '));
         logger.log('episodePattern:', targetSubscription.episodePattern);
         logger.log('excludePattern:', targetSubscription.excludePattern);
+
         new Table({
           columns: [
-            { name: 'order', alignment: 'center' },
-            { name: 'episode', alignment: 'center' },
-            { name: 'title', alignment: 'center' },
+            { name: 'order', title: t('CMD_LS_TH_ORDER'), alignment: 'center' },
+            { name: 'episode', title: t('CMD_LS_TH_EPISODE'), alignment: 'center' },
+            { name: 'title', title: t('CMD_LS_TH_TITLE'), alignment: 'center' },
           ],
           rows: threads.map((th, i) => ({
             order: `#${i + 1}`,
@@ -96,8 +99,8 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       new Table({
         columns: [
           { name: 'sid', alignment: 'center' },
-          { name: 'episode', title: '最新集數', alignment: 'center' },
-          { name: 'subscriptionTitle', title: '訂閱標題', alignment: 'left' },
+          { name: 'episode', title: t('CMD_LS_TH_EPISODE_ALL'), alignment: 'center' },
+          { name: 'subscriptionTitle', title: t('CMD_LS_TH_TITLE_ALL'), alignment: 'left' },
         ],
         rows: subscriptionThreads.map((st) => ({
           sid: st.sid,

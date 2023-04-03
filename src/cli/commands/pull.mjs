@@ -1,4 +1,5 @@
 import debug from 'debug';
+
 import {
   bindSubscriptionAndThread,
   createThread,
@@ -6,6 +7,7 @@ import {
   getMigratedDb,
   isExistingThreadDmhyLink,
 } from '../../database.mjs';
+import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
 import { getRssListByKeywords, parsePattern } from '../../utils.mjs';
 
@@ -64,7 +66,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             await bindSubscriptionAndThread(sub.id, threadResult.lastID, db);
             debug('dmhy:cli:pull:rssItem')(rssItem);
 
-            logger.log(`pull 「${title}」`);
+            logger.log(t('CMD_PULL_SUCCESS', { title }));
           }));
         }),
     );
