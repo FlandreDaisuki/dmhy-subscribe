@@ -22,6 +22,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "aria2": "^4.1.2",
     "chalk": "^5.2.0",
     "console-table-printer": "^2.11.1",
     "debug": "^4.3.4",

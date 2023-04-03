@@ -4,6 +4,7 @@ specifiers:
   '@flandredaisuki/eslint-config': ^0.0.4
   '@types/debug': ^4.1.7
   '@types/yargs': ^17.0.23
+  aria2: ^4.1.2
   chalk: ^5.2.0
   console-table-printer: ^2.11.1
   debug: ^4.3.4
@@ -17,6 +18,7 @@ specifiers:
   yargs: ^17.7.1
 
 dependencies:
+  aria2: 4.1.2
   chalk: 5.2.0
   console-table-printer: 2.11.1
   debug: 4.3.4
@@ -554,6 +556,18 @@ packages:
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  /aria2/4.1.2:
+    resolution: {integrity: sha512-qTBr2RY8RZQmiUmbj2KXFvkErNxU4aTHZszszzwhE8svy2PEVX+IYR/c4Rp9Tuw4QkeU8cylGy6McV6Yl8i7Qw==}
+    engines: {node: '>= 10'}
+    dependencies:
+      node-fetch: 2.6.9
+      ws: 7.5.9
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
 
   /array-buffer-byte-length/1.0.0:
     resolution: {integrity: sha512-LPuwb2P+NrQw3XhxGc36+XSvuBPopovXYTR9Ew++Du9Yb/bx5AzBfrIsBoj0EZUifjQU+sHL21sseZ3jerWO/A==}
@@ -2867,6 +2881,19 @@ packages:
 
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  /ws/7.5.9:
+    resolution: {integrity: sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==}
+    engines: {node: '>=8.3.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xml2js/0.4.23:
     resolution: {integrity: sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==}

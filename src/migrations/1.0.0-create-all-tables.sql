@@ -32,7 +32,10 @@ CREATE TABLE IF NOT EXISTS configurations (
 );
 
 INSERT OR IGNORE INTO configurations (name, value)
-  VALUES ('downloader', 'system');
+  VALUES
+    ('downloader', 'system'),
+    ('download-destination', NULL),
+    ('aria2-jsonrpc', NULL);
 
 CREATE TABLE IF NOT EXISTS migrations (
   version TEXT NOT NULL UNIQUE,
