@@ -1,3 +1,4 @@
+import assert from 'assert';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -28,6 +29,7 @@ export const builder = (yargs) => {
 };
 
 /**
+ * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
 export const handler = async(argv, getDb = getMigratedDb) => {
@@ -47,8 +49,9 @@ export const handler = async(argv, getDb = getMigratedDb) => {
         return logger.error('dmhy:cli:list')('Can not find sid:', targetSid);
       }
 
-      // TODO: getSubscriptionBySid
+      // TODO: getSubscriptionBySid & remove assert
       const targetSubscription = (await getAllSubscriptions(db)).find((sub) => sub.sid === targetSid);
+      assert(targetSubscription); // Make typescript happy
       const threads = await getThreadsBySid(targetSid, db);
       if (argv.format === 'json') {
         return logger.log(JSON.stringify({
@@ -107,6 +110,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   } catch (err) {
     debug('dmhy:cli:list')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:list')(err.message);
   }
 };

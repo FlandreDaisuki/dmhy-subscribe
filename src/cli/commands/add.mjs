@@ -32,6 +32,7 @@ export const builder = (yargs) => {
 };
 
 /**
+ * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
 export const handler = async(argv, getDb = getMigratedDb) => {
@@ -47,6 +48,8 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       }
     }
 
+    /** @type {string[]} */
+    // @ts-expect-error
     const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
     const getExcludePattern = () => {
       if (argv.excludePattern) {
@@ -68,6 +71,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     logger.log(`成功新增「${argv.title}」！`);
   } catch (err) {
     debug('dmhy:cli:add')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:add')(err.message);
   }
 };

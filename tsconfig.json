@@ -1,0 +1,24 @@
+{
+  "include": ["src/**/*", "@types/index.d.ts"],
+  "compilerOptions": {
+    "checkJs": true,
+    "paths": {
+      "~types": ["./@types/index.d.ts"]
+    },
+    "lib": ["ESNext"],
+
+    // https://www.npmjs.com/package/@tsconfig/recommended
+    "target": "ESNext",
+    "module": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html#tsconfig
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "declarationMap": true
+  },
+}

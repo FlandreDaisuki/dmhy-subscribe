@@ -11,6 +11,7 @@ import {
 import * as logger from '../../logger.mjs';
 import { compileEpisodeQuery, isFileExists, parseEpisode } from '../../utils.mjs';
 
+
 export const command = 'download <sid> [episode-queries..]';
 
 export const describe = 'download your subscriptions by following description';
@@ -23,6 +24,7 @@ export const builder = (yargs) => {
 };
 
 /**
+ * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
 export const handler = async(argv, getDb = getMigratedDb) => {
@@ -31,6 +33,9 @@ export const handler = async(argv, getDb = getMigratedDb) => {
   try {
     const db = await getDb();
     const allConfigs = await getAllConfigurations(db);
+
+    /** @type {import('~types').DatabaseConfigDict} */
+    // @ts-expect-error
     const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
 
     const downloaderName = config?.downloader ?? 'system';
@@ -41,7 +46,6 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     if (!(await isFileExists(downloaderPath))) {
       return logger.error('dmhy:cli:download')('Unknown downloader:', downloaderName);
     }
-    /** @type {{download: (thread: {title: string, magnet: string;}, config: Record<string, string>) => Promise<void>}} */
     const downloader = await import(downloaderPath);
 
     const targetSid = String(argv.sid).toUpperCase();
@@ -65,6 +69,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   } catch (err) {
     debug('dmhy:cli:download')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:download')(err.message);
   }
 };

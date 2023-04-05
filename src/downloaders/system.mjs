@@ -2,9 +2,7 @@ import open from 'open';
 import debug from 'debug';
 import * as logger from '../logger.mjs';
 
-/**
- * @param {{magnet: string; title: string;}} thread
- */
+/** @type {import('~types').Downloader['download']} */
 export const download = async(thread, config) => {
   debug('dmhy:downloaders:system:thread')(thread);
   debug('dmhy:downloaders:system:config')(config);

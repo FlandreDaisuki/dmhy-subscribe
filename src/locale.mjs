@@ -16,7 +16,9 @@ const candidates = [
   `${thisFileDir}/locales/${LOCALE.lang}_${LOCALE.territory}.yml`,
 ];
 
+/** @type {Record<string, string>} */
 const dict = {};
+
 for (const candidate of candidates) {
   try {
     const fileStat = await fs.stat(candidate).catch(() => null);
@@ -26,10 +28,16 @@ for (const candidate of candidates) {
     }
   } catch (err) {
     debug('dmhy:locale')(err);
+    // @ts-expect-error
     logger.error('locale')(err.message);
   }
 }
 
+/**
+ * @param {string} key
+ * @param {Record<string, any>} placeholder
+ * @returns {string}
+ */
 export const t = (key, placeholder = {}) => {
   let translated = dict[key];
   for (const [pk, pv] of Object.entries(placeholder)) {

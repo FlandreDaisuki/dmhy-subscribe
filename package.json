@@ -36,8 +36,11 @@
   "devDependencies": {
     "@flandredaisuki/eslint-config": "^0.0.4",
     "@types/debug": "^4.1.7",
+    "@types/js-yaml": "^4.0.5",
+    "@types/semver": "^7.3.13",
     "@types/yargs": "^17.0.23",
     "eslint": "^8.36.0",
+    "typescript": "^5.0.3",
     "vitest": "^0.29.7"
   },
   "engines": {

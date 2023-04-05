@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import os from 'os';
 import fs from 'fs/promises';
 import { execSync, spawnSync } from 'child_process';

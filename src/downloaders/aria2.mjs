@@ -1,10 +1,9 @@
+// @ts-nocheck
 import Aria2 from 'aria2';
 import debug from 'debug';
 import * as logger from '../logger.mjs';
 
-/**
- * @param {{magnet: string; title: string;}} thread
- */
+/** @type {import('~types').Downloader['download']} */
 export const download = async(thread, config) => {
   debug('dmhy:downloaders:aria2:thread')(thread);
   debug('dmhy:downloaders:aria2:config')(config);

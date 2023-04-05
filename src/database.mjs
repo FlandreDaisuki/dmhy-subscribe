@@ -8,7 +8,15 @@ import * as ENV from './env.mjs';
 import * as logger from './logger.mjs';
 import { isFileExists, parsePattern, sidHash } from './utils.mjs';
 
-/** @type {(db: sqlite3.Database) => Promise<string>} */
+/**
+ * @typedef {import('~types').DatabaseThread} DT
+ * @typedef {import('~types').DatabaseSubscription} DS
+ */
+
+/**
+ * @param {sqlite3.Database} db
+ * @returns {Promise<string>}
+ */
 const getLastMigrateVersion = async(db) => {
   return new Promise((resolve) => {
     db.get('SELECT version FROM migrations ORDER BY created_at DESC LIMIT 1', (err, row) => {
@@ -21,6 +29,11 @@ const getLastMigrateVersion = async(db) => {
   });
 };
 
+/**
+ * @param {string} migrationDir
+ * @param {sqlite3.Database} db
+ * @returns {Promise<void>}
+ */
 const execMigration = async(migrationDir, db) => {
   const sortedAllMigrations = (await fs.readdir(migrationDir))
     .map((filename) => {
@@ -43,7 +56,7 @@ const execMigration = async(migrationDir, db) => {
 
     const pseudoSql = await fs.readFile(filePath, 'utf8');
     const sql = pseudoSql.replaceAll('app_datetime_now()', JSON.stringify((new Date()).toISOString()));
-    await new Promise((resolve, reject) => {
+    await (/** @type {Promise<void>} */(new Promise((resolve, reject) => {
       db.exec(sql, (err) => {
         if (err) {
           debug('dmhy:database:unexecutedMigration')(err);
@@ -51,7 +64,7 @@ const execMigration = async(migrationDir, db) => {
         }
         resolve();
       });
-    });
+    })));
 
     logger.log(`Successfully run migration: ${filename}`);
   }
@@ -74,6 +87,11 @@ export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'd
   return db;
 };
 
+/**
+ * @param {string} sid
+ * @param {sqlite3.Database} db
+ * @returns {Promise<boolean>}
+ */
 export const isExistingSubscriptionSid = async(sid, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE sid = ?', [sid], (err, rows) => {
@@ -83,6 +101,11 @@ export const isExistingSubscriptionSid = async(sid, db) => {
   });
 };
 
+/**
+ * @param {string} title
+ * @param {sqlite3.Database} db
+ * @returns {Promise<boolean>}
+ */
 export const isExistingSubscriptionTitle = async(title, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE title = ?', [title], (err, rows) => {
@@ -94,10 +117,12 @@ export const isExistingSubscriptionTitle = async(title, db) => {
 
 /**
  * @param {string} title
- * @param {Object} option
- * @param {string[]} option.keywords
- * @param {string} option.episodePatternString
- * @param {string} option.excludePatternString
+ * @param {{
+ *   episodePatternString?: DS['episode_pattern'];
+ *   excludePatternString?: DS['exclude_pattern'];
+ *   keywords?: string[];
+ * }} option
+ * @param {sqlite3.Database} db
  */
 export const createSubscription = async(title, option = {}, db) => {
   let sid = '';
@@ -105,7 +130,7 @@ export const createSubscription = async(title, option = {}, db) => {
   const episodePatternString = option?.episodePatternString ?? '/$^/';
   const excludePatternString = option?.excludePatternString ?? '/$^/';
   do {
-    sid = sidHash(title, keywords, excludePatternString, episodePatternString, sid);
+    sid = sidHash(title, ...keywords, excludePatternString, episodePatternString, sid);
   } while (await isExistingSubscriptionSid(sid, db));
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
@@ -119,6 +144,17 @@ export const createSubscription = async(title, option = {}, db) => {
   });
 };
 
+/**
+ * @param {sqlite3.Database} db
+ * @returns {Promise<{
+ *   id: DS['id'];
+ *   sid: DS['sid'];
+ *   title: DS['title'];
+ *   keywords: DS['keywords'];
+ *   episodePattern: RegExp;
+ *   excludePattern: RegExp;
+ * }[]>}
+ */
 export const getAllSubscriptions = async(db) => {
   return new Promise((resolve, reject) => {
     db.all('SELECT * FROM subscriptions', (err, rows) => {
@@ -137,6 +173,17 @@ export const getAllSubscriptions = async(db) => {
   });
 };
 
+/**
+ * @param {sqlite3.Database} db
+ * @returns {Promise<{
+ *   subscriptionId: DS['id'];
+ *   threadId: DT['id'];
+ *   sid: DS['sid'];
+ *   subscriptionTitle: DS['title'];
+ *   threadTitle: DT['title'];
+ *   episodePatternString: DS['episode_pattern'];
+ * }[]>}
+ */
 export const getLatestThreadsInEachSubscription = async(db) => {
   const sql = `
   SELECT
@@ -174,6 +221,14 @@ export const getLatestThreadsInEachSubscription = async(db) => {
 /**
  * @param {string} sid
  * @param {sqlite3.Database} db
+ * @returns {Promise<{
+ *   id: DT['id'];
+ *   sid: DS['sid'];
+ *   title: DT['title'];
+ *   episodePatternString: DS['episode_pattern'];
+ *   magnet: DT['magnet'];
+ *   publishDate: DT['publish_date'];
+ * }[]>}
  */
 export const getThreadsBySid = async(sid, db) => {
   const sql = `
@@ -200,6 +255,11 @@ export const getThreadsBySid = async(sid, db) => {
   });
 };
 
+/**
+ * @param {string} dmhyLink
+ * @param {sqlite3.Database} db
+ * @returns {Promise<boolean>}
+ */
 export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {
@@ -209,6 +269,14 @@ export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
   });
 };
 
+/**
+ * @param {string} dmhyLink
+ * @param {string} magnet
+ * @param {string} title
+ * @param {string} publishDate
+ * @param {sqlite3.Database} db
+ * @returns {Promise<sqlite3.RunResult>}
+ */
 export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
   const statement = db.prepare('INSERT INTO threads (dmhy_link, magnet, title, publish_date) VALUES (?, ?, ?, ?)');
   return new Promise((resolve, reject) => {
@@ -219,6 +287,12 @@ export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
   });
 };
 
+/**
+ * @param {number} subscriptionId
+ * @param {number} threadId
+ * @param {sqlite3.Database} db
+ * @returns {Promise<sqlite3.RunResult>}
+ */
 export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => {
   const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
   return new Promise((resolve, reject) => {
@@ -229,6 +303,10 @@ export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => 
   });
 };
 
+/**
+ * @param {sqlite3.Database} db
+ * @returns {Promise<import('~types').DatabaseConfig[]>}
+ */
 export const getAllConfigurations = async(db) => {
   return new Promise((resolve, reject) => {
     db.all('SELECT * FROM configurations', (err, rows) => {

@@ -23,10 +23,8 @@ export const builder = (yargs) => {
     });
 };
 
-/** @typedef {{name: string; value: string;}} Config */
-
 /**
- * @param {Config[]} configs
+ * @param {import('~types').DatabaseConfig[]} configs
  * @param {string} name
  * @param {string} value
  * @param {import('sqlite3').Database} db
@@ -46,7 +44,7 @@ const setConfig = async(configs, name, value, db) => {
 };
 
 /**
- * @param {Config[]} configs
+ * @param {import('~types').DatabaseConfig[]} configs
  * @param {string} name
  */
 const getConfig = (configs, name) => {
@@ -58,7 +56,7 @@ const getConfig = (configs, name) => {
 };
 
 /**
- * @param {Config[]} configs
+ * @param {import('~types').DatabaseConfig[]} configs
  * @param {'json' | 'table'} format
  */
 const printConfig = (configs, format) => {
@@ -81,6 +79,7 @@ const printConfig = (configs, format) => {
 };
 
 /**
+ * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
 export const handler = async(argv, getDb = getMigratedDb) => {
@@ -101,6 +100,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     }
   } catch (err) {
     debug('dmhy:cli:config')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:config')(err.message);
   }
 };

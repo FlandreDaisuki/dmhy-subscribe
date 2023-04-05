@@ -26,10 +26,15 @@ export const builder = (yargs) => {
     .conflicts('excludes', 'exclude-pattern');
 };
 
+/**
+ * @param {*} argv
+ */
 export const handler = async(argv) => {
   debug('dmhy:cli:find:argv')(argv);
 
   try {
+    /** @type {string[]} */
+    // @ts-expect-error
     const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
     const rss = await getRssListByKeywords(keywords);
 
@@ -44,7 +49,7 @@ export const handler = async(argv) => {
     };
 
     const filteredRssItems = rss.items.filter((item) => {
-      return !(getExcludePattern().test(item.title));
+      return !(getExcludePattern().test(String(item.title)));
     });
 
     for (const item of filteredRssItems) {
@@ -52,6 +57,7 @@ export const handler = async(argv) => {
     }
   } catch (err) {
     debug('dmhy:cli:find')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:find')(err.message);
   }
 };

@@ -5,8 +5,10 @@ import debug from 'debug';
 import RSSParser from 'rss-parser';
 import * as logger from './logger.mjs';
 
+// @ts-expect-error
 const isNil = (v) => v === undefined || v === null;
 
+// @ts-expect-error
 const range = (start, end, step) => {
   if (isNil(end) && isNil(step)) {
     return Array.from({ length: start }, (_, i) => i);
@@ -29,6 +31,7 @@ export const isFileExists = (absPath) =>
     .then(() => true)
     .catch(() => false);
 
+/** @param {string} question */
 export const ask = async(question) => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -40,6 +43,7 @@ export const ask = async(question) => {
     .finally(() => rl.close());
 };
 
+/** @param {string} str */
 export const parsePattern = (str) => {
   const patternStart = str.indexOf('/');
   const patternEnd = str.lastIndexOf('/');
@@ -51,6 +55,7 @@ export const parsePattern = (str) => {
   return new RegExp(pattern, flags);
 };
 
+/** @param {string[]} stringList */
 export const joinToRegExp = (stringList) => {
   // Escape special characters in each string and join them with a pipe
   const escapedStrings = stringList.map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
@@ -59,6 +64,7 @@ export const joinToRegExp = (stringList) => {
   return regex;
 };
 
+/** @param {string[]} args */
 export const sidHash = (...args) => {
   const h = createHash('sha1');
   for (const arg of args.flat(Infinity)) {
@@ -70,6 +76,7 @@ export const sidHash = (...args) => {
   }`.slice(-3);
 };
 
+/** @param {string[]} keywords */
 export const getRssListByKeywords = async(keywords = []) => {
   const u = new URL('https://share.dmhy.org/topics/rss/rss.xml');
   u.searchParams.append('sort_id', '2');
@@ -86,8 +93,12 @@ export const getRssListByKeywords = async(keywords = []) => {
   return rss;
 };
 
-/** @param {string} threadTitle */
+/**
+ * @param {string} threadTitle
+ * @returns {import('~types').Episode}
+ */
 export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
+  /** @param {string} s */
   const parseRangeEpisode = (s) => {
     // [\d.]+[-~][\d.]+
     const str = s.replace(/(?:\D*|^)([\d.]+)([-~][\d.]+)?(?:\D*|$)/, '$1$2');
@@ -135,12 +146,13 @@ export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
         return tokParsed;
       }
     }
-    return {};
-  } catch (error) {
-    return {};
+    return { from: NaN, to: NaN };
+  } catch {
+    return { from: NaN, to: NaN };
   }
 };
 
+/** @param {import('~types').Episode} episode */
 export const toEpisodeDisplay = (episode) => {
   if (!episode.from) {
     return '??';
@@ -161,7 +173,9 @@ export const compileEpisodeQuery = (...episodeQueries) => {
     .flatMap((q) => String(q).split(','))
     .flatMap((q) => q.trim());
 
+  /** @type {number[]} */
   const episodes = [];
+  /** @type {number[]} */
   const orders = [];
 
   for (const q of normalizedQueries) {
@@ -183,10 +197,13 @@ export const compileEpisodeQuery = (...episodeQueries) => {
   }
 
   return {
+    /**  @param {{episode: Partial<import('~types').Episode>; order: number;}} extendThread */
     match: (extendThread) => {
-      const threadEpisodes = !extendThread.episode.to
-        ? [extendThread.episode.from]
-        : range(extendThread.episode.from, extendThread.episode.to + 1);
+      const threadEpisodes = (
+        !extendThread.episode.to
+          ? [Number(extendThread.episode.from)]
+          : range(extendThread.episode.from, extendThread.episode.to + 1)
+      ).filter(Number.isFinite);
 
       if (episodes.length > 0 && orders.length > 0) {
         return threadEpisodes.some((ep) => episodes.includes(ep)) || orders.includes(extendThread.order);

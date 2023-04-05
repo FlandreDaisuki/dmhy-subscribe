@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import yargs from 'yargs';
 import { getAllSubscriptions, getMigratedDb } from '../../database.mjs';

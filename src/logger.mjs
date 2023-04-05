@@ -6,4 +6,5 @@ import chalk from 'chalk';
 export const error = (namespace) => (...args) =>
   console.error(chalk.blueBright(String(namespace)), ...args);
 
+/** @type {(...data: any[]) => void} */
 export const log = (...data) => console.log(...data);

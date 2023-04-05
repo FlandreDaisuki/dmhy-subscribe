@@ -20,6 +20,7 @@ export const builder = (yargs) => {
 };
 
 /**
+ * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
 export const handler = async(argv, getDb = getMigratedDb) => {
@@ -28,6 +29,8 @@ export const handler = async(argv, getDb = getMigratedDb) => {
   try {
     const db = await getDb();
     const subscriptions = await getAllSubscriptions(db);
+    /** @type {string[]} */
+    // @ts-expect-error
     const pullingSids = (argv.sid ?? []).map((s) => String(s).toUpperCase());
     await Promise.all(
       subscriptions
@@ -41,13 +44,16 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
           const rss = await getRssListByKeywords(sub.keywords);
           const getExcludePattern = () => parsePattern(String(sub.excludePattern));
-          const filteredRssItems = rss.items.filter((item) => !(getExcludePattern().test(item.title)));
+          const filteredRssItems = rss.items.filter((item) => !(getExcludePattern().test(String(item.title))));
 
           return Promise.all(filteredRssItems.map(async(rssItem) => {
             const dmhyLink = rssItem.link;
-            const magnet = rssItem.enclosure.url;
+            const magnet = rssItem.enclosure?.url;
             const title = rssItem.title;
             const publishDate = rssItem.isoDate;
+            if (!dmhyLink || !magnet || !title || !publishDate){
+              return debug('dmhy:cli:pull:rssItem')(rssItem);
+            }
             if (await isExistingThreadDmhyLink(dmhyLink, db)) {
               return;
             }
@@ -64,6 +70,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     );
   } catch (err) {
     debug('dmhy:cli:pull')(err);
+    // @ts-expect-error
     logger.error('dmhy:cli:pull')(err.message);
   }
 };
