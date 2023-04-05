@@ -88,7 +88,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
     // #region list all
     if (argv.format === 'json') {
-      logger.log(subscriptionThreads);
+      logger.log(JSON.stringify(subscriptionThreads, null, 2));
     } else {
       new Table({
         columns: [
