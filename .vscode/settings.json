@@ -16,5 +16,6 @@
     "src/locales"
   ],
   "i18n-ally.sourceLanguage": "zh",
-  "i18n-ally.displayLanguage": "zh"
+  "i18n-ally.displayLanguage": "zh",
+  "markdown.extension.toc.levels": "2..6"
 }

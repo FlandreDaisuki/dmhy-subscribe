@@ -1,4 +1,7 @@
 node_modules
 *.tgz
 
+docker/data
+docker/.env
+
 *.sqlite3

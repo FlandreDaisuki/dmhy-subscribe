@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  aria2:
+    image: abcminiuser/docker-aria2-with-webui:latest-ng
+    networks:
+      - dmhy_network
+    ports:
+      - ${ARIA2_PORT}:${ARIA2_PORT}
+      - 6880:80
+    volumes:
+      - ./data/download:/data
+      - ./data/aria2:/conf
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+    restart: unless-stopped
+
+  dmhy:
+    image: dmhy-subscribe
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: dmhy
+    networks:
+      - dmhy_network
+    volumes:
+      - ./data/cron.log:/root/app/cron.log
+      - ./data/dmhy.sqlite3:/root/app/dmhy.sqlite3
+    environment:
+      - DATABASE_DIR=/root/app
+      - LANG=${LANG}
+      - CRON_FREQ=${CRON_FREQ}
+      - ARIA2_SECRET=${ARIA2_SECRET}
+      - ARIA2_PORT=${ARIA2_PORT}
+      # - TZ=Asia/Taipei
+    restart: unless-stopped
+
+networks:
+  dmhy_network: {}
