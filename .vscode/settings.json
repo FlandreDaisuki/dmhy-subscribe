@@ -5,7 +5,8 @@
   "cSpell.words": [
     "AUTOINCREMENT",
     "dmhy",
-    "nocheck"
+    "nocheck",
+    "unstub"
   ],
   "i18n-ally.localesPaths": [
     "src/locales"

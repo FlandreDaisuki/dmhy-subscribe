@@ -38,7 +38,7 @@ export const handler = async(argv) => {
   try {
     /** @type {string[]} */
     // @ts-expect-error
-    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
+    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]).map(String);
     const rss = await getRssListByKeywords(keywords);
 
     const getExcludePattern = () => {

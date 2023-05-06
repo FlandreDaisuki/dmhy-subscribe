@@ -5,7 +5,10 @@ import { getAllSubscriptions, getMigratedDb } from '../../database.mjs';
 import * as addCommand from './add.mjs';
 
 beforeEach(() => {
-  vi.stubGlobal('console', { log: vi.fn() });
+  vi.stubGlobal('console', {
+    log: vi.fn(),
+    error: vi.fn(),
+  });
 });
 
 afterEach(() => {
@@ -85,4 +88,22 @@ test('add 搖曳露營 喵萌 -x 简体 合集', async() => {
   expect(s.title).toBe('搖曳露營');
   expect(s.keywords).includes('搖曳露營').includes('喵萌');
   expect(s.excludePattern.source).toMatchObject('(简体|合集)');
+});
+
+// keyword is number
+test('add 搖曳露營 喵萌 繁體 1080', async() => {
+  const argv = await yargs(['add', '搖曳露營', '喵萌', '繁體', '1080'])
+    .command({ ...addCommand, handler: vi.fn() }).argv;
+
+  const db = await getMigratedDb(':memory:');
+
+  await addCommand.handler(argv, () => db);
+  const s = (await getAllSubscriptions(db))[0];
+
+  expect(s.title).toBe('搖曳露營');
+  expect(s.keywords)
+    .includes('搖曳露營')
+    .includes('喵萌')
+    .includes('繁體')
+    .includes('1080');
 });

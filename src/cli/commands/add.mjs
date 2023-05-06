@@ -53,7 +53,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
     /** @type {string[]} */
     // @ts-expect-error
-    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]);
+    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]).map(String);
     const getExcludePattern = () => {
       if (argv.excludePattern) {
         return parsePattern(argv.excludePattern);
