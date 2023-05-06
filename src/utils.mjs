@@ -179,11 +179,11 @@ export const compileEpisodeQuery = (...episodeQueries) => {
   const orders = [];
 
   for (const q of normalizedQueries) {
-    const ord = /^#/.test(q);
+    const ord = /^@/.test(q);
     const rng = /~/.test(q);
 
     const list = ord ? orders : episodes;
-    const z = q.replace(/^#?/, '');
+    const z = q.replace(/^@?/, '');
 
     if (!rng) {
       const n = Number(z);

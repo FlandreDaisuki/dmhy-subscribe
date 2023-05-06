@@ -82,7 +82,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             { name: 'title', title: t('CMD_LS_TH_TITLE'), alignment: 'center' },
           ],
           rows: threads.map((th, i) => ({
-            order: `#${i + 1}`,
+            order: `@${i + 1}`,
             episode: toEpisodeDisplay(parseEpisode(th.title, th.episodePatternString)),
             title: th.title,
           })),

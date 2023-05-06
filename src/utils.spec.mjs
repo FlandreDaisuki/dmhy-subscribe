@@ -77,10 +77,10 @@ describe('compileEpisodeQuery', () => {
     expect(compileEpisodeQuery('1').match({ episode: parseEpisode('3'), order: 99 })).toBe(false);
     expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('1'), order: 99 })).toBe(false);
     expect(compileEpisodeQuery('2~4').match({ episode: parseEpisode('3'), order: 99 })).toBe(true);
-    expect(compileEpisodeQuery('#1').match({ episode: parseEpisode('99'), order: 1 })).toBe(true);
-    expect(compileEpisodeQuery('#1').match({ episode: parseEpisode('99'), order: 3 })).toBe(false);
-    expect(compileEpisodeQuery('#2~4').match({ episode: parseEpisode('99'), order: 1 })).toBe(false);
-    expect(compileEpisodeQuery('#2~4').match({ episode: parseEpisode('99'), order: 3 })).toBe(true);
+    expect(compileEpisodeQuery('@1').match({ episode: parseEpisode('99'), order: 1 })).toBe(true);
+    expect(compileEpisodeQuery('@1').match({ episode: parseEpisode('99'), order: 3 })).toBe(false);
+    expect(compileEpisodeQuery('@2~4').match({ episode: parseEpisode('99'), order: 1 })).toBe(false);
+    expect(compileEpisodeQuery('@2~4').match({ episode: parseEpisode('99'), order: 3 })).toBe(true);
   });
 
   test('multiple query in same type', () => {
@@ -93,11 +93,11 @@ describe('compileEpisodeQuery', () => {
   });
 
   test('mixed query', () => {
-    expect(compileEpisodeQuery('4', '#3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
-    expect(compileEpisodeQuery('1', '#6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
-    expect(compileEpisodeQuery('1~4', '#3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
-    expect(compileEpisodeQuery('1', '#3~6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
-    expect(compileEpisodeQuery('1~3', '#3~5').match({ episode: parseEpisode('4'), order: 6 })).toBe(false);
+    expect(compileEpisodeQuery('4', '@3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1', '@6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1~4', '@3').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1', '@3~6').match({ episode: parseEpisode('4'), order: 6 })).toBe(true);
+    expect(compileEpisodeQuery('1~3', '@3~5').match({ episode: parseEpisode('4'), order: 6 })).toBe(false);
   });
 
   test('all pass query', () => {
