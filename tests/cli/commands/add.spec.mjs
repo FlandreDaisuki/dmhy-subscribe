@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import yargs from 'yargs';
-import { getAllSubscriptions, getMigratedDb } from '../../database.mjs';
-import * as addCommand from './add.mjs';
+import { getAllSubscriptions, getMigratedDb } from '../../../src/database.mjs';
+import * as addCommand from '../../../src/cli/commands/add.mjs';
 
 beforeEach(() => {
   vi.stubGlobal('console', {

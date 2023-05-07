@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { compileEpisodeQuery, joinToRegExp, parseEpisode, parsePattern } from './utils.mjs';
+import { compileEpisodeQuery, joinToRegExp, parseEpisode, parsePattern } from '../src/utils.mjs';
 
 test('parsePattern', () => {
   expect(parsePattern('//').test('abc123')).toBe(true);
