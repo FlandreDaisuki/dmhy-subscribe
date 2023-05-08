@@ -1,27 +1,31 @@
 // @ts-nocheck
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import yargs from 'yargs';
+
 import { getAllSubscriptions, getMigratedDb } from '../../../src/database.mjs';
 import * as addCommand from '../../../src/cli/commands/add.mjs';
 
-beforeEach(() => {
-  vi.stubGlobal('console', {
+const executeAddCommand = async(db, ...keywords) => {
+  const argv = await yargs(['add', ...keywords])
+    .command({ ...addCommand, handler: vi.fn() }).argv;
+
+  await addCommand.handler(argv, () => db);
+};
+
+vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+  const mod = await importOriginal();
+  return {
+    ...mod,
     log: vi.fn(),
     error: vi.fn(),
-  });
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
+  };
 });
 
 test('add 搖曳露營', async() => {
-  const argv = await yargs(['add', '搖曳露營'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
@@ -29,12 +33,10 @@ test('add 搖曳露營', async() => {
 });
 
 test('add 搖曳露營 喵萌 繁體', async() => {
-  const argv = await yargs(['add', '搖曳露營', '喵萌', '繁體'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營', '喵萌', '繁體');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
@@ -45,12 +47,10 @@ test('add 搖曳露營 喵萌 繁體', async() => {
 });
 
 test('add 搖曳露營 輕旅輕營 喵萌 繁體 --exclude-title', async() => {
-  const argv = await yargs(['add', '搖曳露營', '輕旅輕營', '喵萌', '繁體', '--exclude-title'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營', '輕旅輕營', '喵萌', '繁體', '--exclude-title');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
@@ -62,12 +62,10 @@ test('add 搖曳露營 輕旅輕營 喵萌 繁體 --exclude-title', async() => {
 });
 
 test('add 搖曳露營 喵萌 -x 简体', async() => {
-  const argv = await yargs(['add', '搖曳露營', '喵萌', '-x', '简体'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營', '喵萌', '-x', '简体');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
@@ -77,12 +75,10 @@ test('add 搖曳露營 喵萌 -x 简体', async() => {
 
 // keyword after '-x' will view as an array
 test('add 搖曳露營 喵萌 -x 简体 合集', async() => {
-  const argv = await yargs(['add', '搖曳露營', '喵萌', '-x', '简体', '合集'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營', '喵萌', '-x', '简体', '合集');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
@@ -92,12 +88,10 @@ test('add 搖曳露營 喵萌 -x 简体 合集', async() => {
 
 // keyword is number
 test('add 搖曳露營 喵萌 繁體 1080', async() => {
-  const argv = await yargs(['add', '搖曳露營', '喵萌', '繁體', '1080'])
-    .command({ ...addCommand, handler: vi.fn() }).argv;
-
   const db = await getMigratedDb(':memory:');
 
-  await addCommand.handler(argv, () => db);
+  await executeAddCommand(db, '搖曳露營', '喵萌', '繁體', '1080');
+
   const s = (await getAllSubscriptions(db))[0];
 
   expect(s.title).toBe('搖曳露營');
