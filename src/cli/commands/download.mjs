@@ -56,7 +56,6 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       return logger.error('dmhy:cli:download:sid')(t('CMD_DL_SID_NOT_FOUND', { sid: targetSid }));
     }
     const extendThreads = (await getThreadsBySid(targetSid, db))
-      .sort((a, b) => Date.parse(a.publishDate) - Date.parse(b.publishDate))
       .map((t, i) => ({
         ...t,
         order: i + 1,
