@@ -5,3 +5,4 @@ docker/data
 docker/.env
 
 *.sqlite3
+docs/*.mp4

@@ -1,6 +1,6 @@
 # Docker
 
-您也可以使用 [Docker](https://www.docker.com/) 來執行 `dmhy-subscribe` 在無法透過 npm 安裝、設定過於複雜、或有其他支援問題的作業系統中使用 `dmhy-subscribe`。
+您也可以使用 [Docker](https://www.docker.com/) 在無法透過 npm 安裝、設定過於複雜、或有其他支援問題的作業系統中使用 `dmhy-subscribe`。
 
 專案中的 Docker 設定整合了 `dmhy-subscribe` 、 `cron`(排程) 和 `aria2`(下載器) 的功能。
 
@@ -117,7 +117,7 @@ docker-compose down
 
 在啟用服務之後，可以在 `http://localhost:6880` 看到 aria2 的 WebUI。
 
-若發現有連線到 RPC 伺服器但出現警告，是因為 WebUI 有設定 token，預設為 `dockerdmhy` (可在 `docker-compose.yml` 設定)，可以到 **設定>連線設定>密碼令牌** 輸入
+若發現有連線到 RPC 伺服器但出現警告，是因為 WebUI 有設定 token，預設為 `dockerdmhy` (可在 `docker-compose.yml` 設定)，可以到 **設定 > 連線設定 > 密碼令牌** 輸入
 
 要執行 dmhy 指令可以透過以下方式:
 
