@@ -14,11 +14,12 @@ import { downloadThread, getRssListByKeywords, parsePattern } from '../../utils.
 
 export const command = 'pull [sid..]';
 
-export const describe = 'pull the remote threads by your subscriptions';
+export const describe = t('CMD_PULL_DESC');
 
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
+    .usage(t('CMD_PULL_USAGE'))
     .option('then-download', {
       alias: 'd',
       type: 'boolean',

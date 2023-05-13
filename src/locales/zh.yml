@@ -1,3 +1,4 @@
+CMD_ADD_DESC: 新增一筆訂閱
 CMD_ADD_USAGE: |
   新增一筆訂閱
 
@@ -13,6 +14,7 @@ CMD_ADD_EXAMPLE3_DESC: 以「露營」、「悠哈」、「二季」訂閱
 CMD_ADD_PROMPTS_CONFIRM: 資料庫已有標題「%title%」的訂閱，繼續新增？（y/N）
 CMD_ADD_SUCCESS: 成功新增訂閱「%title%」！
 
+CMD_CONFIG_DESC: 個人化設定
 CMD_CONFIG_USAGE: |
   個人化設定
 
@@ -26,6 +28,7 @@ CMD_CONFIG_EXAMPLE3_DESC: 將「downloader」的設定值改為「system」
 CMD_CONFIG_KEY_NOT_FOUND: 找不到設定名「%name%」
 CMD_CONFIG_SUCCESS: 設定成功
 
+CMD_DL_DESC: 下載訂閱貼文
 CMD_DL_USAGE: |
   下載訂閱貼文
 
@@ -45,6 +48,7 @@ CMD_DL_EXAMPLE3_DESC: |
 CMD_DL_DLR_NOT_FOUND: 找不到下載器「%name%」
 CMD_DL_SID_NOT_FOUND: 找不到 sid「%sid%」
 
+CMD_FIND_DESC: 用關鍵字搜尋貼文
 CMD_FIND_USAGE: |
   用關鍵字搜尋貼文
 
@@ -58,6 +62,7 @@ CMD_FIND_EXAMPLE2_DESC: 同上，但過濾掉出現「720p」的貼文
 CMD_FIND_EXAMPLE3: dmhy find 搖曳露營 露營 悠哈 二季 --exclude-title
 CMD_FIND_EXAMPLE3_DESC: 以「露營」、「悠哈」、「二季」搜尋
 
+CMD_LS_DESC: 列出指定或全部訂閱
 CMD_LS_USAGE: |
   列出指定或全部訂閱
 
@@ -69,6 +74,7 @@ CMD_LS_TH_TITLE: 標題
 CMD_LS_TH_EPISODE_ALL: 最新集數
 CMD_LS_TH_TITLE_ALL: 訂閱標題
 
+CMD_PULL_DESC: 更新訂閱的貼文
 CMD_PULL_USAGE: |
   更新訂閱的貼文
 

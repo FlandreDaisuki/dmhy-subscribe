@@ -10,8 +10,9 @@ import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
 import { compileEpisodeQuery, downloadThread, parseEpisode } from '../../utils.mjs';
 
-
 export const command = 'download <sid> [episode-queries..]';
+
+export const describe = t('CMD_DL_DESC');
 
 export const aliases = ['dl'];
 

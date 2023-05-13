@@ -11,6 +11,8 @@ import * as logger from '../../logger.mjs';
 
 export const command = 'config [config-name] [config-value]';
 
+export const describe = t('CMD_CONFIG_DESC');
+
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs

@@ -1,3 +1,4 @@
+CMD_ADD_DESC: Add a new subscription
 CMD_ADD_USAGE: |
   Add a new subscription
 
@@ -13,19 +14,21 @@ CMD_ADD_EXAMPLE3_DESC: Subscribe by "露營", "悠哈", and "二季"
 CMD_ADD_PROMPTS_CONFIRM: A subscription for the title "%title%" already exists in the database. Continue to add? (y/N)
 CMD_ADD_SUCCESS: Successfully added subscription for "%title%"!
 
+CMD_CONFIG_DESC: Personalized configuration
 CMD_CONFIG_USAGE: |
   Personalized configuration
 
-  Usage: dmhy config [setting name] [setting value]
+  Usage: dmhy config [config-name] [config-value]
 CMD_CONFIG_EXAMPLE1: dmhy config
-CMD_CONFIG_EXAMPLE1_DESC: Show all settings
+CMD_CONFIG_EXAMPLE1_DESC: Show all configuration
 CMD_CONFIG_EXAMPLE2: dmhy config downloader
-CMD_CONFIG_EXAMPLE2_DESC: Show the setting value for "downloader"
+CMD_CONFIG_EXAMPLE2_DESC: Show the configuration value for "downloader"
 CMD_CONFIG_EXAMPLE3: dmhy config downloader system
-CMD_CONFIG_EXAMPLE3_DESC: Set the setting value for "downloader" to "system"
-CMD_CONFIG_KEY_NOT_FOUND: Setting name "%name%" not found
-CMD_CONFIG_SUCCESS: Configuration successful
+CMD_CONFIG_EXAMPLE3_DESC: Set the configuration value for "downloader" to "system"
+CMD_CONFIG_KEY_NOT_FOUND: configuration name "%name%" not found
+CMD_CONFIG_SUCCESS: Configure successfully
 
+CMD_DL_DESC: Download subscribed posts
 CMD_DL_USAGE: |
   Download subscribed posts
 
@@ -45,6 +48,7 @@ CMD_DL_EXAMPLE3_DESC: |
 CMD_DL_DLR_NOT_FOUND: Downloader "%name%" not found
 CMD_DL_SID_NOT_FOUND: sid "%sid%" not found
 
+CMD_FIND_DESC: Search posts with keywords
 CMD_FIND_USAGE: |
   Search posts with keywords
 
@@ -58,6 +62,7 @@ CMD_FIND_EXAMPLE2_DESC: Same as above, but filter out posts containing "720p"
 CMD_FIND_EXAMPLE3: dmhy find 搖曳露營 露營 悠哈 二季 --exclude-title
 CMD_FIND_EXAMPLE3_DESC: Search for posts with "露營", "悠哈", and "二季"
 
+CMD_LS_DESC: List specified or all subscriptions
 CMD_LS_USAGE: |
   List specified or all subscriptions
 
@@ -69,6 +74,7 @@ CMD_LS_TH_TITLE: Title
 CMD_LS_TH_EPISODE_ALL: Latest Episode
 CMD_LS_TH_TITLE_ALL: Subscription Title
 
+CMD_PULL_DESC: Update the posts of subscriptions
 CMD_PULL_USAGE: |
   Update the posts of subscriptions
 

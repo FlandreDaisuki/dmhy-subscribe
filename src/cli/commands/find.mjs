@@ -7,6 +7,8 @@ import { createSubscription, getMigratedDb, isExistingSubscriptionTitle } from '
 
 export const command = 'find <title> [keywords..]';
 
+export const describe = t('CMD_FIND_DESC');
+
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs

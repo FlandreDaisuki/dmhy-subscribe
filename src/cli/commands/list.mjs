@@ -15,6 +15,8 @@ import { parseEpisode, toEpisodeDisplay } from '../../utils.mjs';
 
 export const command = 'list [sid]';
 
+export const describe = t('CMD_LS_DESC');
+
 export const aliases = ['ls'];
 
 /** @param {import('yargs').Argv} yargs */

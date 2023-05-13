@@ -11,6 +11,8 @@ import { ask, joinToRegExp, parsePattern } from '../../utils.mjs';
 
 export const command = 'add <title> [keywords..]';
 
+export const describe = t('CMD_ADD_DESC');
+
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
