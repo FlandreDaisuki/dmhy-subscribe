@@ -4,10 +4,13 @@
   },
   "cSpell.words": [
     "AUTOINCREMENT",
-    "bocchi",
     "dmhy",
     "nocheck",
     "unstub"
+  ],
+  "cSpell.ignoreWords": [
+    "Yuru",
+    "bocchi"
   ],
   "i18n-ally.localesPaths": [
     "src/locales"

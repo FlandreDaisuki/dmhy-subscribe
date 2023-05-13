@@ -43,13 +43,6 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
   try {
     const db = await getDb();
-    if (await isExistingSubscriptionTitle(argv.title, db)) {
-
-      const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: argv.title }));
-      if (!/(?:y|yes)/i.test(answer)) {
-        return process.exit(1);
-      }
-    }
 
     /** @type {string[]} */
     // @ts-expect-error
@@ -64,6 +57,13 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       return /$^/;
     };
     const episodePattern = argv.episodePattern ? parsePattern(argv.episodePattern) : /$^/;
+
+    if (await isExistingSubscriptionTitle(argv.title, db)) {
+      const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: argv.title }));
+      if (!/(?:y|yes)/i.test(answer)) {
+        return process.exit(1);
+      }
+    }
 
     await createSubscription(argv.title, {
       keywords,
