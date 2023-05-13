@@ -1,0 +1,8 @@
+@types
+docs
+tests
+
+.*
+
+*.sqlite3
+*.tgz
