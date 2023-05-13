@@ -1,5 +1,3 @@
-import { fileURLToPath } from 'url';
-import path from 'path';
 import debug from 'debug';
 
 import {
@@ -10,7 +8,7 @@ import {
 } from '../../database.mjs';
 import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
-import { compileEpisodeQuery, isFileExists, parseEpisode } from '../../utils.mjs';
+import { compileEpisodeQuery, downloadThread, parseEpisode } from '../../utils.mjs';
 
 
 export const command = 'download <sid> [episode-queries..]';
@@ -41,16 +39,6 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     // @ts-expect-error
     const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
 
-    const downloaderName = config?.downloader ?? 'system';
-    const thisFilePath = fileURLToPath(import.meta.url);
-    const thisFileDir = path.dirname(thisFilePath);
-    const downloaderPath = path.resolve(thisFileDir, `../../downloaders/${downloaderName}.mjs`);
-
-    if (!(await isFileExists(downloaderPath))) {
-      return logger.error('dmhy:cli:download:downloader')(t('CMD_DL_DLR_NOT_FOUND', { name: downloaderName }));
-    }
-    const downloader = await import(downloaderPath);
-
     const targetSid = String(argv.sid).toUpperCase();
     if (!(await isExistingSubscriptionSid(targetSid, db))) {
       return logger.error('dmhy:cli:download:sid')(t('CMD_DL_SID_NOT_FOUND', { sid: targetSid }));
@@ -63,12 +51,15 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       }));
 
     const episodeQuery = compileEpisodeQuery(...argv.episodeQueries);
-    for (const extendThread of extendThreads) {
-      if (episodeQuery.match(extendThread)) {
-        downloader.download(extendThread, config);
-      }
-    }
-
+    await Promise.all(extendThreads
+      .filter((extendThread) => episodeQuery.match(extendThread))
+      .map(async(extendThread) => {
+        try {
+          await downloadThread(extendThread, config);
+        } catch (err) {
+          logger.error('dmhy:cli:download:downloader')(err);
+        }
+      }));
   } catch (err) {
     debug('dmhy:cli:download')(err);
     // @ts-expect-error

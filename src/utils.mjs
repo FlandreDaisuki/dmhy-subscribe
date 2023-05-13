@@ -1,9 +1,12 @@
 import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
 import * as readline from 'readline';
 import debug from 'debug';
 import RSSParser from 'rss-parser';
 import * as logger from './logger.mjs';
+import { t } from './locale.mjs';
 
 // @ts-expect-error
 const isNil = (v) => v === undefined || v === null;
@@ -216,4 +219,22 @@ export const compileEpisodeQuery = (...episodeQueries) => {
       }
     },
   };
+};
+
+/**
+ * @param  {{title: string; magnet: import('~types').MagnetString;}} threadLike
+ * @param  {import('~types').DatabaseConfigDict} config
+ */
+export const downloadThread = async(threadLike, config) => {
+  const downloaderName = config?.downloader ?? 'system';
+  const thisFilePath = fileURLToPath(import.meta.url);
+  const thisFileDir = path.dirname(thisFilePath);
+  const downloaderPath = path.resolve(thisFileDir, `./downloaders/${downloaderName}.mjs`);
+
+  if (!(await isFileExists(downloaderPath))) {
+    throw new Error(t('CMD_DL_DLR_NOT_FOUND', { name: downloaderName }));
+  }
+
+  const downloader = await import(downloaderPath);
+  return downloader.download(threadLike, config);
 };
