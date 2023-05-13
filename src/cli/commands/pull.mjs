@@ -3,13 +3,14 @@ import debug from 'debug';
 import {
   bindSubscriptionAndThread,
   createThread,
+  getAllConfigurations,
   getAllSubscriptions,
   getMigratedDb,
   isExistingThreadDmhyLink,
 } from '../../database.mjs';
 import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
-import { getRssListByKeywords, parsePattern } from '../../utils.mjs';
+import { downloadThread, getRssListByKeywords, parsePattern } from '../../utils.mjs';
 
 export const command = 'pull [sid..]';
 
@@ -18,7 +19,10 @@ export const describe = 'pull the remote threads by your subscriptions';
 /** @param {import('yargs').Argv} yargs */
 export const builder = (yargs) => {
   yargs
-    .option({});
+    .option('then-download', {
+      alias: 'd',
+      type: 'boolean',
+    });
 };
 
 /**
@@ -31,9 +35,17 @@ export const handler = async(argv, getDb = getMigratedDb) => {
   try {
     const db = await getDb();
     const subscriptions = await getAllSubscriptions(db);
+
     /** @type {string[]} */
     // @ts-expect-error
     const pullingSids = (argv.sid ?? []).map((s) => String(s).toUpperCase());
+
+    const allConfigs = await getAllConfigurations(db);
+
+    /** @type {import('~types').DatabaseConfigDict} */
+    // @ts-expect-error
+    const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
+
     await Promise.all(
       subscriptions
         .filter((sub) => {
@@ -67,6 +79,10 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             debug('dmhy:cli:pull:rssItem')(rssItem);
 
             logger.log(t('CMD_PULL_SUCCESS', { title }));
+
+            if (argv.thenDownload) {
+              await downloadThread({ title, magnet }, config);
+            }
           }));
         }),
     );
