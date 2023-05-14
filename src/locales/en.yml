@@ -67,7 +67,7 @@ CMD_LS_USAGE: |
   List specified or all subscriptions
 
   Usage: dmhy list [sid]
-CMD_LS_SID_NOT_FOUND: Cannot find sid "%sid%"
+CMD_LS_SID_NOT_FOUND: Can't find sid "%sid%"
 CMD_LS_TH_ORDER: Order
 CMD_LS_TH_EPISODE: Episode
 CMD_LS_TH_TITLE: Title
@@ -80,6 +80,21 @@ CMD_PULL_USAGE: |
 
   Usage: dmhy pull [sid..]
 CMD_PULL_SUCCESS: Update post "%title%"
+
+CMD_RM_DESC: Remove subscriptions by sid
+CMD_RM_USAGE: |
+  Remove subscriptions by sid
+
+  Usage: dmhy remove [sid..]
+CMD_RM_EXAMPLE1: dmhy rm ABC
+CMD_RM_EXAMPLE1_DESC: Unsubscribes the subscription with the sid "ABC".
+CMD_RM_EXAMPLE2: dmhy rm ABC XYZ
+CMD_RM_EXAMPLE2_DESC: Unsubscribes the subscriptions with the sid "ABC" and "XYZ".
+CMD_RM_EXAMPLE3: dmhy rm -f ABC XYZ
+CMD_RM_EXAMPLE3_DESC: Same as above, without any error messages or user interaction.
+CMD_RM_SUCCESS: Successfully removed subscription for "%title%"!
+CMD_RM_SID_NOT_FOUND: Can't find sid "%sid%"
+CMD_RM_PROMPTS_CONFIRM: Do you want to unsubscribe the subscription "%title%"? (y/N)
 
 DLR_ARIA2_HOST_ERR: Please set the correct "aria2-jsonrpc" URL using `dmhy config` first
 DLR_ARIA2_SECRET_ERR: |

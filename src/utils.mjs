@@ -28,6 +28,17 @@ const range = (start, end, step) => {
   }
 };
 
+/**
+ * @template T
+ * @param {T[]} arr
+ * @param {(item: T) => Promise<boolean>} predicate
+ * @returns {Promise<T[]>}
+ */
+export const arrayAsyncFilter = async(arr, predicate) => {
+  const results = await Promise.all(arr.map(predicate));
+  return arr.filter((_, idx) => results[idx]);
+};
+
 /** @param {string} absPath */
 export const isFileExists = (absPath) =>
   fs.access(absPath)

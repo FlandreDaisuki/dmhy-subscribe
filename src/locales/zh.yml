@@ -81,6 +81,21 @@ CMD_PULL_USAGE: |
   使用方法: dmhy pull [sid..]
 CMD_PULL_SUCCESS: 更新貼文「%title%」
 
+CMD_RM_DESC: 移除訂閱
+CMD_RM_USAGE: |
+  移除訂閱
+
+  用法: dmhy remove [sid..]
+CMD_RM_EXAMPLE1: dmhy rm ABC
+CMD_RM_EXAMPLE1_DESC: 移除 SID 為「ABC」的訂閱
+CMD_RM_EXAMPLE2: dmhy rm ABC XYZ
+CMD_RM_EXAMPLE2_DESC: 移除 SID 為「ABC」和「XYZ」的訂閱
+CMD_RM_EXAMPLE3: dmhy rm -f ABC XYZ
+CMD_RM_EXAMPLE3_DESC: 與上述相同，但不顯示任何錯誤訊息或使用者確認
+CMD_RM_SUCCESS: 已成功移除「%title%」的訂閱！
+CMD_RM_SID_NOT_FOUND: 找不到 SID 為「%sid%」的訂閱
+CMD_RM_PROMPTS_CONFIRM: 是否確定要移除「%title%」的訂閱？(y/N)
+
 DLR_ARIA2_HOST_ERR: 請先使用 dmhy config 設定「aria2-jsonrpc」正確網址
 DLR_ARIA2_SECRET_ERR: |
   「aria2-jsonrpc」正確網址須包含 token:secret

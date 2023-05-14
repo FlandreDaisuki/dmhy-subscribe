@@ -82,6 +82,14 @@ export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'd
     if (err) { console.error(err); }
   });
 
+  // ref: https://stackoverflow.com/a/15303742
+  await new Promise((resolve) => {
+    db.run('PRAGMA foreign_keys = ON;', function(err) {
+      if (err) { console.error(err); }
+      resolve(this);
+    });
+  });
+
   const thisFilePath = fileURLToPath(import.meta.url);
   const thisFileDir = path.dirname(thisFilePath);
   const migrationDir = path.join(thisFileDir, 'migrations');
@@ -138,6 +146,22 @@ export const createSubscription = async(title, option = {}, db) => {
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
   return new Promise((resolve) => {
     statement.run([sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString], function(err) {
+      if (err) {
+        console.error(err);
+      }
+      resolve(this);
+    });
+  });
+};
+
+/**
+ * @param {string} sid
+ * @param {sqlite3.Database} db
+ */
+export const removeSubscriptionBySid = async(sid, db) => {
+  const statement = db.prepare('DELETE FROM subscriptions WHERE sid = ?');
+  return new Promise((resolve) => {
+    statement.run([sid], function(err) {
       if (err) {
         console.error(err);
       }
