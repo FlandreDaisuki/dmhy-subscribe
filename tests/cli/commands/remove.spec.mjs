@@ -2,10 +2,15 @@
 import { afterEach, assert, expect, test, vi } from 'vitest';
 import yargs from 'yargs';
 
-import { getAllSubscriptions, getMigratedDb, isExistingSubscriptionSid } from '../../../src/database.mjs';
+import {
+  getAllSubscriptions,
+  getMigratedDb,
+  isExistingSubscriptionSid,
+} from '../../../src/database.mjs';
+import { t } from '../../../src/locale.mjs';
+
 import * as addCommand from '../../../src/cli/commands/add.mjs';
 import * as removeCommand from '../../../src/cli/commands/remove.mjs';
-import { t } from '../../../src/locale.mjs';
 
 const outputs = [];
 const errOutputs = [];

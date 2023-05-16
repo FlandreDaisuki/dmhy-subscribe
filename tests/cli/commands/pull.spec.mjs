@@ -32,6 +32,7 @@ const executePullCommand = async(db, ...sids) => {
 
   await pullCommand.handler(argv, () => db);
 };
+
 const executeConfigCommand = async(db, name, value) => {
   const argv = await yargs(['config', name, value])
     .command({ ...configCommand, handler: vi.fn() }).argv;
@@ -75,7 +76,6 @@ vi.mock('../../../src/logger.mjs', async(importOriginal) => {
   return {
     ...mod,
     log: vi.fn((...args) => outputs.push(args.join(' '))),
-    error: vi.fn(),
   };
 });
 
@@ -109,8 +109,6 @@ test('pull all while no threads', async() => {
 });
 
 test('pull specific subscription threads', async() => {
-
-
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營');
