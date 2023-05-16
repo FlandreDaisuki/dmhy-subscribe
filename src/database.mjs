@@ -284,13 +284,13 @@ export const getThreadsBySid = async(sid, db) => {
 /**
  * @param {string} dmhyLink
  * @param {sqlite3.Database} db
- * @returns {Promise<boolean>}
+ * @returns {Promise<number | null>}
  */
-export const isExistingThreadDmhyLink = async(dmhyLink, db) => {
+export const getThreadByDmhyLink = async(dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {
       if (err) { return reject(err); }
-      resolve(Boolean(rows));
+      resolve(rows?.id ?? null);
     });
   });
 };
@@ -317,14 +317,20 @@ export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
  * @param {number} subscriptionId
  * @param {number} threadId
  * @param {sqlite3.Database} db
- * @returns {Promise<sqlite3.RunResult>}
+ * @returns {Promise<boolean>} successful
  */
 export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => {
   const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
   return new Promise((resolve, reject) => {
-    statement.run([subscriptionId, threadId], function(err) {
-      if (err) { return reject(err); }
-      resolve(this);
+    statement.run([subscriptionId, threadId], (err) => {
+      if (err) {
+        // @ts-expect-error
+        if (err.errno === 19 && err.code === 'SQLITE_CONSTRAINT') {
+          return resolve(false);
+        }
+        return reject(err);
+      }
+      resolve(true);
     });
   });
 };

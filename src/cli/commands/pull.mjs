@@ -6,7 +6,7 @@ import {
   getAllConfigurations,
   getAllSubscriptions,
   getMigratedDb,
-  isExistingThreadDmhyLink,
+  getThreadByDmhyLink,
 } from '../../database.mjs';
 import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
@@ -69,20 +69,24 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             if (!dmhyLink || !magnet || !title || !publishDate){
               return debug('dmhy:cli:pull:rssItem')(rssItem);
             }
-            if (await isExistingThreadDmhyLink(dmhyLink, db)) {
-              return;
+
+            let threadId = await getThreadByDmhyLink(dmhyLink, db);
+            if (threadId === null) {
+              const threadResult = await createThread(dmhyLink, magnet, title, publishDate, db);
+              debug('dmhy:cli:pull:threadResult')(threadResult);
+
+              threadId = threadResult.lastID;
             }
 
-            const threadResult = await createThread(dmhyLink, magnet, title, publishDate, db);
-            debug('dmhy:cli:pull:threadResult')(threadResult);
-
-            await bindSubscriptionAndThread(sub.id, threadResult.lastID, db);
+            const bound = await bindSubscriptionAndThread(sub.id, threadId, db);
             debug('dmhy:cli:pull:rssItem')(rssItem);
 
-            logger.log(t('CMD_PULL_SUCCESS', { title }));
+            if (bound) {
+              logger.log(t('CMD_PULL_SUCCESS', { title }));
 
-            if (argv.thenDownload) {
-              await downloadThread({ title, magnet }, config);
+              if (argv.thenDownload) {
+                await downloadThread({ title, magnet }, config);
+              }
             }
           }));
         }),

@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS subscriptions_threads (
   subscription_id INTEGER,
   thread_id INTEGER,
   FOREIGN KEY(subscription_id) REFERENCES subscriptions(id) ON DELETE CASCADE,
-  FOREIGN KEY(thread_id) REFERENCES threads(id)
+  FOREIGN KEY(thread_id) REFERENCES threads(id),
+  UNIQUE (subscription_id, thread_id)
 );
 
 CREATE TABLE IF NOT EXISTS configurations (
