@@ -28,20 +28,21 @@
     "debug": "^4.3.4",
     "js-yaml": "^4.1.0",
     "open": "^9.1.0",
-    "rss-parser": "^3.12.0",
-    "semver": "^7.3.8",
+    "rss-parser": "^3.13.0",
+    "semver": "^7.5.1",
     "sqlite3": "^5.1.6",
-    "yargs": "^17.7.1"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@flandredaisuki/eslint-config": "^0.0.4",
     "@types/debug": "^4.1.7",
     "@types/js-yaml": "^4.0.5",
-    "@types/semver": "^7.3.13",
-    "@types/yargs": "^17.0.23",
-    "eslint": "^8.36.0",
-    "typescript": "^5.0.3",
-    "vitest": "^0.29.7"
+    "@types/node": "^20.2.1",
+    "@types/semver": "^7.5.0",
+    "@types/yargs": "^17.0.24",
+    "eslint": "^8.40.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.1"
   },
   "engines": {
     "node": ">=18"
