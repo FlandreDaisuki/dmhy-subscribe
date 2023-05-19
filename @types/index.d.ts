@@ -4,13 +4,19 @@ export type ISO8601DateTime = string & {};
 
 type DatabaseConfig = {
   name: 'downloader';
-  value: 'system' | 'stdout' | 'aria2';
+  value: 'system' | 'stdout' | 'aria2' | 'webhook';
 } | {
   name: 'download-destination'
   value: string | null;
 }| {
   name: 'aria2-jsonrpc'
-  value: string | null;
+  value: UrlString | null;
+} | {
+  name: 'webhook-url'
+  value: UrlString | null;
+}| {
+  name: 'webhook-token'
+  value: UrlString | null;
 }
 
 // I don't know why but it works! Thanks ChatGPT!

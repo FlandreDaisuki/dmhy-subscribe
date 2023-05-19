@@ -36,7 +36,9 @@ INSERT OR IGNORE INTO configurations (name, value)
   VALUES
     ('downloader', 'system'),
     ('download-destination', NULL),
-    ('aria2-jsonrpc', NULL);
+    ('aria2-jsonrpc', NULL),
+    ('webhook-url', NULL),
+    ('webhook-token', NULL);
 
 CREATE TABLE IF NOT EXISTS migrations (
   version TEXT NOT NULL UNIQUE,

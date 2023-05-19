@@ -103,4 +103,8 @@ DLR_ARIA2_SUCCESS: 成功下載「%title%」
 
 DLR_SYSTEM_SUCCESS: 成功下載「%title%」
 
+DLR_WEBHOOK_URL_ERR: 請先使用 dmhy config 設定「webhook-url」
+DLR_WEBHOOK_TOKEN_ERR: 請先使用 dmhy config 設定「webhook-token」
+DLR_WEBHOOK_SUCCESS: 成功下載「%title%」！
+
 DB_MIGRATION_SUCCESS: 成功執行「%filename%」
