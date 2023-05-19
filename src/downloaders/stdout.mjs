@@ -9,7 +9,7 @@ export const download = async(thread, config) => {
   try {
     logger.log(thread.magnet);
   } catch (error) {
-    logger.error(thread.title);
+    logger.error('dmhy:downloaders:stdout:error')(thread.title);
     debug('dmhy:downloaders:stdout:error')(error);
   }
 };

@@ -12,7 +12,7 @@ export const download = async(thread, config) => {
     await open(thread.magnet);
     logger.log(t('DLR_SYSTEM_SUCCESS', { title: thread.title }));
   } catch (error) {
-    logger.error(thread.title);
+    logger.error('dmhy:downloaders:system:error')(thread.title);
     debug('dmhy:downloaders:system:error')(error);
   }
 };

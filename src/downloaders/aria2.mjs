@@ -43,7 +43,7 @@ export const download = async(thread, config) => {
       .catch(() => logger.error('dmhy:downloaders:aria2:downloadError')({ title: thread.title }))
       .then(() => client.close());
   } catch (error) {
-    logger.error(thread.title);
+    logger.error('dmhy:downloaders:aria2:error')(thread.title);
     debug('dmhy:downloaders:aria2:error')(error);
   }
 };
