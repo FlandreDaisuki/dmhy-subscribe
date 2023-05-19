@@ -1,9 +1,9 @@
 {
-  "include": ["src/**/*", "@types/index.d.ts"],
+  "include": ["src/**/*", "typings/index.d.ts"],
   "compilerOptions": {
     "checkJs": true,
     "paths": {
-      "~types": ["./@types/index.d.ts"]
+      "~types": ["./typings/index.d.ts"]
     },
     "lib": ["ESNext"],
 
