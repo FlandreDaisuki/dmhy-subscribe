@@ -25,8 +25,10 @@ CMD_CONFIG_EXAMPLE2: dmhy config downloader
 CMD_CONFIG_EXAMPLE2_DESC: 顯示「downloader」的設定值
 CMD_CONFIG_EXAMPLE3: dmhy config downloader system
 CMD_CONFIG_EXAMPLE3_DESC: 將「downloader」的設定值改為「system」
-CMD_CONFIG_KEY_NOT_FOUND: 找不到設定名「%name%」
+CMD_CONFIG_KEY_NOT_FOUND: 找不到設定名「%key%」
 CMD_CONFIG_SUCCESS: 設定成功
+CMD_CONFIG_TH_KEY: 設定名
+CMD_CONFIG_TH_VALUE: 設定值
 
 CMD_DL_DESC: 下載訂閱貼文
 CMD_DL_USAGE: |

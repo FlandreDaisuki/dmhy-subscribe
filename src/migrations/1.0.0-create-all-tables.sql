@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS subscriptions_threads (
 
 CREATE TABLE IF NOT EXISTS configurations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT UNIQUE,
+  key TEXT UNIQUE,
   value TEXT /* JSON */
 );
 
-INSERT OR IGNORE INTO configurations (name, value)
+INSERT OR IGNORE INTO configurations (key, value)
   VALUES
     ('downloader', 'system'),
     ('download-destination', NULL),

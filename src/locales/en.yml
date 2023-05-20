@@ -18,15 +18,17 @@ CMD_CONFIG_DESC: Personalized configuration
 CMD_CONFIG_USAGE: |
   Personalized configuration
 
-  Usage: dmhy config [config-name] [config-value]
+  Usage: dmhy config [config-key] [config-value]
 CMD_CONFIG_EXAMPLE1: dmhy config
 CMD_CONFIG_EXAMPLE1_DESC: Show all configuration
 CMD_CONFIG_EXAMPLE2: dmhy config downloader
 CMD_CONFIG_EXAMPLE2_DESC: Show the configuration value for "downloader"
 CMD_CONFIG_EXAMPLE3: dmhy config downloader system
 CMD_CONFIG_EXAMPLE3_DESC: Set the configuration value for "downloader" to "system"
-CMD_CONFIG_KEY_NOT_FOUND: configuration name "%name%" not found
+CMD_CONFIG_KEY_NOT_FOUND: configuration key "%key%" not found
 CMD_CONFIG_SUCCESS: Configure successfully
+CMD_CONFIG_TH_KEY: key
+CMD_CONFIG_TH_VALUE: value
 
 CMD_DL_DESC: Download subscribed posts
 CMD_DL_USAGE: |

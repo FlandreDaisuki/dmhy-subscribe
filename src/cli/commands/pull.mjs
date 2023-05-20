@@ -45,7 +45,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
     /** @type {import('~types').DatabaseConfigDict} */
     // @ts-expect-error
-    const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.name]: curr.value }), {});
+    const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.key]: curr.value }), {});
 
     await Promise.all(
       subscriptions

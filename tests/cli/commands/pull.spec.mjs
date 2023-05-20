@@ -33,8 +33,8 @@ const executePullCommand = async(db, ...sids) => {
   await pullCommand.handler(argv, () => db);
 };
 
-const executeConfigCommand = async(db, name, value) => {
-  const argv = await yargs(['config', name, value])
+const executeConfigCommand = async(db, key, value) => {
+  const argv = await yargs(['config', key, value])
     .command({ ...configCommand, handler: vi.fn() }).argv;
 
   await configCommand.handler(argv, () => db);

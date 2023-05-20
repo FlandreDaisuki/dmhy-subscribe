@@ -345,7 +345,7 @@ export const getAllConfigurations = async(db) => {
       if (err) { return reject(err); }
       resolve(rows.map((row) => {
         return {
-          name: row.name,
+          key: row.key,
           value: row.value,
         };
       }));
@@ -354,15 +354,15 @@ export const getAllConfigurations = async(db) => {
 };
 
 /**
- * @param {string} name
+ * @param {string} key
  * @param {string} value
  * @param {sqlite3.Database} db
  * @returns {Promise<sqlite3.RunResult>}
  */
-export const setConfiguration = async(name, value, db) => {
-  const statement = db.prepare('UPDATE configurations SET value = ? WHERE name = ?');
+export const setConfiguration = async(key, value, db) => {
+  const statement = db.prepare('UPDATE configurations SET value = ? WHERE key = ?');
   return new Promise((resolve, reject) => {
-    statement.run([value, name], function(err) {
+    statement.run([value, key], function(err) {
       if (err) { return reject(err); }
       resolve(this);
     });

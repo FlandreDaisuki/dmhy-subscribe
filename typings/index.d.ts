@@ -3,25 +3,25 @@ export type MagnetString = string & {};
 export type ISO8601DateTime = string & {};
 
 type DatabaseConfig = {
-  name: 'downloader';
+  key: 'downloader';
   value: 'system' | 'stdout' | 'aria2' | 'webhook';
 } | {
-  name: 'download-destination'
+  key: 'download-destination'
   value: string | null;
 }| {
-  name: 'aria2-jsonrpc'
+  key: 'aria2-jsonrpc'
   value: UrlString | null;
 } | {
-  name: 'webhook-url'
+  key: 'webhook-url'
   value: UrlString | null;
 }| {
-  name: 'webhook-token'
+  key: 'webhook-token'
   value: UrlString | null;
 }
 
 // I don't know why but it works! Thanks ChatGPT!
 type DatabaseConfigDict = {
-  [R in DatabaseConfig as R extends { name: infer N; } ? N : never]:
+  [R in DatabaseConfig as R extends { key: infer N; } ? N : never]:
     R extends { value: infer V } ? V : never;
   };
 

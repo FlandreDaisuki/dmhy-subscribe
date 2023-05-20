@@ -9,7 +9,7 @@ import {
 import { t } from '../../locale.mjs';
 import * as logger from '../../logger.mjs';
 
-export const command = 'config [config-name] [config-value]';
+export const command = 'config [config-key] [config-value]';
 
 export const describe = t('CMD_CONFIG_DESC');
 
@@ -30,17 +30,17 @@ export const builder = (yargs) => {
 
 /**
  * @param {import('~types').DatabaseConfig[]} configs
- * @param {string} name
+ * @param {string} key
  * @param {string} value
  * @param {import('sqlite3').Database} db
  */
-const setConfig = async(configs, name, value, db) => {
-  const found = configs.find((c) => c.name === name);
+const setConfig = async(configs, key, value, db) => {
+  const found = configs.find((c) => c.key === key);
   if (!found) {
-    return logger.error('dmhy:cli:config:setConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { name }));
+    return logger.error('dmhy:cli:config:setConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { key }));
   }
 
-  const r = await setConfiguration(name, value, db);
+  const r = await setConfiguration(key, value, db);
   if (r.changes > 0) {
     logger.log(t('CMD_CONFIG_SUCCESS'));
   } else {
@@ -50,12 +50,12 @@ const setConfig = async(configs, name, value, db) => {
 
 /**
  * @param {import('~types').DatabaseConfig[]} configs
- * @param {string} name
+ * @param {string} key
  */
-const getConfig = (configs, name) => {
-  const found = configs.find((c) => c.name === name);
+const getConfig = (configs, key) => {
+  const found = configs.find((c) => c.key === key);
   if (!found) {
-    return logger.error('dmhy:cli:config:getConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { name }));
+    return logger.error('dmhy:cli:config:getConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { key }));
   }
   logger.log(found.value);
 };
@@ -68,15 +68,15 @@ const printConfig = (configs, format) => {
   if (format === 'json') {
     logger.log(
       configs.reduce(
-        (prev, curr) => ({ ...prev, [curr.name]: curr.value }),
+        (prev, curr) => ({ ...prev, [curr.key]: curr.value }),
         {},
       ),
     );
   } else {
     new Table({
       columns: [
-        { name: 'name', alignment: 'center' },
-        { name: 'value', alignment: 'center' },
+        { name: 'key', alignment: 'center', title: t('CMD_CONFIG_TH_KEY') },
+        { name: 'value', alignment: 'center', title: t('CMD_CONFIG_TH_VALUE') },
       ],
       rows: configs,
     }).printTable();
@@ -94,14 +94,14 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     const db = await getDb();
     const configs = await getAllConfigurations(db);
 
-    if (!argv.configName && !argv.configValue) {
+    if (!argv.configKey && !argv.configValue) {
       return printConfig(configs, argv.format);
     }
-    if (argv.configName && !argv.configValue) {
-      return getConfig(configs, argv.configName);
+    if (argv.configKey && !argv.configValue) {
+      return getConfig(configs, argv.configKey);
     }
-    if (argv.configName && argv.configValue) {
-      return setConfig(configs, argv.configName, argv.configValue, db);
+    if (argv.configKey && argv.configValue) {
+      return setConfig(configs, argv.configKey, argv.configValue, db);
     }
   } catch (err) {
     debug('dmhy:cli:config')(err);
