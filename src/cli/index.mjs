@@ -6,7 +6,7 @@ import yargs from 'yargs';
 import debug from 'debug';
 
 /** @param {string} name */
-const loadCommand = async(name) => {
+const loadCommand = async (name) => {
   const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
   return import(path.join(thisFileDir, 'commands', `${name}.mjs`));
 };
@@ -24,6 +24,7 @@ const argv = await yargs(process.argv.slice(2))
   .help('h')
   .alias('h', 'help')
   .alias('v', 'version')
+  .demandCommand()
   .argv;
 
 debug('dmhy:cli:argv')(argv);
