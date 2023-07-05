@@ -47,6 +47,7 @@ describe('parseEpisode', () => {
   test('range episode', () => {
     expect(parseEpisode('【DHR百合組】[搖曳露營△_Yuru Camp][05-06][繁體][720P][MP4]')).toMatchObject({ from: 5, to: 6 });
     expect(parseEpisode('【幻櫻字幕組】【4月新番】【戰鬥員派遣中！ Sentouin, Hakenshimasu!】【01~02】【BIG5_MP4】【1920X1080】')).toMatchObject({ from: 1, to: 2 });
+    expect(parseEpisode('[愛戀字幕社&漫貓字幕社] 鬼灭之刃 刀匠村篇/Kimetsu no Yaiba - Katanakaji no Sato-hen (01-11Fin WEBRIP 1080p AVC AAC MP4 2023年4月 繁中)')).toMatchObject({ from: 1, to: 11 });
   });
 
   test('no brackets', () => {
