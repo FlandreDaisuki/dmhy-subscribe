@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import debug from 'debug';
@@ -31,10 +31,11 @@ export const builder = (yargs) => {
     .example(t('CMD_CONFIG_EXAMPLE3'), t('CMD_CONFIG_EXAMPLE3_DESC'));
 };
 
-const getDownloaders = () => {
+const getDownloaders = async() => {
   const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
   const downloadersDir = path.join(thisFileDir, '..', '..', 'downloaders');
-  const downloaders = fs.readdirSync(downloadersDir).map((fullName) => path.parse(fullName).name);
+  const downloadersFilename = await fs.readdir(downloadersDir);
+  const downloaders = downloadersFilename.map((fullName) => path.parse(fullName).name);
   return downloaders;
 };
 
@@ -42,13 +43,15 @@ const getDownloaders = () => {
  * @param {string} key
  * @param {string} value
  */
-const validateConfig = (key, value) => {
+const validateConfig = async(key, value) => {
   if (key === 'downloader') {
-    if (!getDownloaders().includes(value)) {
-      return 'DLR_KEY_NOT_FOUND';
+    const supportedDownloaders = await getDownloaders();
+    if (!supportedDownloaders.includes(value)) {
+      logger.error('dmhy:cli:config:setConfig')(t('DLR_KEY_NOT_FOUND', { key }));
+      return true;
     }
   }
-  return '';
+  return false;
 };
 
 /**
@@ -63,9 +66,9 @@ const setConfig = async(configs, key, value, db) => {
     return logger.error('dmhy:cli:config:setConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { key }));
   }
 
-  const validatationError = validateConfig(key, value);
-  if (validatationError) {
-    return logger.error('dmhy:cli:config:setConfig')(t(validatationError, { key }));
+  const hasError = await validateConfig(key, value);
+  if (hasError) {
+    return;
   }
 
   const r = await setConfiguration(key, value, db);
