@@ -98,6 +98,8 @@ CMD_RM_SUCCESS: 已成功移除「%title%」的訂閱！
 CMD_RM_SID_NOT_FOUND: 找不到 SID 為「%sid%」的訂閱
 CMD_RM_PROMPTS_CONFIRM: 是否確定要移除「%title%」的訂閱？(y/N)
 
+DLR_KEY_NOT_FOUND: 找不到對應的 downloader
+
 DLR_ARIA2_HOST_ERR: 請先使用 dmhy config 設定「aria2-jsonrpc」正確網址
 DLR_ARIA2_SECRET_ERR: |
   「aria2-jsonrpc」正確網址須包含 token:secret

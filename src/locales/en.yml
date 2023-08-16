@@ -98,6 +98,8 @@ CMD_RM_SUCCESS: Successfully removed subscription for "%title%"!
 CMD_RM_SID_NOT_FOUND: Can't find sid "%sid%"
 CMD_RM_PROMPTS_CONFIRM: Do you want to unsubscribe the subscription "%title%"? (y/N)
 
+DLR_KEY_NOT_FOUND: Unsupported downloader
+
 DLR_ARIA2_HOST_ERR: Please set the correct "aria2-jsonrpc" URL using `dmhy config` first
 DLR_ARIA2_SECRET_ERR: |
   The "aria2-jsonrpc" URL must include token:secret

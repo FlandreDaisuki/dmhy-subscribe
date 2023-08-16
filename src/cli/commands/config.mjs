@@ -1,3 +1,6 @@
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -28,6 +31,29 @@ export const builder = (yargs) => {
     .example(t('CMD_CONFIG_EXAMPLE3'), t('CMD_CONFIG_EXAMPLE3_DESC'));
 };
 
+const getDownloaders = async() => {
+  const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
+  const downloadersDir = path.join(thisFileDir, '..', '..', 'downloaders');
+  const downloadersFilename = await fs.readdir(downloadersDir);
+  const downloaders = downloadersFilename.map((fullName) => path.parse(fullName).name);
+  return downloaders;
+};
+
+/**
+ * @param {string} key
+ * @param {string} value
+ */
+const validateConfig = async(key, value) => {
+  if (key === 'downloader') {
+    const supportedDownloaders = await getDownloaders();
+    if (!supportedDownloaders.includes(value)) {
+      logger.error('dmhy:cli:config:setConfig')(t('DLR_KEY_NOT_FOUND', { key }));
+      return true;
+    }
+  }
+  return false;
+};
+
 /**
  * @param {import('~types').DatabaseConfig[]} configs
  * @param {string} key
@@ -38,6 +64,11 @@ const setConfig = async(configs, key, value, db) => {
   const found = configs.find((c) => c.key === key);
   if (!found) {
     return logger.error('dmhy:cli:config:setConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { key }));
+  }
+
+  const hasError = await validateConfig(key, value);
+  if (hasError) {
+    return;
   }
 
   const r = await setConfiguration(key, value, db);
