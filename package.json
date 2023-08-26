@@ -1,6 +1,6 @@
 {
   "name": "dmhy-subscribe",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Subscribe by keywords and download megnets",
   "keywords": [],
   "license": "ISC",
@@ -29,7 +29,7 @@
     "js-yaml": "^4.1.0",
     "open": "^9.1.0",
     "rss-parser": "^3.13.0",
-    "semver": "^7.5.3",
+    "semver": "^7.5.4",
     "sqlite3": "^5.1.6",
     "yargs": "^17.7.2"
   },
@@ -37,14 +37,23 @@
     "@flandredaisuki/eslint-config": "^0.0.4",
     "@types/debug": "^4.1.8",
     "@types/js-yaml": "^4.0.5",
-    "@types/node": "^20.3.3",
+    "@types/node": "^20.5.6",
     "@types/semver": "^7.5.0",
     "@types/yargs": "^17.0.24",
-    "eslint": "^8.44.0",
-    "typescript": "^5.1.6",
+    "eslint": "^8.48.0",
+    "typescript": "^5.2.2",
     "vitest": "^0.31.4"
   },
   "engines": {
     "node": ">=18"
+  },
+  "pnpm": {
+    "overrides": {
+      "array-includes": "npm:@nolyfill/array-includes@latest",
+      "array.prototype.flat": "npm:@nolyfill/array.prototype.flat@latest",
+      "array.prototype.flatmap": "npm:@nolyfill/array.prototype.flatmap@latest",
+      "has": "npm:@nolyfill/has@latest",
+      "object.values": "npm:@nolyfill/object.values@latest"
+    }
   }
 }
