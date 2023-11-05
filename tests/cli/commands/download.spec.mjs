@@ -1,8 +1,7 @@
-// @ts-nocheck
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import yargs from 'yargs';
 import RSSParser from 'rss-parser';
 
@@ -18,46 +17,45 @@ const campHalfRss = await fs.readFile(path.join(thisFileDir, '../../fixtures/cam
 
 const outputs = [];
 
-const executeAddCommand = async(db, ...keywords) => {
+const executeAddCommand = async (db, ...keywords) => {
   const argv = await yargs(['add', ...keywords])
     .command({ ...addCommand, handler: vi.fn() }).argv;
 
   await addCommand.handler(argv, () => db);
 };
 
-const executePullCommand = async(db, ...sids) => {
+const executePullCommand = async (db, ...sids) => {
   const argv = await yargs(['pull', ...sids])
     .command({ ...pullCommand, handler: vi.fn() }).argv;
 
   await pullCommand.handler(argv, () => db);
 };
 
-
-const executeConfigCommand = async(db, key, value) => {
+const executeConfigCommand = async (db, key, value) => {
   const argv = await yargs(['config', key, value])
     .command({ ...configCommand, handler: vi.fn() }).argv;
 
   await configCommand.handler(argv, () => db);
 };
 
-const executeDownloadCommand = async(db, sid, ...queries) => {
+const executeDownloadCommand = async (db, sid, ...queries) => {
   const argv = await yargs(['download', sid, ...queries])
     .command({ ...downloadCommand, handler: vi.fn() }).argv;
 
   await downloadCommand.handler(argv, () => db);
 };
 
-vi.mock('../../../src/utils.mjs', async(importOriginal) => {
+vi.mock('../../../src/utils.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
     getRssListByKeywords: vi.fn(() => {
-      return (new RSSParser).parseString(campHalfRss);
+      return (new RSSParser()).parseString(campHalfRss);
     }),
   };
 });
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -65,7 +63,7 @@ vi.mock('../../../src/logger.mjs', async(importOriginal) => {
   };
 });
 
-describe('download camp-half', async() => {
+describe('download camp-half', async () => {
   afterEach(() => {
     outputs.length = 0;
   });
@@ -86,7 +84,7 @@ describe('download camp-half', async() => {
     6: 'magnet:?xt=urn:btih:ZV2Z2QETYPWRW7DIQF4OHJFHEW2SZ5K3',
   });
 
-  test('download all threads', async() => {
+  it('download all threads', async () => {
     outputs.length = 0;
     await executeDownloadCommand(db, sid);
     expect(outputs)
@@ -98,7 +96,7 @@ describe('download camp-half', async() => {
       .include(EPISODE_MAGNET_MAP[6]);
   });
 
-  test('download episode 2', async() => {
+  it('download episode 2', async () => {
     outputs.length = 0;
     await executeDownloadCommand(db, sid, '2');
     expect(outputs)
@@ -110,7 +108,7 @@ describe('download camp-half', async() => {
       .not.include(EPISODE_MAGNET_MAP[6]);
   });
 
-  test('download episode 2~4', async() => {
+  it('download episode 2~4', async () => {
     outputs.length = 0;
     await executeDownloadCommand(db, sid, '2~4');
     expect(outputs)
@@ -122,7 +120,7 @@ describe('download camp-half', async() => {
       .not.include(EPISODE_MAGNET_MAP[6]);
   });
 
-  test('download episode @2~4', async() => {
+  it('download episode @2~4', async () => {
     outputs.length = 0;
     await executeDownloadCommand(db, sid, '@2~4');
     expect(outputs)

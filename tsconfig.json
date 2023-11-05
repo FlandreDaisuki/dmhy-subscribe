@@ -1,24 +1,20 @@
 {
-  "include": ["src/**/*", "typings/index.d.ts"],
   "compilerOptions": {
-    "checkJs": true,
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "module": "NodeNext",
     "paths": {
       "~types": ["./typings/index.d.ts"]
     },
-    "lib": ["ESNext"],
-
-    // https://www.npmjs.com/package/@tsconfig/recommended
-    "target": "ESNext",
-    "module": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
-    // https://www.typescriptlang.org/docs/handbook/declaration-files/dts-from-js.html#tsconfig
     "allowJs": true,
+    "checkJs": true,
+    "strict": true,
     "declaration": true,
+    "declarationMap": true,
     "emitDeclarationOnly": true,
     "outDir": "dist",
-    "declarationMap": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
+  "include": ["src/**/*", "typings/index.d.ts"]
 }

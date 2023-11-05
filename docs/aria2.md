@@ -106,7 +106,7 @@ aria2 常用的 ui 介面有 `webui-aria2` 和 `AriaNg`，不過安裝稍微有�
 
 改成剛剛設定的密碼 (以上面 `hello-dmhy-subscribe` 為例) 並移除註解 (`//`) 如下：
 
-```js
+```txt
 token: 'hello-dmhy-subscribe'
 ```
 

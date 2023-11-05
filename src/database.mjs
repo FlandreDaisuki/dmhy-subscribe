@@ -1,9 +1,10 @@
-import path from 'path';
-import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
-import sqlite3 from 'sqlite3';
-import semver from 'semver';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+
 import debug from 'debug';
+import semver from 'semver';
+import sqlite3 from 'sqlite3';
 
 import { t } from './locale.mjs';
 import * as ENV from './env.mjs';
@@ -17,9 +18,9 @@ import { isFileExists, parsePattern, sidHash } from './utils.mjs';
 
 /**
  * @param {sqlite3.Database} db
- * @returns {Promise<string>}
+ * @returns {Promise<string>} semantic version string
  */
-const getLastMigrateVersion = async(db) => {
+const getLastMigrateVersion = async (db) => {
   return new Promise((resolve) => {
     db.get('SELECT version FROM migrations ORDER BY created_at DESC LIMIT 1', (err, row) => {
       if (err) {
@@ -36,7 +37,7 @@ const getLastMigrateVersion = async(db) => {
  * @param {sqlite3.Database} db
  * @returns {Promise<void>}
  */
-const execMigration = async(migrationDir, db) => {
+const execMigration = async (migrationDir, db) => {
   const sortedAllMigrations = (await fs.readdir(migrationDir))
     .map((filename) => {
       return ({
@@ -72,7 +73,7 @@ const execMigration = async(migrationDir, db) => {
   }
 };
 
-export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3')) => {
+export const getMigratedDb = async (databasePath = path.join(ENV.DATABASE_DIR, 'dmhy.sqlite3')) => {
   if (databasePath !== ':memory:' && !(await isFileExists(databasePath))) {
     await fs.writeFile(databasePath, '');
   }
@@ -84,8 +85,9 @@ export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'd
 
   // ref: https://stackoverflow.com/a/15303742
   await new Promise((resolve) => {
-    db.run('PRAGMA foreign_keys = ON;', function(err) {
+    db.run('PRAGMA foreign_keys = ON;', function (err) {
       if (err) { console.error(err); }
+      // eslint-disable-next-line ts/no-invalid-this
       resolve(this);
     });
   });
@@ -100,9 +102,9 @@ export const getMigratedDb = async(databasePath = path.join(ENV.DATABASE_DIR, 'd
 /**
  * @param {string} sid
  * @param {sqlite3.Database} db
- * @returns {Promise<boolean>}
+ * @returns {Promise<boolean>} is existing subscription sid
  */
-export const isExistingSubscriptionSid = async(sid, db) => {
+export const isExistingSubscriptionSid = async (sid, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE sid = ?', [sid], (err, rows) => {
       if (err) { return reject(err); }
@@ -114,9 +116,9 @@ export const isExistingSubscriptionSid = async(sid, db) => {
 /**
  * @param {string} title
  * @param {sqlite3.Database} db
- * @returns {Promise<boolean>}
+ * @returns {Promise<boolean>} is existing subscription title
  */
-export const isExistingSubscriptionTitle = async(title, db) => {
+export const isExistingSubscriptionTitle = async (title, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM subscriptions WHERE title = ?', [title], (err, rows) => {
       if (err) { return reject(err); }
@@ -134,7 +136,7 @@ export const isExistingSubscriptionTitle = async(title, db) => {
  * }} option
  * @param {sqlite3.Database} db
  */
-export const createSubscription = async(title, option = {}, db) => {
+export const createSubscription = async (title, option = {}, db) => {
   let sid = '';
   const keywords = option?.keywords ?? [];
   const episodePatternString = option?.episodePatternString ?? '/$^/';
@@ -145,10 +147,11 @@ export const createSubscription = async(title, option = {}, db) => {
 
   const statement = db.prepare('INSERT INTO subscriptions (sid, title, keywords, exclude_pattern, episode_pattern) VALUES (?,?,?,?,?)');
   return new Promise((resolve) => {
-    statement.run([sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString], function(err) {
+    statement.run([sid, title, JSON.stringify(keywords), excludePatternString, episodePatternString], function (err) {
       if (err) {
         console.error(err);
       }
+      // eslint-disable-next-line ts/no-invalid-this
       resolve(this);
     });
   });
@@ -158,13 +161,14 @@ export const createSubscription = async(title, option = {}, db) => {
  * @param {string} sid
  * @param {sqlite3.Database} db
  */
-export const removeSubscriptionBySid = async(sid, db) => {
+export const removeSubscriptionBySid = async (sid, db) => {
   const statement = db.prepare('DELETE FROM subscriptions WHERE sid = ?');
   return new Promise((resolve) => {
-    statement.run([sid], function(err) {
+    statement.run([sid], function (err) {
       if (err) {
         console.error(err);
       }
+      // eslint-disable-next-line ts/no-invalid-this
       resolve(this);
     });
   });
@@ -179,9 +183,9 @@ export const removeSubscriptionBySid = async(sid, db) => {
  *   keywords: DS['keywords'];
  *   episodePattern: RegExp;
  *   excludePattern: RegExp;
- * }[]>}
+ * }[]>} all subscriptions
  */
-export const getAllSubscriptions = async(db) => {
+export const getAllSubscriptions = async (db) => {
   return new Promise((resolve, reject) => {
     db.all('SELECT * FROM subscriptions', (err, rows) => {
       if (err) { return reject(err); }
@@ -208,9 +212,9 @@ export const getAllSubscriptions = async(db) => {
  *   subscriptionTitle: DS['title'];
  *   threadTitle: DT['title'];
  *   episodePatternString: DS['episode_pattern'];
- * }[]>}
+ * }[]>} last threads of each subscriptions
  */
-export const getLatestThreadsInEachSubscription = async(db) => {
+export const getLatestThreadsInEachSubscription = async (db) => {
   const sql = `
   SELECT
     sub.id AS sub_id,
@@ -254,9 +258,9 @@ export const getLatestThreadsInEachSubscription = async(db) => {
  *   episodePatternString: DS['episode_pattern'];
  *   magnet: DT['magnet'];
  *   publishDate: DT['publish_date'];
- * }[]>}
+ * }[]>} threads
  */
-export const getThreadsBySid = async(sid, db) => {
+export const getThreadsBySid = async (sid, db) => {
   const sql = `
   SELECT t.*, sub.episode_pattern, sub.sid
   FROM subscriptions sub
@@ -284,9 +288,9 @@ export const getThreadsBySid = async(sid, db) => {
 /**
  * @param {string} dmhyLink
  * @param {sqlite3.Database} db
- * @returns {Promise<number | null>}
+ * @returns {Promise<number | null>} threads.id
  */
-export const getThreadByDmhyLink = async(dmhyLink, db) => {
+export const getThreadByDmhyLink = async (dmhyLink, db) => {
   return new Promise((resolve, reject) => {
     db.get('SELECT id FROM threads WHERE dmhy_link = ?', [dmhyLink], (err, rows) => {
       if (err) { return reject(err); }
@@ -301,13 +305,14 @@ export const getThreadByDmhyLink = async(dmhyLink, db) => {
  * @param {string} title
  * @param {string} publishDate
  * @param {sqlite3.Database} db
- * @returns {Promise<sqlite3.RunResult>}
+ * @returns {Promise<sqlite3.RunResult>} create statement result
  */
-export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
+export const createThread = async (dmhyLink, magnet, title, publishDate, db) => {
   const statement = db.prepare('INSERT INTO threads (dmhy_link, magnet, title, publish_date) VALUES (?, ?, ?, ?)');
   return new Promise((resolve, reject) => {
-    statement.run([dmhyLink, magnet, title, publishDate], function(err) {
+    statement.run([dmhyLink, magnet, title, publishDate], function (err) {
       if (err) { return reject(err); }
+      // eslint-disable-next-line ts/no-invalid-this
       resolve(this);
     });
   });
@@ -319,12 +324,12 @@ export const createThread = async(dmhyLink, magnet, title, publishDate, db) => {
  * @param {sqlite3.Database} db
  * @returns {Promise<boolean>} successful
  */
-export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => {
+export const bindSubscriptionAndThread = async (subscriptionId, threadId, db) => {
   const statement = db.prepare('INSERT INTO subscriptions_threads (subscription_id, thread_id) VALUES (?, ?)');
   return new Promise((resolve, reject) => {
     statement.run([subscriptionId, threadId], (err) => {
       if (err) {
-        // @ts-expect-error
+        // @ts-expect-error err is sqlite3 error type
         if (err.errno === 19 && err.code === 'SQLITE_CONSTRAINT') {
           return resolve(false);
         }
@@ -337,9 +342,9 @@ export const bindSubscriptionAndThread = async(subscriptionId, threadId, db) => 
 
 /**
  * @param {sqlite3.Database} db
- * @returns {Promise<import('~types').DatabaseConfig[]>}
+ * @returns {Promise<import('~types').DatabaseConfig[]>} database configs
  */
-export const getAllConfigurations = async(db) => {
+export const getAllConfigurations = async (db) => {
   return new Promise((resolve, reject) => {
     db.all('SELECT * FROM configurations', (err, rows) => {
       if (err) { return reject(err); }
@@ -357,13 +362,14 @@ export const getAllConfigurations = async(db) => {
  * @param {string} key
  * @param {string} value
  * @param {sqlite3.Database} db
- * @returns {Promise<sqlite3.RunResult>}
+ * @returns {Promise<sqlite3.RunResult>} create statement result
  */
-export const setConfiguration = async(key, value, db) => {
+export const setConfiguration = async (key, value, db) => {
   const statement = db.prepare('UPDATE configurations SET value = ? WHERE key = ?');
   return new Promise((resolve, reject) => {
-    statement.run([value, key], function(err) {
+    statement.run([value, key], function (err) {
       if (err) { return reject(err); }
+      // eslint-disable-next-line ts/no-invalid-this
       resolve(this);
     });
   });

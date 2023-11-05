@@ -39,7 +39,8 @@ app.post('/download', (req, res) => {
 
   if (!token || token !== expectedToken) {
     res.status(403).send('Forbidden');
-  } else {
+  }
+  else {
     console.log(req.body);
     res.json(req.body);
   }

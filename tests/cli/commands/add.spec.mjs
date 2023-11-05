@@ -1,18 +1,17 @@
-// @ts-nocheck
-import { expect, test, vi } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import yargs from 'yargs';
 
 import { getAllSubscriptions, getMigratedDb } from '../../../src/database.mjs';
 import * as addCommand from '../../../src/cli/commands/add.mjs';
 
-const executeAddCommand = async(db, ...keywords) => {
+const executeAddCommand = async (db, ...keywords) => {
   const argv = await yargs(['add', ...keywords])
     .command({ ...addCommand, handler: vi.fn() }).argv;
 
   await addCommand.handler(argv, () => db);
 };
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -21,7 +20,7 @@ vi.mock('../../../src/logger.mjs', async(importOriginal) => {
   };
 });
 
-test('add 搖曳露營', async() => {
+it('add 搖曳露營', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營');
@@ -32,7 +31,7 @@ test('add 搖曳露營', async() => {
   expect(s.keywords).includes('搖曳露營');
 });
 
-test('add 搖曳露營 喵萌 繁體', async() => {
+it('add 搖曳露營 喵萌 繁體', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營', '喵萌', '繁體');
@@ -46,7 +45,7 @@ test('add 搖曳露營 喵萌 繁體', async() => {
     .includes('繁體');
 });
 
-test('add 搖曳露營 輕旅輕營 喵萌 繁體 --exclude-title', async() => {
+it('add 搖曳露營 輕旅輕營 喵萌 繁體 --exclude-title', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營', '輕旅輕營', '喵萌', '繁體', '--exclude-title');
@@ -61,7 +60,7 @@ test('add 搖曳露營 輕旅輕營 喵萌 繁體 --exclude-title', async() => {
     .not.includes('搖曳露營');
 });
 
-test('add 搖曳露營 喵萌 -x 简体', async() => {
+it('add 搖曳露營 喵萌 -x 简体', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營', '喵萌', '-x', '简体');
@@ -74,7 +73,7 @@ test('add 搖曳露營 喵萌 -x 简体', async() => {
 });
 
 // keyword after '-x' will view as an array
-test('add 搖曳露營 喵萌 -x 简体 合集', async() => {
+it('add 搖曳露營 喵萌 -x 简体 合集', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營', '喵萌', '-x', '简体', '合集');
@@ -87,7 +86,7 @@ test('add 搖曳露營 喵萌 -x 简体 合集', async() => {
 });
 
 // keyword is number
-test('add 搖曳露營 喵萌 繁體 1080', async() => {
+it('add 搖曳露營 喵萌 繁體 1080', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營', '喵萌', '繁體', '1080');

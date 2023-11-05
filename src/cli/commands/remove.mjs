@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import debug from 'debug';
 
 import {
@@ -29,19 +30,23 @@ export const builder = (yargs) => {
     .example(t('CMD_RM_EXAMPLE3'), t('CMD_RM_EXAMPLE3_DESC'));
 };
 
+const yargsZodParser = z.object({
+  sid: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  force: z.boolean().optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:remove:argv')(argv);
 
   try {
     const db = await getDb();
+    const yz = yargsZodParser.parse(argv);
 
-    /** @type {string[]} */
-    // @ts-expect-error
-    const removingSids = (argv.sid ?? []).map((s) => String(s).toUpperCase());
+    const removingSids = (yz.sid ?? []).map((s) => String(s).toUpperCase());
 
     const removableSids = await arrayAsyncFilter(removingSids, (sid) => isExistingSubscriptionSid(sid, db));
     const unremovableSids = removingSids.filter((sid) => !removableSids.includes(sid));
@@ -49,7 +54,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     debug('dmhy:cli:remove:removableSids')(removableSids);
     debug('dmhy:cli:remove:unremovableSids')(unremovableSids);
 
-    if (unremovableSids.length > 0 && !argv.force) {
+    if (unremovableSids.length > 0 && !yz.force) {
       throw new Error(t('CMD_RM_SID_NOT_FOUND', { sid: unremovableSids[0] }));
     }
 
@@ -57,15 +62,16 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
     for (const sid of removableSids) {
       const found = subscriptions.find((sub) => sub.sid === sid);
-      const answer = argv.force ? 'y' : await ask(t('CMD_RM_PROMPTS_CONFIRM', { title: found?.title }));
+      const answer = yz.force ? 'y' : await ask(t('CMD_RM_PROMPTS_CONFIRM', { title: found?.title }));
       if (/(?:y|yes)/i.test(answer)) {
         await removeSubscriptionBySid(sid, db);
         logger.log(t('CMD_RM_SUCCESS', { title: found?.title }));
       }
     }
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:remove')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:remove')(err.message);
   }
 };

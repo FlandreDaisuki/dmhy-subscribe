@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import debug from 'debug';
 
 import {
@@ -25,22 +26,27 @@ export const builder = (yargs) => {
     .example(t('CMD_DL_EXAMPLE3'), t('CMD_DL_EXAMPLE3_DESC'));
 };
 
+const yargsZodParser = z.object({
+  sid: z.string(),
+  episodeQueries: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:download:argv')(argv);
 
   try {
     const db = await getDb();
     const allConfigs = await getAllConfigurations(db);
+    const yz = yargsZodParser.parse(argv);
 
-    /** @type {import('~types').DatabaseConfigDict} */
-    // @ts-expect-error
+    /** @type {Partial<import('~types').DatabaseConfigDict>} */
     const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.key]: curr.value }), {});
 
-    const targetSid = String(argv.sid).toUpperCase();
+    const targetSid = String(yz.sid).toUpperCase();
     if (!(await isExistingSubscriptionSid(targetSid, db))) {
       return logger.error('dmhy:cli:download:sid')(t('CMD_DL_SID_NOT_FOUND', { sid: targetSid }));
     }
@@ -51,19 +57,21 @@ export const handler = async(argv, getDb = getMigratedDb) => {
         episode: parseEpisode(t.title, t.episodePatternString),
       }));
 
-    const episodeQuery = compileEpisodeQuery(...argv.episodeQueries);
+    const episodeQuery = compileEpisodeQuery(...(yz.episodeQueries ?? []));
     await Promise.all(extendThreads
       .filter((extendThread) => episodeQuery.match(extendThread))
-      .map(async(extendThread) => {
+      .map(async (extendThread) => {
         try {
           await downloadThread(extendThread, config);
-        } catch (err) {
+        }
+        catch (err) {
           logger.error('dmhy:cli:download:downloader')(err);
         }
       }));
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:download')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:download')(err.message);
   }
 };

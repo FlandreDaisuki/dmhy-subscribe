@@ -1,8 +1,7 @@
-// @ts-nocheck
-
-import os from 'os';
-import fs from 'fs/promises';
-import { execSync, spawnSync } from 'child_process';
+import os from 'node:os';
+import fs from 'node:fs/promises';
+import process from 'node:process';
+import { execSync, spawnSync } from 'node:child_process';
 import debug from 'debug';
 
 // Modified from https://github.com/sindresorhus/os-locale
@@ -22,11 +21,13 @@ export const LOCALE = ((env) => {
     const x = spawnSync('wmic', ['os', 'get', 'locale'], { encoding: 'utf-8' });
     if (x.status === 0) {
       const winLocId = x.stdout.replace('Locale', '').trim();
-      return LOCALE_ID[winLocId];
+      // @ts-expect-error winLocId may not keyof LOCALE_ID
+      return LOCALE_ID[winLocId] ?? 'en_US';
     }
     return '';
   };
 
+  // @ts-expect-error may call by undefined
   const localeName = {
     freebsd: unix,
     linux: unix,
@@ -41,7 +42,7 @@ export const LOCALE = ((env) => {
 })(process.env);
 
 // Modified from https://github.com/juliangruber/downloads-folder
-export const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR ?? await(async() => {
+export const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR ?? await (async () => {
   const darwin = () => {
     return `${os.homedir()}/Downloads`;
   };
@@ -50,26 +51,30 @@ export const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR ?? await(async() => {
     return `${process.env.USERPROFILE}/Downloads`;
   };
 
-  const unix = async() => {
+  const unix = async () => {
     try {
       const xdgDownloadDir = execSync('xdg-user-dir DOWNLOAD', {
-        encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'],
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'],
       }).trim();
       if ((await fs.stat(xdgDownloadDir)).isDirectory()) { return xdgDownloadDir; }
-    } catch (err){
+    }
+    catch (err) {
       debug('dmhy:env:xdgDownloadDir')(err);
     }
 
     try {
       const homeDownloadDir = `${os.homedir()}/Downloads`;
       if ((await fs.stat(homeDownloadDir)).isDirectory()) { return homeDownloadDir; }
-    } catch (err) {
+    }
+    catch (err) {
       debug('dmhy:env:homeDownloadDir')(err);
     }
 
     return '/tmp';
   };
 
+  // @ts-expect-error may call by undefined
   return await {
     darwin,
     freebsd: unix,
@@ -79,7 +84,7 @@ export const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR ?? await(async() => {
   }[os.platform()]();
 })();
 
-export const DATABASE_DIR = process.env.DATABASE_DIR ?? await (async() => {
+export const DATABASE_DIR = process.env.DATABASE_DIR ?? await (async () => {
   const dir = `${os.homedir()}/.local/share/dmhy-subscribe`;
   await fs.mkdir(dir, { recursive: true });
   return dir;

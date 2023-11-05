@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { afterEach, assert, expect, test, vi } from 'vitest';
+import { afterEach, assert, expect, it, vi } from 'vitest';
 import yargs from 'yargs';
 
 import {
@@ -15,21 +14,21 @@ import * as removeCommand from '../../../src/cli/commands/remove.mjs';
 const outputs = [];
 const errOutputs = [];
 
-const executeAddCommand = async(db, ...keywords) => {
+const executeAddCommand = async (db, ...keywords) => {
   const argv = await yargs(['add', ...keywords])
     .command({ ...addCommand, handler: vi.fn() }).argv;
 
   await addCommand.handler(argv, () => db);
 };
 
-const executeRemoveCommand = async(db, ...sids) => {
+const executeRemoveCommand = async (db, ...sids) => {
   const argv = await yargs(['rm', ...sids])
     .command({ ...removeCommand, handler: vi.fn() }).argv;
 
   await removeCommand.handler(argv, () => db);
 };
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -38,7 +37,7 @@ vi.mock('../../../src/logger.mjs', async(importOriginal) => {
   };
 });
 
-vi.mock('../../../src/utils.mjs', async(importOriginal) => {
+vi.mock('../../../src/utils.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -51,7 +50,7 @@ afterEach(() => {
   errOutputs.length = 0;
 });
 
-test('remove existing one', async() => {
+it('remove existing one', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營');
@@ -74,7 +73,7 @@ test('remove existing one', async() => {
   expect(outputs).include(t('CMD_RM_SUCCESS', { title: '搖曳露營' }));
 });
 
-test('remove non existing one', async() => {
+it('remove non existing one', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeRemoveCommand(db, 'XYZ');

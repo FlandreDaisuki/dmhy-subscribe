@@ -1,3 +1,6 @@
+import process from 'node:process';
+
+import { z } from 'zod';
 import debug from 'debug';
 
 import { t } from '../../locale.mjs';
@@ -36,31 +39,40 @@ export const builder = (yargs) => {
     .example(t('CMD_FIND_EXAMPLE3'), t('CMD_FIND_EXAMPLE3_DESC'));
 };
 
+const yargsZodParser = z.object({
+  title: z.string(),
+  keywords: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  excludeTitle: z.boolean().optional(),
+  episodePattern: z.string().optional(),
+  excludePattern: z.string().optional(),
+  excludes: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  thenAdd: z.boolean().optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:find:argv')(argv);
 
   try {
     const db = await getDb();
+    const yz = yargsZodParser.parse(argv);
 
-    /** @type {string[]} */
-    // @ts-expect-error
-    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]).map(String);
+    const keywords = (yz.keywords ?? []).concat(yz.excludeTitle ? [] : [yz.title]).map(String);
     const rss = await getRssListByKeywords(keywords);
 
     const getExcludePattern = () => {
-      if (argv.excludePattern) {
-        return parsePattern(argv.excludePattern);
+      if (yz.excludePattern) {
+        return parsePattern(yz.excludePattern);
       }
-      if (argv.excludes) {
-        return joinToRegExp(argv.excludes);
+      if (yz.excludes) {
+        return joinToRegExp(yz.excludes);
       }
       return /$^/;
     };
-    const episodePattern = argv.episodePattern ? parsePattern(argv.episodePattern) : /$^/;
+    const episodePattern = yz.episodePattern ? parsePattern(yz.episodePattern) : /$^/;
 
     const filteredRssItems = rss.items.filter((item) => {
       return !(getExcludePattern().test(String(item.title)));
@@ -70,23 +82,24 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       logger.log(item.title);
     }
 
-    if (argv.thenAdd) {
-      if (await isExistingSubscriptionTitle(argv.title, db)) {
-        const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: argv.title }));
+    if (yz.thenAdd) {
+      if (await isExistingSubscriptionTitle(yz.title, db)) {
+        const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: yz.title }));
         if (!/(?:y|yes)/i.test(answer)) {
           return process.exit(1);
         }
       }
 
-      await createSubscription(argv.title, {
+      await createSubscription(yz.title, {
         keywords,
         excludePatternString: String(getExcludePattern()),
         episodePatternString: String(episodePattern),
       }, db);
     }
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:find')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:find')(err.message);
   }
 };

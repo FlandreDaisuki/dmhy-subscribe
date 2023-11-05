@@ -1,8 +1,7 @@
-// @ts-nocheck
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { afterEach, assert, expect, test, vi } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, assert, expect, it, vi } from 'vitest';
 import yargs from 'yargs';
 import RSSParser from 'rss-parser';
 
@@ -19,35 +18,35 @@ const bocchiRss = await fs.readFile(path.join(thisFileDir, '../../fixtures/bocch
 
 const outputs = [];
 
-const executeAddCommand = async(db, ...keywords) => {
+const executeAddCommand = async (db, ...keywords) => {
   const argv = await yargs(['add', ...keywords])
     .command({ ...addCommand, handler: vi.fn() }).argv;
 
   await addCommand.handler(argv, () => db);
 };
 
-const executePullCommand = async(db, ...sids) => {
+const executePullCommand = async (db, ...sids) => {
   const argv = await yargs(['pull', ...sids])
     .command({ ...pullCommand, handler: vi.fn() }).argv;
 
   await pullCommand.handler(argv, () => db);
 };
 
-const executeConfigCommand = async(db, key, value) => {
+const executeConfigCommand = async (db, key, value) => {
   const argv = await yargs(['config', key, value])
     .command({ ...configCommand, handler: vi.fn() }).argv;
 
   await configCommand.handler(argv, () => db);
 };
 
-function * mutableRssGen(){
-  yield (new RSSParser).parseString(campHalfRss);
+function * mutableRssGen() {
+  yield (new RSSParser()).parseString(campHalfRss);
   while (true) {
-    yield (new RSSParser).parseString(campRss);
+    yield (new RSSParser()).parseString(campRss);
   }
 }
 
-vi.mock('../../../src/utils.mjs', async(importOriginal) => {
+vi.mock('../../../src/utils.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   const μ = mutableRssGen();
   const λ = mutableRssGen();
@@ -56,10 +55,10 @@ vi.mock('../../../src/utils.mjs', async(importOriginal) => {
     ...mod,
     getRssListByKeywords: vi.fn((a) => {
       if (a[0] === '搖曳露營') {
-        return (new RSSParser).parseString(campRss);
+        return (new RSSParser()).parseString(campRss);
       }
       if (a[0] === '孤獨搖滾') {
-        return (new RSSParser).parseString(bocchiRss);
+        return (new RSSParser()).parseString(bocchiRss);
       }
       if (a[0] === '搖曳露營μ') {
         return μ.next().value;
@@ -71,7 +70,7 @@ vi.mock('../../../src/utils.mjs', async(importOriginal) => {
   };
 });
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -83,7 +82,7 @@ afterEach(() => {
   outputs.length = 0;
 });
 
-test('pull all while no threads', async() => {
+it('pull all while no threads', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營');
@@ -108,7 +107,7 @@ test('pull all while no threads', async() => {
   expect((await getThreadsBySid(sidMap['孤獨搖滾'], db))).toHaveLength(13);
 });
 
-test('pull specific subscription threads', async() => {
+it('pull specific subscription threads', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營');
@@ -133,7 +132,7 @@ test('pull specific subscription threads', async() => {
   expect((await getThreadsBySid(sidMap['孤獨搖滾'], db))).toHaveLength(0);
 });
 
-test('pull existing subscription threads', async() => {
+it('pull existing subscription threads', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeAddCommand(db, '搖曳露營μ');
@@ -151,7 +150,7 @@ test('pull existing subscription threads', async() => {
   expect((await getThreadsBySid(sid, db))).toHaveLength(14);
 });
 
-test('pull existing subscription threads then download it', async() => {
+it('pull existing subscription threads then download it', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeConfigCommand(db, 'downloader', 'stdout');

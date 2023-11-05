@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+
 import yargs from 'yargs';
 import debug from 'debug';
 

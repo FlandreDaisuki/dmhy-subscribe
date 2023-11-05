@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { z } from 'zod';
 
 import {
   bindSubscriptionAndThread,
@@ -26,25 +27,28 @@ export const builder = (yargs) => {
     });
 };
 
+const yargsZodParser = z.object({
+  sid: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  thenDownload: z.boolean().optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:pull:argv')(argv);
 
   try {
     const db = await getDb();
     const subscriptions = await getAllSubscriptions(db);
+    const yz = yargsZodParser.parse(argv);
 
-    /** @type {string[]} */
-    // @ts-expect-error
-    const pullingSids = (argv.sid ?? []).map((s) => String(s).toUpperCase());
+    const pullingSids = (yz.sid ?? []).map((s) => String(s).toUpperCase());
 
     const allConfigs = await getAllConfigurations(db);
 
-    /** @type {import('~types').DatabaseConfigDict} */
-    // @ts-expect-error
+    /** @type {Partial<import('~types').DatabaseConfigDict>}} */
     const config = allConfigs.reduce((prev, curr) => ({ ...prev, [curr.key]: curr.value }), {});
 
     await Promise.all(
@@ -54,19 +58,19 @@ export const handler = async(argv, getDb = getMigratedDb) => {
 
           return pullingSids.includes(String(sub.sid).toUpperCase());
         })
-        .map(async(sub) => {
+        .map(async (sub) => {
           debug('dmhy:cli:pull:subscription')(sub);
 
           const rss = await getRssListByKeywords(sub.keywords);
           const getExcludePattern = () => parsePattern(String(sub.excludePattern));
           const filteredRssItems = rss.items.filter((item) => !(getExcludePattern().test(String(item.title))));
 
-          return Promise.all(filteredRssItems.map(async(rssItem) => {
+          return Promise.all(filteredRssItems.map(async (rssItem) => {
             const dmhyLink = rssItem.link;
             const magnet = rssItem.enclosure?.url;
             const title = rssItem.title;
             const publishDate = rssItem.isoDate;
-            if (!dmhyLink || !magnet || !title || !publishDate){
+            if (!dmhyLink || !magnet || !title || !publishDate) {
               return debug('dmhy:cli:pull:rssItem')(rssItem);
             }
 
@@ -84,16 +88,17 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             if (bound) {
               logger.log(t('CMD_PULL_SUCCESS', { title }));
 
-              if (argv.thenDownload) {
+              if (yz.thenDownload) {
                 await downloadThread({ title, magnet }, config);
               }
             }
           }));
         }),
     );
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:pull')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:pull')(err.message);
   }
 };

@@ -1,8 +1,7 @@
-// @ts-nocheck
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { afterEach, expect, test, vi } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, expect, it, vi } from 'vitest';
 import yargs from 'yargs';
 import RSSParser from 'rss-parser';
 
@@ -15,22 +14,22 @@ const campRss = await fs.readFile(path.join(thisFileDir, '../../fixtures/camp.xm
 
 const outputs = [];
 
-const executeFindCommand = async(db, ...keywords) => {
+const executeFindCommand = async (db, ...keywords) => {
   const argv = await yargs(['find', ...keywords])
     .command({ ...findCommand, handler: vi.fn() }).argv;
 
   await findCommand.handler(argv, () => db);
 };
 
-vi.mock('../../../src/utils.mjs', async(importOriginal) => {
+vi.mock('../../../src/utils.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
-    getRssListByKeywords: vi.fn(() => (new RSSParser).parseString(campRss)),
+    getRssListByKeywords: vi.fn(() => (new RSSParser()).parseString(campRss)),
   };
 });
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -59,7 +58,7 @@ const EPISODE_TITLE_MAP = Object.freeze({
   '1080p': '【喵萌奶茶屋&千夏字幕組】【輕旅輕營_Yuru Camp】[第01-12話][合集][1920×1080][MP4][繁體]（諢名：搖曳露營）(附無損音樂)',
 });
 
-test('find 搖曳露營 喵萌', async() => {
+it('find 搖曳露營 喵萌', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeFindCommand(db, '搖曳露營', '喵萌');
@@ -84,7 +83,7 @@ test('find 搖曳露營 喵萌', async() => {
     .include(EPISODE_TITLE_MAP['1080p']);
 });
 
-test('find 搖曳露營 喵萌 -x 合集', async() => {
+it('find 搖曳露營 喵萌 -x 合集', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeFindCommand(db, '搖曳露營', '喵萌', '-x', '合集');
@@ -109,7 +108,7 @@ test('find 搖曳露營 喵萌 -x 合集', async() => {
     .not.include(EPISODE_TITLE_MAP['1080p']);
 });
 
-test('find 搖曳露營 喵萌 繁體 --then-add', async() => {
+it('find 搖曳露營 喵萌 繁體 --then-add', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeFindCommand(db, '搖曳露營', '喵萌', '繁體', '--then-add');

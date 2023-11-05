@@ -1,4 +1,6 @@
-import assert from 'assert';
+import assert from 'node:assert';
+
+import { z } from 'zod';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -31,23 +33,30 @@ export const builder = (yargs) => {
     });
 };
 
+const yargsZodParser = z.object({
+  format: z.enum(['table', 'json']),
+  sid: z.string().optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:list:argv')(argv);
 
   try {
     const db = await getDb();
+    const yz = yargsZodParser.parse(argv);
+
     const subscriptionThreads = await getLatestThreadsInEachSubscription(db);
     for (const st of subscriptionThreads) {
       debug('dmhy:cli:list:subscriptionThread')(JSON.stringify(st));
     }
 
     // #region list sid
-    if (argv.sid) {
-      const targetSid = String(argv.sid).toUpperCase();
+    if (yz.sid) {
+      const targetSid = String(yz.sid).toUpperCase();
       if (!(await isExistingSubscriptionSid(targetSid, db))) {
         return logger.error('dmhy:cli:list')(t('CMD_LS_SID_NOT_FOUND', { sid: targetSid }));
       }
@@ -56,7 +65,7 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       const targetSubscription = (await getAllSubscriptions(db)).find((sub) => sub.sid === targetSid);
       assert(targetSubscription); // Make typescript happy
       const threads = await getThreadsBySid(targetSid, db);
-      if (argv.format === 'json') {
+      if (yz.format === 'json') {
         return logger.log(JSON.stringify({
           sid: targetSubscription.sid,
           title: targetSubscription.title,
@@ -69,7 +78,8 @@ export const handler = async(argv, getDb = getMigratedDb) => {
             episode: toEpisodeDisplay(parseEpisode(th.title, th.episodePatternString)),
           })),
         }, null, 2));
-      } else {
+      }
+      else {
         // TODO: i18n & print style
         logger.log('sid:', targetSubscription.sid);
         logger.log('title:', targetSubscription.title);
@@ -95,9 +105,10 @@ export const handler = async(argv, getDb = getMigratedDb) => {
     // #endregion list sid
 
     // #region list all
-    if (argv.format === 'json') {
+    if (yz.format === 'json') {
       logger.log(JSON.stringify(subscriptionThreads, null, 2));
-    } else {
+    }
+    else {
       new Table({
         columns: [
           { name: 'sid', alignment: 'center' },
@@ -112,10 +123,10 @@ export const handler = async(argv, getDb = getMigratedDb) => {
       }).printTable();
     }
     // #endregion list all
-
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:list')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:list')(err.message);
   }
 };

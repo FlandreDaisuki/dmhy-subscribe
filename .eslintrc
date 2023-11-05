@@ -1,6 +1,0 @@
-{
-  "extends":["@flandredaisuki"],
-  "rules": {
-    "no-console": "warn"
-  }
-}

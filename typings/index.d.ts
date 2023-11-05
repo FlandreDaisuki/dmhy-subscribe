@@ -1,29 +1,29 @@
 export type UrlString = `https://${string}`;
-export type MagnetString = string & {};
-export type ISO8601DateTime = string & {};
+export type MagnetString = string & NonNullable<unknown>;
+export type ISO8601DateTime = string & NonNullable<unknown>;
 
 type DatabaseConfig = {
   key: 'downloader';
   value: 'system' | 'stdout' | 'aria2' | 'webhook';
 } | {
-  key: 'download-destination'
+  key: 'download-destination';
   value: string | null;
-}| {
-  key: 'aria2-jsonrpc'
+} | {
+  key: 'aria2-jsonrpc';
   value: UrlString | null;
 } | {
-  key: 'webhook-url'
+  key: 'webhook-url';
   value: UrlString | null;
-}| {
-  key: 'webhook-token'
+} | {
+  key: 'webhook-token';
   value: UrlString | null;
-}
+};
 
 // I don't know why but it works! Thanks ChatGPT!
 type DatabaseConfigDict = {
   [R in DatabaseConfig as R extends { key: infer N; } ? N : never]:
-    R extends { value: infer V } ? V : never;
-  };
+  R extends { value: infer V; } ? V : never;
+};
 
 interface DatabaseThread {
   id: number;
@@ -35,7 +35,7 @@ interface DatabaseThread {
 
 interface DatabaseSubscription {
   id: number;
-  sid: string & {length: 3};
+  sid: string & { length: 3; };
   title: string;
   keywords: string[];
   episode_pattern: string;
@@ -43,7 +43,7 @@ interface DatabaseSubscription {
 }
 
 interface Downloader {
-  download: (thread: {title: string, magnet: string;}, config: Record<string, string | null>) => Promise<void>;
+  download: (thread: { title: string; magnet: string; }, config: Record<string, string | null>) => Promise<void>;
 }
 
 interface Episode {

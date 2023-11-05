@@ -1,11 +1,10 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import yaml from 'js-yaml';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import debug from 'debug';
-
-import * as logger from './logger.mjs';
+import yaml from 'js-yaml';
 import { LOCALE } from './env.mjs';
+import * as logger from './logger.mjs';
 
 const thisFilePath = fileURLToPath(import.meta.url);
 const thisFileDir = path.dirname(thisFilePath);
@@ -26,9 +25,10 @@ for (const candidate of candidates) {
       const localeStrings = yaml.load(await fs.readFile(candidate, 'utf-8'));
       Object.assign(dict, localeStrings);
     }
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:locale')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('locale')(err.message);
   }
 }
@@ -36,7 +36,6 @@ for (const candidate of candidates) {
 /**
  * @param {string} key
  * @param {Record<string, any>} placeholder
- * @returns {string}
  */
 export const t = (key, placeholder = {}) => {
   let translated = dict[key];

@@ -1,10 +1,11 @@
 {
   "name": "dmhy-subscribe",
+  "type": "module",
   "version": "1.0.6",
   "description": "Subscribe by keywords and download megnets",
-  "keywords": [],
-  "license": "ISC",
   "author": "FlandreDaisuki <vbnm123c+github@gmail.com>",
+  "license": "ISC",
+  "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FlandreDaisuki/dmhy-subscribe.git"
@@ -12,13 +13,16 @@
   "bugs": {
     "url": "https://github.com/FlandreDaisuki/dmhy-subscribe/issues"
   },
-  "homepage": "https://github.com/FlandreDaisuki/dmhy-subscribe#readme",
+  "keywords": [],
   "main": "index.mjs",
   "bin": {
     "dmhy": "./src/cli/index.mjs"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "lint": "eslint --fix .",
+    "lint": "eslint . --fix",
     "test": "vitest"
   },
   "dependencies": {
@@ -31,21 +35,19 @@
     "rss-parser": "^3.13.0",
     "semver": "^7.5.4",
     "sqlite3": "^5.1.6",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@flandredaisuki/eslint-config": "^0.0.4",
+    "@flandredaisuki/eslint-config": "^0.1.2",
     "@types/debug": "^4.1.9",
     "@types/js-yaml": "^4.0.6",
     "@types/node": "^20.8.3",
     "@types/semver": "^7.5.3",
     "@types/yargs": "^17.0.28",
-    "eslint": "^8.51.0",
+    "eslint": "^8.53.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
-  },
-  "engines": {
-    "node": ">=18"
   },
   "pnpm": {
     "overrides": {

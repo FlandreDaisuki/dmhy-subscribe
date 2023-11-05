@@ -1,10 +1,9 @@
-// @ts-nocheck
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import yargs from 'yargs';
-import { afterEach, assert, expect, test, vi } from 'vitest';
+import { afterEach, assert, expect, it, vi } from 'vitest';
 import RSSParser from 'rss-parser';
 
 import { getAllSubscriptions, getMigratedDb } from '../../../src/database.mjs';
@@ -15,55 +14,54 @@ import * as pullCommand from '../../../src/cli/commands/pull.mjs';
 import * as removeCommand from '../../../src/cli/commands/remove.mjs';
 import * as configCommand from '../../../src/cli/commands/config.mjs';
 
-
 const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
 
 const campHalfRss = await fs.readFile(path.join(thisFileDir, '../../fixtures/camp-half.xml'), 'utf8');
 
 const outputs = [];
 
-const executeAddCommand = async(db, ...keywords) => {
+const executeAddCommand = async (db, ...keywords) => {
   const argv = await yargs(['add', ...keywords])
     .command({ ...addCommand, handler: vi.fn() }).argv;
 
   await addCommand.handler(argv, () => db);
 };
 
-const executeRemoveCommand = async(db, ...sids) => {
+const executeRemoveCommand = async (db, ...sids) => {
   const argv = await yargs(['rm', ...sids])
     .command({ ...removeCommand, handler: vi.fn() }).argv;
 
   await removeCommand.handler(argv, () => db);
 };
 
-const executePullCommand = async(db, ...sids) => {
+const executePullCommand = async (db, ...sids) => {
   const argv = await yargs(['pull', ...sids])
     .command({ ...pullCommand, handler: vi.fn() }).argv;
 
   await pullCommand.handler(argv, () => db);
 };
 
-const executeConfigCommand = async(db, key, value) => {
+const executeConfigCommand = async (db, key, value) => {
   const argv = await yargs(['config', key, value])
     .command({ ...configCommand, handler: vi.fn() }).argv;
 
   await configCommand.handler(argv, () => db);
 };
 
-vi.mock('../../../src/utils.mjs', async(importOriginal) => {
+vi.mock('../../../src/utils.mjs', async (importOriginal) => {
   const mod = await importOriginal();
 
   return {
     ...mod,
     getRssListByKeywords: vi.fn((a) => {
       if (a[0] === '搖曳露營') {
-        return (new RSSParser).parseString(campHalfRss);
+        return (new RSSParser()).parseString(campHalfRss);
       }
     }),
   };
 });
 
-vi.mock('../../../src/logger.mjs', async(importOriginal) => {
+vi.mock('../../../src/logger.mjs', async (importOriginal) => {
   const mod = await importOriginal();
   return {
     ...mod,
@@ -75,7 +73,7 @@ afterEach(() => {
   outputs.length = 0;
 });
 
-test('pull after removed', async() => {
+it('pull after removed', async () => {
   const db = await getMigratedDb(':memory:');
 
   await executeConfigCommand(db, 'downloader', 'stdout');

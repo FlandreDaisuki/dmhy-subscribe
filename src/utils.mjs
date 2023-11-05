@@ -1,40 +1,34 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createHash } from 'crypto';
-import * as readline from 'readline';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import * as readline from 'node:readline';
+import process from 'node:process';
+
 import debug from 'debug';
 import RSSParser from 'rss-parser';
 import * as logger from './logger.mjs';
 import { t } from './locale.mjs';
 
-// @ts-expect-error
-const isNil = (v) => v === undefined || v === null;
+/**
+ * @param {number} start
+ * @param {number | undefined} end
+ * @param {number} [step]
+ */
+const range = (start, end, step = 1) => {
+  const min = Math.min(start, end ?? 0);
+  const max = Math.max(start, end ?? 0);
 
-// @ts-expect-error
-const range = (start, end, step) => {
-  if (isNil(end) && isNil(step)) {
-    return Array.from({ length: start }, (_, i) => i);
-  }
-
-  const min = Math.min(start, end);
-  const max = Math.max(start, end);
-
-  if (isNil(step)) {
-    return Array.from({ length: max - min }, (_, i) => i + min);
-  } else {
-    const length = Math.round((max - min) / step);
-    return Array.from({ length }, (_, i) => i * step + min);
-  }
+  const length = Math.round((max - min) / step);
+  return Array.from({ length }, (_, i) => i * step + min);
 };
 
 /**
  * @template T
  * @param {T[]} arr
  * @param {(item: T) => Promise<boolean>} predicate
- * @returns {Promise<T[]>}
  */
-export const arrayAsyncFilter = async(arr, predicate) => {
+export const arrayAsyncFilter = async (arr, predicate) => {
   const results = await Promise.all(arr.map(predicate));
   return arr.filter((_, idx) => results[idx]);
 };
@@ -46,7 +40,7 @@ export const isFileExists = (absPath) =>
     .catch(() => false);
 
 /** @param {string} question */
-export const ask = async(question) => {
+export const ask = async (question) => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -81,7 +75,7 @@ export const joinToRegExp = (stringList) => {
 /** @param {string[]} args */
 export const sidHash = (...args) => {
   const h = createHash('sha1');
-  for (const arg of args.flat(Infinity)) {
+  for (const arg of args.flat(Number.POSITIVE_INFINITY)) {
     h.update(arg);
   }
   return `ZZZ${h.digest('base64')
@@ -91,32 +85,33 @@ export const sidHash = (...args) => {
 };
 
 /** @param {string[]} keywords */
-export const getRssListByKeywords = async(keywords = []) => {
+export const getRssListByKeywords = async (keywords = []) => {
   const u = new URL('https://share.dmhy.org/topics/rss/rss.xml');
   u.searchParams.append('sort_id', '2');
 
   u.searchParams.append('keyword', Array.from(keywords).join(' '));
-  debug('dmhy:utils:getRssListByKeywords:url')( u.href);
+  debug('dmhy:utils:getRssListByKeywords:url')(u.href);
 
-  const rss = await (new RSSParser).parseURL(u.href)
+  const rss = await (new RSSParser()).parseURL(u.href)
     .catch((err) => {
       logger.error('dmhy:RSSParser')(err.message);
     });
 
   if (!rss) { return process.exit(1); }
+
   return rss;
 };
 
 /**
  * @param {string} threadTitle
- * @returns {import('~types').Episode}
+ * @returns {import('~types').Episode} parsed episode
  */
 export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
   /** @param {string} s */
   const parseRangeEpisode = (s) => {
     // [\d.]+[-~][\d.]+
     const str = s.replace(/(?:\D*|^)([\d.]+)([-~][\d.]+)?(?:\D*|$)/, '$1$2');
-    const [from, to] = str.split(/[-~]/).map((t) => parseFloat(t));
+    const [from, to] = str.split(/[-~]/).map((t) => Number.parseFloat(t));
     return { from: Number(from), to: Number(to) };
   };
 
@@ -160,9 +155,10 @@ export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
         return tokParsed;
       }
     }
-    return { from: NaN, to: NaN };
-  } catch {
-    return { from: NaN, to: NaN };
+    return { from: Number.NaN, to: Number.NaN };
+  }
+  catch {
+    return { from: Number.NaN, to: Number.NaN };
   }
 };
 
@@ -193,7 +189,7 @@ export const compileEpisodeQuery = (...episodeQueries) => {
   const orders = [];
 
   for (const q of normalizedQueries) {
-    const ord = /^@/.test(q);
+    const ord = q.startsWith('@');
     const rng = /~/.test(q);
 
     const list = ord ? orders : episodes;
@@ -202,7 +198,8 @@ export const compileEpisodeQuery = (...episodeQueries) => {
     if (!rng) {
       const n = Number(z);
       list.push(n);
-    } else {
+    }
+    else {
       const [l, r] = z.split('~').filter(Boolean).map(Number);
       for (const rn of range(l, r + 1)) {
         list.push(rn);
@@ -216,16 +213,19 @@ export const compileEpisodeQuery = (...episodeQueries) => {
       const threadEpisodes = (
         !extendThread.episode.to
           ? [Number(extendThread.episode.from)]
-          : range(extendThread.episode.from, extendThread.episode.to + 1)
+          : range(Number(extendThread.episode.from), extendThread.episode.to + 1)
       ).filter(Number.isFinite);
 
       if (episodes.length > 0 && orders.length > 0) {
         return threadEpisodes.some((ep) => episodes.includes(ep)) || orders.includes(extendThread.order);
-      } else if (episodes.length > 0 && orders.length === 0){
+      }
+      else if (episodes.length > 0 && orders.length === 0) {
         return threadEpisodes.some((ep) => episodes.includes(ep));
-      } else if (episodes.length === 0 && orders.length > 0){
+      }
+      else if (episodes.length === 0 && orders.length > 0) {
         return orders.includes(extendThread.order);
-      } else {
+      }
+      else {
         return true;
       }
     },
@@ -233,10 +233,10 @@ export const compileEpisodeQuery = (...episodeQueries) => {
 };
 
 /**
- * @param  {{title: string; magnet: import('~types').MagnetString;}} threadLike
- * @param  {import('~types').DatabaseConfigDict} config
+ * @param {{title: string; magnet: import('~types').MagnetString;}} threadLike
+ * @param {Partial<import('~types').DatabaseConfigDict>} config
  */
-export const downloadThread = async(threadLike, config) => {
+export const downloadThread = async (threadLike, config) => {
   const downloaderName = config?.downloader ?? 'system';
   const thisFilePath = fileURLToPath(import.meta.url);
   const thisFileDir = path.dirname(thisFilePath);

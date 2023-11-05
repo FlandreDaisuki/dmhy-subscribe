@@ -1,6 +1,8 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+
+import { z } from 'zod';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -31,7 +33,13 @@ export const builder = (yargs) => {
     .example(t('CMD_CONFIG_EXAMPLE3'), t('CMD_CONFIG_EXAMPLE3_DESC'));
 };
 
-const getDownloaders = async() => {
+const yargsZodParser = z.object({
+  configKey: z.string().optional(),
+  configValue: z.string().optional(),
+  format: z.enum(['table', 'json']),
+});
+
+const getDownloaders = async () => {
   const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
   const downloadersDir = path.join(thisFileDir, '..', '..', 'downloaders');
   const downloadersFilename = await fs.readdir(downloadersDir);
@@ -43,7 +51,7 @@ const getDownloaders = async() => {
  * @param {string} key
  * @param {string} value
  */
-const validateConfig = async(key, value) => {
+const validateConfig = async (key, value) => {
   if (key === 'downloader') {
     const supportedDownloaders = await getDownloaders();
     if (!supportedDownloaders.includes(value)) {
@@ -60,7 +68,7 @@ const validateConfig = async(key, value) => {
  * @param {string} value
  * @param {import('sqlite3').Database} db
  */
-const setConfig = async(configs, key, value, db) => {
+const setConfig = async (configs, key, value, db) => {
   const found = configs.find((c) => c.key === key);
   if (!found) {
     return logger.error('dmhy:cli:config:setConfig')(t('CMD_CONFIG_KEY_NOT_FOUND', { key }));
@@ -74,7 +82,8 @@ const setConfig = async(configs, key, value, db) => {
   const r = await setConfiguration(key, value, db);
   if (r.changes > 0) {
     logger.log(t('CMD_CONFIG_SUCCESS'));
-  } else {
+  }
+  else {
     debug('dmhy:cli:config:setConfig')(r);
   }
 };
@@ -103,7 +112,8 @@ const printConfig = (configs, format) => {
         {},
       ),
     );
-  } else {
+  }
+  else {
     new Table({
       columns: [
         { name: 'key', alignment: 'center', title: t('CMD_CONFIG_TH_KEY') },
@@ -118,25 +128,27 @@ const printConfig = (configs, format) => {
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:config:argv')(argv);
 
   try {
     const db = await getDb();
     const configs = await getAllConfigurations(db);
+    const yz = yargsZodParser.parse(argv);
 
-    if (!argv.configKey && !argv.configValue) {
-      return printConfig(configs, argv.format);
+    if (!yz.configKey && !yz.configValue) {
+      return printConfig(configs, yz.format);
     }
-    if (argv.configKey && !argv.configValue) {
-      return getConfig(configs, argv.configKey);
+    if (yz.configKey && !yz.configValue) {
+      return getConfig(configs, yz.configKey);
     }
-    if (argv.configKey && argv.configValue) {
-      return setConfig(configs, argv.configKey, argv.configValue, db);
+    if (yz.configKey && yz.configValue) {
+      return setConfig(configs, yz.configKey, yz.configValue, db);
     }
-  } catch (err) {
+  }
+  catch (err) {
     debug('dmhy:cli:config')(err);
-    // @ts-expect-error
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:config')(err.message);
   }
 };

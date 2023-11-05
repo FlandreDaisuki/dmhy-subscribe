@@ -1,4 +1,7 @@
+import process from 'node:process';
+
 import debug from 'debug';
+import { z } from 'zod';
 
 import {
   createSubscription,
@@ -36,47 +39,57 @@ export const builder = (yargs) => {
     .example(t('CMD_ADD_EXAMPLE3'), t('CMD_ADD_EXAMPLE3_DESC'));
 };
 
+const yargsZodParser = z.object({
+  title: z.string(),
+  keywords: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  excludeTitle: z.boolean().optional(),
+  episodePattern: z.string().optional(),
+  excludePattern: z.string().optional(),
+  excludes: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+});
+
 /**
  * @param {*} argv
  * @param {() => Promise<import('sqlite3').Database>} getDb For testing dependency injection and not used by yargs
  */
-export const handler = async(argv, getDb = getMigratedDb) => {
+export const handler = async (argv, getDb = getMigratedDb) => {
   debug('dmhy:cli:add:argv')(argv);
 
   try {
     const db = await getDb();
+    const yz = yargsZodParser.parse(argv);
 
-    /** @type {string[]} */
-    // @ts-expect-error
-    const keywords = [].concat(argv.keywords).concat(argv.excludeTitle ? [] : [argv.title]).map(String);
+    const keywords = (yz.keywords ?? []).concat(yz.excludeTitle ? [] : [yz.title]).map(String);
     const getExcludePattern = () => {
-      if (argv.excludePattern) {
-        return parsePattern(argv.excludePattern);
+      if (yz.excludePattern) {
+        return parsePattern(yz.excludePattern);
       }
-      if (argv.excludes) {
-        return joinToRegExp(argv.excludes);
+      if (yz.excludes) {
+        return joinToRegExp(yz.excludes);
       }
       return /$^/;
     };
-    const episodePattern = argv.episodePattern ? parsePattern(argv.episodePattern) : /$^/;
+    const episodePattern = yz.episodePattern ? parsePattern(yz.episodePattern) : /$^/;
 
-    if (await isExistingSubscriptionTitle(argv.title, db)) {
-      const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: argv.title }));
+    if (await isExistingSubscriptionTitle(yz.title, db)) {
+      const answer = await ask(t('CMD_ADD_PROMPTS_CONFIRM', { title: yz.title }));
       if (!/(?:y|yes)/i.test(answer)) {
         return process.exit(1);
       }
     }
 
-    await createSubscription(argv.title, {
+    await createSubscription(yz.title, {
       keywords,
       excludePatternString: String(getExcludePattern()),
       episodePatternString: String(episodePattern),
     }, db);
 
-    logger.log(t('CMD_ADD_SUCCESS', { title: argv.title }));
-  } catch (err) {
+    logger.log(t('CMD_ADD_SUCCESS', { title: yz.title }));
+  }
+  catch (err) {
     debug('dmhy:cli:add')(err);
-    // @ts-expect-error
+    console.error(err);
+    // @ts-expect-error err is unknown type
     logger.error('dmhy:cli:add')(err.message);
   }
 };

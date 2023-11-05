@@ -3,7 +3,7 @@ import * as logger from '../logger.mjs';
 import { t } from '../locale.mjs';
 
 /** @type {import('~types').Downloader['download']} */
-export const download = async(thread, config) => {
+export const download = async (thread, config) => {
   debug('dmhy:downloaders:webhook:thread')(thread);
   debug('dmhy:downloaders:webhook:config')(config);
 
@@ -15,7 +15,7 @@ export const download = async(thread, config) => {
       return logger.error('dmhy:downloaders:webhook:tokenError')(t('DLR_WEBHOOK_TOKEN_ERR'));
     }
 
-    // @ts-expect-error
+    // @ts-expect-error node/20/fetch
     await fetch(config['webhook-url'], {
       method: 'POST',
       body: JSON.stringify(thread),
@@ -26,7 +26,8 @@ export const download = async(thread, config) => {
     });
 
     logger.log(t('DLR_WEBHOOK_SUCCESS', { title: thread.title }));
-  } catch (error) {
+  }
+  catch (error) {
     logger.error('dmhy:downloaders:webhook:error')(thread.title);
     debug('dmhy:downloaders:webhook:error')(error);
   }
