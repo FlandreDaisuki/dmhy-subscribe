@@ -126,7 +126,7 @@ export const parseEpisode = (threadTitle, episodePatternString = '/$^/') => {
     const BLACKLIST_PATTERNS = [
       /x?(1080|720|480)p?/,
       /^(\d+\s*年)?\d+\s*月$/,
-      /(\d+\s*年)?\d+\s*月新番/,
+      /(\d+\s*年)?\d+\s*月新?番/,
       /x26[45]/,
       /(10|8)bit/,
       /ma10p/,

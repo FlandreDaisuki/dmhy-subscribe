@@ -36,6 +36,7 @@ describe('parseEpisode', () => {
     expect(parseEpisode('[澄空学园] 紫罗兰永恒花园 第08话 MP4 720p v2')).toMatchObject({ from: 8 });
     expect(parseEpisode('【DHR百合組】[搖曳露營△_Yuru Camp][08][繁體][720P][MP4]')).toMatchObject({ from: 8 });
     expect(parseEpisode('【西农YUI汉化组】★十月新番【三月的狮子 3-gatsu no Lion 2】第16话 GB简体 720P MP4')).toMatchObject({ from: 16 });
+    expect(parseEpisode('[猎户不鸽压制] 哥布林杀手 第二季 / Goblin Slayer II [04] [1080p] [繁日内嵌] [2023年10月番]')).toMatchObject({ from: 4 });
     expect(parseEpisode('【喵萌奶茶屋&千夏字幕組】【輕旅輕營_Yuru Camp】[第08話][1280x720][MP4][繁體]（諢名：搖曳露營）')).toMatchObject({ from: 8 });
     expect(parseEpisode('[INDRA&NMKST][四月新番] 櫻花任務 / Sakura Quest [16] [720P][HardSub][BIG5][x264 AAC][v3]')).toMatchObject({ from: 16 });
     expect(parseEpisode('【追新番字幕组】【3月的狮子】【Sangatsu no Lion】【第16集】【中日双语字幕】【HDTVrip】【1280X720】【mp4】')).toMatchObject({ from: 16 });
@@ -68,6 +69,10 @@ describe('parseEpisode', () => {
 
   it('not support', () => {
     expect(parseEpisode('[c.c動漫][8月][Fate Grand Order - 絕對魔獸戰線巴比倫尼亞][特別篇][BIG5][1080P][網盤]')).toMatchObject({});
+  });
+
+  it.todo('number in title', () => {
+    expect(parseEpisode('[SweetSub][16 位元的輝煌 Another Layer][16bit Sensation: Another Layer][03][WebRip][1080P][AVC 8bit][繁日雙語][v2]（檢索用：16bit的感動）')).toMatchObject({ from: 3 });
   });
   // cSpell:enable
 });
