@@ -1,60 +1,25 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  run-test:
-    name: 🧪 Run tests
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20.x
 
-      - uses: pnpm/action-setup@v2
-        name: Setup pnpm
-        id: setup-pnpm
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> "${GITHUB_OUTPUT}"
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - run: pnpm install
-
-      - run: pnpm run test
-
-  deploy-to-npm:
-    name: 📦 Deploy to npm
-    runs-on: ubuntu-latest
-    needs: [run-test]
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org'
-
-      - run: npm publish
+      - run: npx changelogithub
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   build-and-push-image:
     name: 🐳 Build image & deploy to ghcr.io
@@ -62,7 +27,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    needs: [run-test]
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
