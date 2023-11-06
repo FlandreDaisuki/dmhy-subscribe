@@ -1,7 +1,7 @@
 {
   "name": "dmhy-subscribe",
   "type": "module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Subscribe by keywords and download megnets",
   "author": "FlandreDaisuki <vbnm123c+github@gmail.com>",
   "license": "ISC",
