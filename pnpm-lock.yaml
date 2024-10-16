@@ -23,7 +23,7 @@ importers:
         version: 5.3.0
       console-table-printer:
         specifier: ^2.12.0
-        version: 2.12.0
+        version: 2.12.1
       debug:
         specifier: ^4.3.5
         version: 4.3.5
@@ -791,8 +791,8 @@ packages:
   console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
 
-  console-table-printer@2.12.0:
-    resolution: {integrity: sha512-Q/Ax+UOpZw0oPZGmv8bH8/W5NpC2rAYy6cX20BVLGQ45v944oL+srmLTZAse/5a3vWDl0MXR/0GTEdsz2dDTbg==}
+  console-table-printer@2.12.1:
+    resolution: {integrity: sha512-wKGOQRRvdnd89pCeH96e2Fn4wkbenSP6LMHfjfyNLMbGuHEFbMqQNuxXqd0oXG9caIOQ1FTvc5Uijp9/4jujnQ==}
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -2998,7 +2998,7 @@ snapshots:
   console-control-strings@1.1.0:
     optional: true
 
-  console-table-printer@2.12.0:
+  console-table-printer@2.12.1:
     dependencies:
       simple-wcswidth: 1.0.1
 
