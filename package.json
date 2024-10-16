@@ -43,7 +43,7 @@
     "@flandredaisuki/eslint-config": "^0.1.3",
     "@types/debug": "^4.1.12",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.14.1",
+    "@types/node": "^22.7.5",
     "@types/semver": "^7.5.8",
     "@types/yargs": "^17.0.32",
     "bumpp": "^9.4.1",
