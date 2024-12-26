@@ -30,6 +30,7 @@ services:
       - LANG=${LANG}
       - CRON_FREQ=${CRON_FREQ}
       - ARIA2_SECRET=${ARIA2_SECRET}
+      - ARIA2_HOST=${ARIA2_HOST}
       - ARIA2_PORT=${ARIA2_PORT}
       # - TZ=Asia/Taipei
     restart: unless-stopped
