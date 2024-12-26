@@ -1,5 +1,3 @@
-version: 3
-
 services:
   aria2:
     image: abcminiuser/docker-aria2-with-webui:latest-ng
