@@ -66,7 +66,11 @@ docker run --rm -itd \
 這個腳本會建立 `data` 資料夾，包含了 `cron` 和 `aria2` 的設定檔。
 
 ```sh
+# 使用預設的密碼及設定
 ./setup.sh
+
+# 或是使用自己定義的設定
+ARIA2_SECRET="tomorin" ARIA2_PORT="6000" ./setup.sh
 ```
 
 可以修改並執行完 `setup.sh` 再開始設定 `docker-compose.yml`。
