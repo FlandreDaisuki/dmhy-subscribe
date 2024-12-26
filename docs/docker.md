@@ -108,11 +108,11 @@ ARIA2_PORT='6800'
 
 ```sh
 # 執行服務
-docker-compose up -d
+docker compose up -d
 # 暫停服務
-docker-compose stop
+docker compose stop
 # 完全清除容器
-docker-compose down
+docker compose down
 ```
 
 在啟用服務之後，可以在 `http://localhost:6880` 看到 aria2 的 WebUI。
