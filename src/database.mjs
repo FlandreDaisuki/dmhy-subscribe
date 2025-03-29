@@ -87,7 +87,7 @@ export const getMigratedDb = async (databasePath = path.join(ENV.DATABASE_DIR, '
   await new Promise((resolve) => {
     db.run('PRAGMA foreign_keys = ON;', function (err) {
       if (err) { console.error(err); }
-      // eslint-disable-next-line ts/no-invalid-this
+
       resolve(this);
     });
   });
@@ -151,7 +151,7 @@ export const createSubscription = async (title, option = {}, db) => {
       if (err) {
         console.error(err);
       }
-      // eslint-disable-next-line ts/no-invalid-this
+
       resolve(this);
     });
   });
@@ -168,7 +168,7 @@ export const removeSubscriptionBySid = async (sid, db) => {
       if (err) {
         console.error(err);
       }
-      // eslint-disable-next-line ts/no-invalid-this
+
       resolve(this);
     });
   });
@@ -312,7 +312,7 @@ export const createThread = async (dmhyLink, magnet, title, publishDate, db) => 
   return new Promise((resolve, reject) => {
     statement.run([dmhyLink, magnet, title, publishDate], function (err) {
       if (err) { return reject(err); }
-      // eslint-disable-next-line ts/no-invalid-this
+
       resolve(this);
     });
   });
@@ -369,7 +369,7 @@ export const setConfiguration = async (key, value, db) => {
   return new Promise((resolve, reject) => {
     statement.run([value, key], function (err) {
       if (err) { return reject(err); }
-      // eslint-disable-next-line ts/no-invalid-this
+
       resolve(this);
     });
   });

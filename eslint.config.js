@@ -1,3 +1,3 @@
 import flandre from '@flandredaisuki/eslint-config';
 
-export default flandre();
+export default flandre.preset;
