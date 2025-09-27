@@ -1,6 +1,6 @@
 import process from 'node:process';
 
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import debug from 'debug';
 
 import { t } from '../../locale.mjs';
@@ -41,12 +41,12 @@ export const builder = (yargs) => {
 
 const yargsZodParser = z.object({
   title: z.string(),
-  keywords: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
-  excludeTitle: z.boolean().optional(),
-  episodePattern: z.string().optional(),
-  excludePattern: z.string().optional(),
-  excludes: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
-  thenAdd: z.boolean().optional(),
+  keywords: z.optional(z.pipe(z.array(z.unknown()), z.transform((u) => u.map(String)))),
+  excludeTitle: z.optional(z.boolean()),
+  episodePattern: z.optional(z.string()),
+  excludePattern: z.optional(z.string()),
+  excludes: z.optional(z.pipe(z.array(z.unknown()), z.transform((u) => u.map(String)))),
+  thenAdd: z.optional(z.boolean()),
 });
 
 /**
