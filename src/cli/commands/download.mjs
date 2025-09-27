@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import debug from 'debug';
 
 import {
@@ -28,7 +28,7 @@ export const builder = (yargs) => {
 
 const yargsZodParser = z.object({
   sid: z.string(),
-  episodeQueries: z.array(z.unknown()).transform((u) => u.map(String)).optional(),
+  episodeQueries: z.optional(z.pipe(z.array(z.unknown()), z.transform((u) => u.map(String)))),
 });
 
 /**

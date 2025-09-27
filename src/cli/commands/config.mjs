@@ -2,7 +2,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -34,8 +34,8 @@ export const builder = (yargs) => {
 };
 
 const yargsZodParser = z.object({
-  configKey: z.string().optional(),
-  configValue: z.string().optional(),
+  configKey: z.optional(z.string()),
+  configValue: z.optional(z.string()),
   format: z.enum(['table', 'json']),
 });
 

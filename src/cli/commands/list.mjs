@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 
-import { z } from 'zod';
+import * as z from 'zod/mini';
 import debug from 'debug';
 import { Table } from 'console-table-printer';
 
@@ -35,7 +35,7 @@ export const builder = (yargs) => {
 
 const yargsZodParser = z.object({
   format: z.enum(['table', 'json']),
-  sid: z.string().optional(),
+  sid: z.optional(z.string()),
 });
 
 /**
