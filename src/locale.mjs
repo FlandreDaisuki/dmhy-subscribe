@@ -2,7 +2,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import debug from 'debug';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { LOCALE } from './env.mjs';
 import * as logger from './logger.mjs';
 
@@ -22,7 +22,7 @@ for (const candidate of candidates) {
   try {
     const fileStat = await fs.stat(candidate).catch(() => null);
     if (fileStat?.isFile()) {
-      const localeStrings = yaml.load(await fs.readFile(candidate, 'utf-8'));
+      const localeStrings = load(await fs.readFile(candidate, 'utf-8'));
       Object.assign(dict, localeStrings);
     }
   }

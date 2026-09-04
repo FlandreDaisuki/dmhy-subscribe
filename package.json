@@ -20,7 +20,7 @@
     "dmhy": "./src/cli/index.mjs"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "lint": "eslint .",
@@ -30,27 +30,27 @@
     "prepublishOnly": "pnpm run check"
   },
   "dependencies": {
-    "aria2": "^4.1.2",
-    "console-table-printer": "^2.14.6",
+    "aria2": "^5.0.0",
+    "console-table-printer": "^2.16.1",
     "debug": "^4.4.3",
-    "js-yaml": "^4.1.0",
-    "open": "^10.2.0",
+    "js-yaml": "^5.4.1",
+    "open": "^11.0.2",
     "picocolors": "^1.1.1",
     "rss-parser": "^3.13.0",
-    "semver": "^7.7.2",
-    "sqlite3": "^5.1.7",
-    "yargs": "^17.7.2",
-    "zod": "^4.1.11"
+    "semver": "^7.8.5",
+    "sqlite3": "^6.0.1",
+    "yargs": "^18.1.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@flandredaisuki/eslint-config": "^1.0.1",
-    "@types/debug": "^4.1.12",
+    "@types/debug": "^4.1.13",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^24.5.2",
-    "@types/semver": "^7.7.1",
-    "@types/yargs": "^17.0.33",
-    "eslint": "^9.36.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "@types/node": "^26.4.1",
+    "@types/semver": "^7.8.0",
+    "@types/yargs": "^17.0.35",
+    "eslint": "^10.9.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.0"
   }
 }
