@@ -21,8 +21,8 @@ type DatabaseConfig = {
 
 // I don't know why but it works! Thanks ChatGPT!
 type DatabaseConfigDict = {
-  [R in DatabaseConfig as R extends { key: infer N; } ? N : never]:
-  R extends { value: infer V; } ? V : never;
+  [R in DatabaseConfig as R extends { key: infer N } ? N : never]:
+  R extends { value: infer V } ? V : never;
 };
 
 interface DatabaseThread {
@@ -35,7 +35,7 @@ interface DatabaseThread {
 
 interface DatabaseSubscription {
   id: number;
-  sid: string & { length: 3; };
+  sid: string & { length: 3 };
   title: string;
   keywords: string[];
   episode_pattern: string;
@@ -43,7 +43,7 @@ interface DatabaseSubscription {
 }
 
 interface Downloader {
-  download: (thread: { title: string; magnet: string; }, config: Record<string, string | null>) => Promise<void>;
+  download: (thread: { title: string; magnet: string }, config: Record<string, string | null>) => Promise<void>;
 }
 
 interface Episode {

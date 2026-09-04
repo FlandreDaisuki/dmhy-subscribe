@@ -1,7 +1,8 @@
 {
   "name": "dmhy-subscribe",
   "type": "module",
-  "version": "1.0.14",
+  "version": "0.0.0-development",
+  "packageManager": "pnpm@11.25.0",
   "description": "Subscribe by keywords and download megnets",
   "author": "FlandreDaisuki <vbnm123c+github@gmail.com>",
   "license": "ISC",
@@ -22,9 +23,11 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "lint": "eslint . --fix",
-    "test": "vitest",
-    "release": "bumpp && pnpm publish"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "pnpm run lint && pnpm run test",
+    "prepublishOnly": "pnpm run check"
   },
   "dependencies": {
     "aria2": "^4.1.2",
@@ -46,18 +49,8 @@
     "@types/node": "^24.5.2",
     "@types/semver": "^7.7.1",
     "@types/yargs": "^17.0.33",
-    "bumpp": "^10.2.3",
     "eslint": "^9.36.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
-  },
-  "pnpm": {
-    "overrides": {
-      "array-includes": "npm:@nolyfill/array-includes@latest",
-      "array.prototype.flat": "npm:@nolyfill/array.prototype.flat@latest",
-      "array.prototype.flatmap": "npm:@nolyfill/array.prototype.flatmap@latest",
-      "has": "npm:@nolyfill/has@latest",
-      "object.values": "npm:@nolyfill/object.values@latest"
-    }
   }
 }

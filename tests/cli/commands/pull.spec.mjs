@@ -39,7 +39,7 @@ const executeConfigCommand = async (db, key, value) => {
   await configCommand.handler(argv, () => db);
 };
 
-function * mutableRssGen() {
+function* mutableRssGen() {
   yield (new RSSParser()).parseString(campHalfRss);
   while (true) {
     yield (new RSSParser()).parseString(campRss);
