@@ -33,24 +33,24 @@
     "aria2": "^5.0.0",
     "console-table-printer": "^2.16.1",
     "debug": "^4.4.3",
-    "js-yaml": "^5.4.1",
-    "open": "^11.0.2",
+    "js-yaml": "^5.4.2",
+    "open": "^11.0.4",
     "picocolors": "^1.1.1",
     "rss-parser": "^3.13.0",
     "semver": "^7.8.5",
     "sqlite3": "^6.0.1",
     "yargs": "^18.1.0",
-    "zod": "^4.5.4"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@flandredaisuki/eslint-config": "^1.0.1",
     "@types/debug": "^4.1.13",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^26.4.1",
+    "@types/node": "^26.6.1",
     "@types/semver": "^7.8.0",
     "@types/yargs": "^17.0.35",
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   }
 }
